@@ -1,29 +1,45 @@
 package edu.oregonstate.cs467.travelplanner.experience.model;
 
+import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
+
 import java.time.Instant;
 import java.time.LocalDate;
 
 public class Experience {
+    @Positive
     private Long experienceId;
 
+    @NotBlank
+    @Size(max = 100)
     private String title;
 
+    @NotBlankNull
+    @Size(max = 1000)
     private String description;
 
     private LocalDate eventDate;
 
+    @NotNull
     private GeoPoint location;
 
+    @Size(max = 255)
     private String address;
 
+    @URL
     private String imageUrl;
 
+    @PositiveOrZero
     private int ratingCnt;
 
+    @PositiveOrZero
     private int ratingSum;
 
+    @Positive
     private long userId;
 
+    @NotNull
     private Instant createdAt;
 
     private Instant updatedAt;
