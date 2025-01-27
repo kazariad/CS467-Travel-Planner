@@ -32,13 +32,5 @@ CREATE TABLE `user`  (
   PRIMARY KEY (`user_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
-DROP TABLE IF EXISTS `user_experience`;
-CREATE TABLE `user_experience`  (
-  `user_id` bigint NOT NULL,
-  `experience_id` bigint NOT NULL,
-  PRIMARY KEY (`user_id`, `experience_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`experience_id`) REFERENCES `experience`(`experience_id`) ON DELETE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
