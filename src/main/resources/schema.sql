@@ -28,7 +28,7 @@ CREATE TABLE `user`  (
   `username` varchar(50) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
