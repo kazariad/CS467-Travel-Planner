@@ -24,8 +24,7 @@ CREATE TABLE `experience`  (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `user_id` bigint NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `created_at` datetime(6) NOT NULL,
