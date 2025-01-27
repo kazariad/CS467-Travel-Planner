@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `user_id` bigint NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL UNIQUE,
+  `username` varchar(50) NOT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
