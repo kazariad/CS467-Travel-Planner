@@ -24,6 +24,7 @@ public class Experience {
     @NotNull
     private GeoPoint location;
 
+    @NotBlankNull
     @Size(max = 255)
     private String address;
 

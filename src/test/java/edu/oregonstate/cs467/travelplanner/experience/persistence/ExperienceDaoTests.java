@@ -25,15 +25,32 @@ class ExperienceDaoTests extends AbstractBaseTest {
     @Sql(scripts = "/sql/experience/1.sql")
     @Sql(scripts = "/sql/experience/2.sql")
     void findById() throws Exception {
-        var actual = dao.findById(1);
-        var expected = objectMapper.readValue(new ClassPathResource("/json/experience/1.json").getInputStream(), Experience.class);
-        assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
+        var actual1 = dao.findById(1);
+        var expected1 = objectMapper.readValue(new ClassPathResource("/json/experience/1.json").getInputStream(), Experience.class);
+        assertThat(actual1.get()).usingRecursiveComparison().isEqualTo(expected1);
 
-        actual = dao.findById(2);
-        expected = objectMapper.readValue(new ClassPathResource("/json/experience/2.json").getInputStream(), Experience.class);
-        assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
+        var actual2 = dao.findById(2);
+        var expected2 = objectMapper.readValue(new ClassPathResource("/json/experience/2.json").getInputStream(), Experience.class);
+        assertThat(actual2.get()).usingRecursiveComparison().isEqualTo(expected2);
 
-        actual = dao.findById(3);
-        assertThat(actual).isEmpty();
+        var actual3 = dao.findById(3);
+        assertThat(actual3).isEmpty();
+    }
+
+    @Test
+    void persist() throws Exception {
+        var exp1 = objectMapper.readValue(new ClassPathResource("/json/experience/1.json").getInputStream(), Experience.class);
+        exp1.setExperienceId(null);
+        dao.persist(exp1);
+        assertThat(exp1.getExperienceId()).isEqualTo(1);
+        var actual1 = dao.findById(1);
+        assertThat(actual1.get()).usingRecursiveComparison().isEqualTo(exp1);
+
+        var exp2 = objectMapper.readValue(new ClassPathResource("/json/experience/2.json").getInputStream(), Experience.class);
+        exp2.setExperienceId(null);
+        dao.persist(exp2);
+        assertThat(exp2.getExperienceId()).isEqualTo(2);
+        var actual2 = dao.findById(2);
+        assertThat(actual2.get()).usingRecursiveComparison().isEqualTo(exp2);
     }
 }

@@ -2,12 +2,15 @@ package edu.oregonstate.cs467.travelplanner.experience.persistence;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
+import jakarta.validation.Valid;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -22,9 +25,7 @@ public class ExperienceDao {
         exp.setTitle(rs.getString("title"));
         exp.setDescription(rs.getString("description"));
         exp.setEventDate(rs.getObject("event_date", LocalDate.class));
-        double lat = rs.getDouble("location_lat");
-        double lng = rs.getDouble("location_lng");
-        exp.setLocation(new GeoPoint(lat, lng));
+        exp.setLocation(new GeoPoint(rs.getDouble("location_lat"), rs.getDouble("location_lng")));
         exp.setAddress(rs.getString("address"));
         exp.setImageUrl(rs.getString("image_url"));
         exp.setRatingCnt(rs.getInt("rating_cnt"));
@@ -50,9 +51,35 @@ public class ExperienceDao {
                        ST_Longitude(location) AS location_lng 
                 FROM experience
                 WHERE experience_id = ?""";
+
         return jdbcClient.sql(sql)
                 .param(experienceId)
                 .query(rowMapper)
                 .optional();
+    }
+
+    public void persist(@Valid Experience experience) {
+        String sql = """
+                INSERT INTO experience
+                VALUES (NULL, ?, ?, ?, ST_PointFromText(?, 4326), ?, ?, ?, ?, ?, ?, ?, ?)""";
+
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int idx = 1;
+        jdbcClient.sql(sql)
+                .param(idx++, experience.getTitle())
+                .param(idx++, experience.getDescription())
+                .param(idx++, experience.getEventDate(), Types.DATE)
+                // %f only prints 6 decimals, %s prints with full precision
+                .param(idx++, String.format("POINT(%s %s)", experience.getLocation().lat(), experience.getLocation().lng()))
+                .param(idx++, experience.getAddress())
+                .param(idx++, experience.getImageUrl())
+                .param(idx++, experience.getRatingCnt())
+                .param(idx++, experience.getRatingSum())
+                .param(idx++, experience.getUserId())
+                .param(idx++, experience.getCreatedAt(), Types.TIMESTAMP)
+                .param(idx++, experience.getUpdatedAt(), Types.TIMESTAMP)
+                .param(idx++, experience.getDeletedAt(), Types.TIMESTAMP)
+                .update(keyHolder);
+        experience.setExperienceId(keyHolder.getKey().longValue());
     }
 }
