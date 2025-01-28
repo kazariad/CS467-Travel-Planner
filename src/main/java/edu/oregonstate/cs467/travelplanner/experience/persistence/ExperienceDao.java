@@ -3,6 +3,7 @@ package edu.oregonstate.cs467.travelplanner.experience.persistence;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
 import jakarta.validation.Valid;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -81,5 +82,41 @@ public class ExperienceDao {
                 .param(idx++, experience.getDeletedAt(), Types.TIMESTAMP)
                 .update(keyHolder);
         experience.setExperienceId(keyHolder.getKey().longValue());
+    }
+
+    public void update(@Valid Experience experience) {
+        String sql = """
+                UPDATE experience SET
+                    title = ?,
+                    description = ?,
+                    event_date = ?,
+                    location = ST_PointFromText(?, 4326),
+                    address = ?,
+                    image_url = ?,
+                    rating_cnt = ?,
+                    rating_sum = ?,
+                    user_id = ?,
+                    created_at = ?,
+                    updated_at = ?,
+                    deleted_at = ?
+                WHERE experience_id = ?""";
+
+        int idx = 1;
+        int affectedRows = jdbcClient.sql(sql)
+                .param(idx++, experience.getTitle())
+                .param(idx++, experience.getDescription())
+                .param(idx++, experience.getEventDate(), Types.DATE)
+                .param(idx++, String.format("POINT(%s %s)", experience.getLocation().lat(), experience.getLocation().lng()))
+                .param(idx++, experience.getAddress())
+                .param(idx++, experience.getImageUrl())
+                .param(idx++, experience.getRatingCnt())
+                .param(idx++, experience.getRatingSum())
+                .param(idx++, experience.getUserId())
+                .param(idx++, experience.getCreatedAt(), Types.TIMESTAMP)
+                .param(idx++, experience.getUpdatedAt(), Types.TIMESTAMP)
+                .param(idx++, experience.getDeletedAt(), Types.TIMESTAMP)
+                .param(idx++, experience.getExperienceId())
+                .update();
+        if (affectedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
     }
 }
