@@ -1,0 +1,12 @@
+{
+  "experienceId": 2,
+  "title": "Some title",
+  "location": {
+    "lat": 0,
+    "lng": 0
+  },
+  "ratingCnt": 0,
+  "ratingSum": 0,
+  "userId": 1,
+  "createdAt": "2025-01-27T13:02:38Z"
+}
