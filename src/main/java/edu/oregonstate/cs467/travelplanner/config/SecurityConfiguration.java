@@ -18,6 +18,7 @@ public class SecurityConfiguration {
     @Autowired
     private UserService userService;
 
+    // validate login credentials
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -31,6 +32,8 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(authenticationProvider());
     }
+
+    // Authorization : determines which pages are public
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,20 +43,12 @@ public class SecurityConfiguration {
                         .authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .successHandler(successHandler())
+                        .defaultSuccessUrl("/viewUser", true)
                         .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .permitAll());
         return http.build();
-    }
-    // TODO: remove when the Display page for User is done
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return (request, response, authentication) -> {
-            request.getSession().setAttribute("message", "Welcome back, " + authentication.getName() + "!");
-            response.sendRedirect("/login");  // Stay on the login page after successful login
-        };
     }
 }

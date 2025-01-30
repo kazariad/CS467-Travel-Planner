@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
     public boolean usernameExists(String username) {
         return userRepository.findByUsername(username) != null;
     }
+
     @Override
     public User save(UserRegistrationDto registrationDto) {
         if (usernameExists(registrationDto.getUsername())) {
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = registrationDto.toEntity();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));   // hashed password before storing
         return userRepository.save(user);
     }
 
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw new UsernameNotFoundException("Invalid username.");
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER")));
