@@ -1,0 +1,18 @@
+{
+  "experienceId": 1,
+  "title": "Some title",
+  "description": "Some description 123 😀",
+  "eventDate": "2025-01-27",
+  "location": {
+    "lat": 34.114260988634435,
+    "lng": -118.14992387107054
+  },
+  "address": "123 Fake St. Atlantis, Earth 12345",
+  "imageUrl": "https://www.site.com/image.jpg",
+  "ratingCnt": 100,
+  "ratingSum": 250,
+  "userId": 1,
+  "createdAt": "2025-01-27T13:02:38Z",
+  "updatedAt": "2025-01-28T13:02:38.123Z",
+  "deletedAt": "2025-01-29T23:59:59.999999Z"
+}
