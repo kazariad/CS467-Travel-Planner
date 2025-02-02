@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SqlMergeMode(MergeMode.MERGE)
 @Sql(scripts = "/sql/schema.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = "/sql/user/1.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "/sql/user/2.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(statements = "ALTER TABLE experience AUTO_INCREMENT = 1")
 class ExperienceDaoTests extends AbstractBaseTest {
     @Autowired
