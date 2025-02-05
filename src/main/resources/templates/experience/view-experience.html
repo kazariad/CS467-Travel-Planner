@@ -37,14 +37,14 @@
             <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.67 / 5.0</span>
             <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
             <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                  th:text="${' (' + experience.ratingCnt + 'ratings)'}"> (5 ratings)</span>
+                  th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
         </p>
     </div>
 
     <div class="row">
         <p class="col mb-4">
             <i class="bi bi-person"></i>
-            <span th:text="${'Submitted by ' + author}">Submitted by username</span>
+            <span th:text="${'Submitted by ' + author + ' ' + submittedDuration + ' ago'}">Submitted by username 5 days ago</span>
         </p>
     </div>
 
