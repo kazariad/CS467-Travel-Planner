@@ -19,6 +19,7 @@ public class Experience {
     @Size(max = 1000)
     private String description;
 
+    @NotNull
     private LocalDate eventDate;
 
     @NotNull

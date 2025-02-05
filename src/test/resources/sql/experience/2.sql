@@ -2,7 +2,7 @@ INSERT INTO `experience`
 VALUES (2,
         'Some title',
         NULL,
-        NULL,
+        '2025-01-27',
         ST_PointFromText('POINT(0 0)', 4326),
         NULL,
         NULL,

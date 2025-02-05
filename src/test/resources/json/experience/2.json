@@ -1,6 +1,7 @@
 {
   "experienceId": 2,
   "title": "Some title",
+  "eventDate": "2025-01-27",
   "location": {
     "lat": 0,
     "lng": 0
