@@ -25,13 +25,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(UserRegistrationDto registrationDto) {
+    public void save(UserRegistrationDto registrationDto) {
         if (usernameExists(registrationDto.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
         User user = registrationDto.toEntity();
         user.setPassword(passwordEncoder.encode(user.getPassword()));   // hashed password before storing
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override

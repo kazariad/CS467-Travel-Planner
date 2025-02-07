@@ -25,7 +25,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/viewUser", true)
+                        .defaultSuccessUrl("/user/details", true)
                         .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)

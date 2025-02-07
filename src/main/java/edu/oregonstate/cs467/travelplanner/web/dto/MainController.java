@@ -1,6 +1,11 @@
 package edu.oregonstate.cs467.travelplanner.web.dto;
 
+import edu.oregonstate.cs467.travelplanner.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -11,8 +16,4 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/viewUser")
-    public String viewUser() {
-        return "viewUser";
-    }
 }
