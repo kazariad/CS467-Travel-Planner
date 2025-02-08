@@ -1,4 +1,4 @@
-package edu.oregonstate.cs467.travelplanner.web.dto;
+package edu.oregonstate.cs467.travelplanner.user.controller;
 
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
-public class UserDetailsController {
+public class UserProfileController {
 
     @Autowired
     private UserService userService;
