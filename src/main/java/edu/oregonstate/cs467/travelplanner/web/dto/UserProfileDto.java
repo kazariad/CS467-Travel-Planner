@@ -7,34 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistrationDto {
-
-    private Long userId;
+public class UserProfileDto {
     private String fullName;
     private String username;
-    private String password;
-    private Instant createdAt = Instant.now();
-    private Instant updatedAt;
     private List<Experience> experienceList;
 
     public User toEntity() {
         User user = new User();
-        user.setUserId(this.userId);
         user.setFullName(this.fullName);
         user.setUsername(this.username);
-        user.setPassword(this.password);
-        if (this.createdAt == null) {
-            user.setCreatedAt(Instant.now());
-        } else {
-            user.setCreatedAt(this.createdAt);
-        }
+        user.setExperienceList(this.experienceList);
         return user;
     }
 }
