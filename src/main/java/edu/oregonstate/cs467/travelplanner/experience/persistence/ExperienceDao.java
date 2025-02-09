@@ -15,12 +15,17 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * Data access object for Experience objects, supporting basic CRUD and other specialized functions.
+ */
 @Repository
+// activate validation for @Valid method arguments
 @Validated
 public class ExperienceDao {
     private final JdbcClient jdbcClient;
 
     private final RowMapper<Experience> rowMapper = (rs, rowNum) -> {
+        // RowMapper creates Experience objects from returned data rows by reading the individual columns
         Experience exp = new Experience();
         exp.setExperienceId(rs.getLong("experience_id"));
         exp.setTitle(rs.getString("title"));
@@ -45,10 +50,16 @@ public class ExperienceDao {
         this.jdbcClient = jdbcClient;
     }
 
+    /**
+     * Retrieve an Experience by its ID.
+     * @param experienceId
+     * @return {@link Optional} containing the Experience, or empty if no matching results
+     */
     public Optional<Experience> findById(long experienceId) {
+        // use SQL functions ST_Latitude/Longitude to extract values as doubles
         String sql = """
                 SELECT *, 
-                       ST_Latitude(location) AS location_lat, 
+                       ST_Latitude(location) AS location_lat,
                        ST_Longitude(location) AS location_lng 
                 FROM experience
                 WHERE experience_id = ?""";
@@ -59,7 +70,12 @@ public class ExperienceDao {
                 .optional();
     }
 
+    /**
+     * Save a new Experience in the database.  Experience's ID will be updated with the generated key.
+     * @param experience
+     */
     public void persist(@Valid Experience experience) {
+        if (experience.getExperienceId() != null) throw new IllegalArgumentException("Experience ID not null");
         String sql = """
                 INSERT INTO experience
                 VALUES (NULL, ?, ?, ?, ST_PointFromText(?, 4326), ?, ?, ?, ?, ?, ?, ?, ?)""";
@@ -84,6 +100,10 @@ public class ExperienceDao {
         experience.setExperienceId(keyHolder.getKey().longValue());
     }
 
+    /**
+     * Update an existing Experience in the database.
+     * @param experience
+     */
     public void update(@Valid Experience experience) {
         String sql = """
                 UPDATE experience SET
@@ -117,6 +137,7 @@ public class ExperienceDao {
                 .param(idx++, experience.getDeletedAt(), Types.TIMESTAMP)
                 .param(idx++, experience.getExperienceId())
                 .update();
+        // make sure that an Experience was actually matched and updated
         if (affectedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
     }
 }

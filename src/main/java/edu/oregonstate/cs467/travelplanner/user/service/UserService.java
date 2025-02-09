@@ -4,7 +4,10 @@ import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.web.dto.UserRegistrationDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Optional;
+
 public interface UserService extends UserDetailsService {
     User save(UserRegistrationDto registrationDto);
     boolean usernameExists(String username);
+    Optional<User> findById(long userId);
 }

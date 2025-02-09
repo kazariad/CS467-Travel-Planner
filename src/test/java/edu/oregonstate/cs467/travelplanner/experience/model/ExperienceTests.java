@@ -22,6 +22,6 @@ class ExperienceTests extends AbstractBaseTest {
         exp.setRatingSum(-1);
         exp.setUserId(0);
         var violations = validator.validate(exp);
-        assertThat(violations.size()).isEqualTo(9);
+        assertThat(violations.size()).isEqualTo(10);
     }
 }

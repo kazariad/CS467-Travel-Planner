@@ -1,12 +1,13 @@
 {
   "experienceId": 2,
   "title": "Some title",
+  "eventDate": "2025-01-27",
   "location": {
     "lat": 0,
     "lng": 0
   },
   "ratingCnt": 0,
   "ratingSum": 0,
-  "userId": 1,
+  "userId": 2,
   "createdAt": "2025-01-27T13:02:38Z"
 }
