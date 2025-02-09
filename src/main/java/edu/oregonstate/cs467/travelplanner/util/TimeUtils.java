@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-public class TimeUtil {
-    public String coarseDuration(Duration duration) {
+public class TimeUtils {
+    public String formatDuration(Duration duration) {
         duration = duration.abs();
 
         long minutes = duration.toMinutes();
