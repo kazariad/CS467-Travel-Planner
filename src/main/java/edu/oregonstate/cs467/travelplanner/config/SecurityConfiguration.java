@@ -1,5 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.config;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/login", "/registration").permitAll()
                         .requestMatchers(HttpMethod.GET, "/experience/**").permitAll()
                         .anyRequest().authenticated())
