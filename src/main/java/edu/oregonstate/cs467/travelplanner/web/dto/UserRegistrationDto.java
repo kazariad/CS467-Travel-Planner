@@ -2,6 +2,7 @@ package edu.oregonstate.cs467.travelplanner.web.dto;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,14 @@ import java.util.List;
 public class UserRegistrationDto {
 
     private Long userId;
+
+    @NotBlank(message = "Full Name cannot be blank")
     private String fullName;
+
+    @NotBlank(message = "Username cannot be blank")
     private String username;
+
+    @NotBlank(message = "Password cannot be blank")
     private String password;
     private Instant createdAt = Instant.now();
     private Instant updatedAt;

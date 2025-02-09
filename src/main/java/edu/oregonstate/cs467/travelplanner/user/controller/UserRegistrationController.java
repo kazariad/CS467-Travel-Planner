@@ -29,8 +29,8 @@ public class UserRegistrationController {
     @PostMapping
     public String registerUserAccount(@Valid @ModelAttribute("user") UserRegistrationDto registrationDto,
                                       BindingResult result, Model model) {
-        // validation ensures username is unique
-        if (userService.usernameExists(registrationDto.getUsername())) {
+        // check if validation already caught issues then ensures username is unique
+        if (!result.hasErrors() && userService.usernameExists(registrationDto.getUsername())) {
             result.rejectValue("username", "error.user", "Username already exists");
         }
         if (result.hasErrors()) {
