@@ -1,6 +1,7 @@
-package edu.oregonstate.cs467.travelplanner.web.dto;
+package edu.oregonstate.cs467.travelplanner.user.controller;
 
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
+import edu.oregonstate.cs467.travelplanner.web.dto.UserRegistrationDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,8 @@ public class UserRegistrationController {
     @PostMapping
     public String registerUserAccount(@Valid @ModelAttribute("user") UserRegistrationDto registrationDto,
                                       BindingResult result, Model model) {
-        // validation ensures username is unique
-        if (userService.usernameExists(registrationDto.getUsername())) {
+        // check if validation already caught issues then ensures username is unique
+        if (!result.hasErrors() && userService.usernameExists(registrationDto.getUsername())) {
             result.rejectValue("username", "error.user", "Username already exists");
         }
         if (result.hasErrors()) {

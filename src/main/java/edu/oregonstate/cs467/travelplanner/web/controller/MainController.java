@@ -1,5 +1,4 @@
-package edu.oregonstate.cs467.travelplanner.web.dto;
-
+package edu.oregonstate.cs467.travelplanner.web.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -11,8 +10,4 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/viewUser")
-    public String viewUser() {
-        return "viewUser";
-    }
 }
