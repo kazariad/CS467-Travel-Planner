@@ -53,4 +53,14 @@ public class ExperienceService {
         experience.setUpdatedAt(Instant.now(clock));
         experienceDao.update(experience);
     }
+
+    public void deleteExperience(long experienceId) {
+        Experience experience = experienceDao.findById(experienceId).orElse(null);
+        if (experience == null || experience.getDeletedAt() != null) return;
+        User user = authUserProvider.getUser();
+        if (user == null || user.getUserId() != experience.getUserId()) throw new AccessDeniedException("Access denied");
+
+        experience.setDeletedAt(Instant.now(clock));
+        experienceDao.update(experience);
+    }
 }

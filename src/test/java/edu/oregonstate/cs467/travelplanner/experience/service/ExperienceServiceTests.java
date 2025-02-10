@@ -124,4 +124,28 @@ class ExperienceServiceTests extends AbstractBaseTest {
         assertThatThrownBy(() ->  service.updateExperience(1, dtoA)).isInstanceOf(ResourceNotFoundException.class);
         assertThatThrownBy(() ->  service.updateExperience(2, dtoA)).isInstanceOf(ResourceNotFoundException.class);
     }
+
+    @Test
+    @WithUserDetails("user2")
+    @Sql(scripts = "/sql/Experience/2.sql")
+    void deleteExperience_as_owner() {
+        service.deleteExperience(2);
+        var actual = service.getExperience(2);
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    @Sql(scripts = "/sql/Experience/2.sql")
+    void deleteExperience_as_other() {
+        assertThatThrownBy(() -> service.deleteExperience(2)).isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    @Sql(scripts = "/sql/Experience/1.sql")
+    void deleteExperience_missing_or_deleted() {
+        service.deleteExperience(1);
+        service.deleteExperience(2);
+    }
 }
