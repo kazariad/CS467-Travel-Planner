@@ -3,6 +3,7 @@ package edu.oregonstate.cs467.travelplanner.experience.service;
 import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
 import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.util.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -85,5 +86,42 @@ class ExperienceServiceTests extends AbstractBaseTest {
     void createExperience_as_anon() throws Exception {
         var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
         assertThatThrownBy(() -> service.createExperience(dtoA)).isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    @WithUserDetails("user2")
+    @Sql(scripts = "/sql/Experience/2.sql")
+    void updateExperience_as_owner() throws Exception {
+        var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
+        service.updateExperience(2, dtoA);
+        var expected = objectMapper.readValue(new ClassPathResource("/json/Experience/2.json").getInputStream(), Experience.class);
+        dtoA.transferTo(expected);
+        expected.setUpdatedAt(Instant.now(clock));
+        var actual = service.getExperience(2);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+        var dtoB = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/B.json").getInputStream(), CreateUpdateExperienceDto.class);
+        service.updateExperience(2, dtoB);
+        dtoB.transferTo(expected);
+        expected.setUpdatedAt(Instant.now(clock));
+        actual = service.getExperience(2);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    @Sql(scripts = "/sql/Experience/2.sql")
+    void updateExperience_as_other() throws Exception {
+        var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
+        assertThatThrownBy(() ->  service.updateExperience(2, dtoA)).isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    @Sql(scripts = "/sql/Experience/1.sql")
+    void updateExperience_missing_or_deleted() throws Exception {
+        var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
+        assertThatThrownBy(() ->  service.updateExperience(1, dtoA)).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() ->  service.updateExperience(2, dtoA)).isInstanceOf(ResourceNotFoundException.class);
     }
 }

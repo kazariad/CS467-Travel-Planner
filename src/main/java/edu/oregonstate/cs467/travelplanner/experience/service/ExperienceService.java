@@ -4,6 +4,7 @@ import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperience
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.persistence.ExperienceDao;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
+import edu.oregonstate.cs467.travelplanner.util.exception.ResourceNotFoundException;
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,16 @@ public class ExperienceService {
         experience.setCreatedAt(Instant.now(clock));
         experienceDao.persist(experience);
         return experience.getExperienceId();
+    }
+
+    public void updateExperience(long experienceId, CreateUpdateExperienceDto experienceDto) {
+        Experience experience = experienceDao.findById(experienceId).orElse(null);
+        if (experience == null || experience.getDeletedAt() != null) throw new ResourceNotFoundException();
+        User user = authUserProvider.getUser();
+        if (user == null || user.getUserId() != experience.getUserId()) throw new AccessDeniedException("Access denied");
+
+        experienceDto.transferTo(experience);
+        experience.setUpdatedAt(Instant.now(clock));
+        experienceDao.update(experience);
     }
 }
