@@ -1,13 +1,16 @@
 package edu.oregonstate.cs467.travelplanner.experience.service;
 
 import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
+import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.jdbc.SqlMergeMode;
@@ -18,6 +21,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SqlMergeMode(MergeMode.MERGE)
@@ -48,5 +52,38 @@ class ExperienceServiceTests extends AbstractBaseTest {
 
         var actual3 = service.getExperience(3);
         assertThat(actual3).isNull();
+    }
+
+    @Test
+    @WithUserDetails("user1")
+    void createExperience_as_user() throws Exception {
+        var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
+        assertThat(service.createExperience(dtoA)).isEqualTo(1);
+        var actual1 = service.getExperience(1);
+        var expected1 = dtoA.transferTo(new Experience());
+        expected1.setExperienceId(1L);
+        expected1.setRatingCnt(0);
+        expected1.setRatingSum(0);
+        expected1.setUserId(1);
+        expected1.setCreatedAt(Instant.now(clock));
+        assertThat(actual1).usingRecursiveComparison().isEqualTo(expected1);
+
+        var dtoB = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/B.json").getInputStream(), CreateUpdateExperienceDto.class);
+        assertThat(service.createExperience(dtoB)).isEqualTo(2);
+        var actual2 = service.getExperience(2);
+        var expected2 = dtoB.transferTo(new Experience());
+        expected2.setExperienceId(2L);
+        expected2.setRatingCnt(0);
+        expected2.setRatingSum(0);
+        expected2.setUserId(1);
+        expected2.setCreatedAt(Instant.now(clock));
+        assertThat(actual2).usingRecursiveComparison().isEqualTo(expected2);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void createExperience_as_anon() throws Exception {
+        var dtoA = objectMapper.readValue(new ClassPathResource("/json/CreateUpdateExperienceDto/A.json").getInputStream(), CreateUpdateExperienceDto.class);
+        assertThatThrownBy(() -> service.createExperience(dtoA)).isInstanceOf(AccessDeniedException.class);
     }
 }
