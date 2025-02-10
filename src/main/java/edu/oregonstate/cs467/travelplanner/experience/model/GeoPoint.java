@@ -1,10 +1,12 @@
 package edu.oregonstate.cs467.travelplanner.experience.model;
 
-public record GeoPoint(double lat, double lng) {
-    public GeoPoint(double lat, double lng) {
-        if (lat < -90 || lat > 90) throw new IllegalArgumentException("Invalid latitude");
-        if (lng < -180 || lng > 180) throw new IllegalArgumentException("Invalid longitude");
-        this.lat = lat;
-        this.lng = lng;
-    }
-}
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
+public record GeoPoint(
+        @Min(-90)
+        @Max(90)
+        double lat,
+        @Min(-180)
+        @Max(180)
+        double lng) {}

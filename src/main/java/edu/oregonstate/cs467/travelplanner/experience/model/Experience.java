@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.experience.model;
 
 import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -23,6 +24,7 @@ public class Experience {
     private LocalDate eventDate;
 
     @NotNull
+    @Valid
     private GeoPoint location;
 
     @NotBlankNull
