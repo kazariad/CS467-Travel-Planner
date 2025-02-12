@@ -26,6 +26,9 @@ public class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    /**
+     * Test that the usernameExists() method returns true when the username exists in the repository.
+     */
     @Test
     public void testUsernameExistsTrue() {
         User testUser = new User();
@@ -39,6 +42,9 @@ public class UserServiceTest {
         verify(userRepository).findByUsername(("testUser"));
     }
 
+    /**
+     * Test that the usernameExists() method returns true when the username exists in the repository.
+     */
     @Test
     public void testUsernameExistsFalse() {
         User testUser = new User();
@@ -52,7 +58,9 @@ public class UserServiceTest {
         verify(userRepository).findByUsername(("unknownUser"));
     }
 
-
+    /**
+     * Test that a new user is successfully saved when the username does not already exist.
+     */
     @Test
     public void testSaveNewUserSuccess() {
         UserRegistrationDto testUserRegistrationDto = new UserRegistrationDto();
@@ -77,6 +85,9 @@ public class UserServiceTest {
         assertEquals(expectedUser.getPassword(), capturedUser.getPassword());
     }
 
+    /**
+     * Test that saving a user with an existing username throws an exception.
+     */
     @Test
     public void testSaveExistingUserThrowException() {
         User testUser = new User();
