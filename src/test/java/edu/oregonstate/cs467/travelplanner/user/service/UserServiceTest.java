@@ -9,6 +9,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +18,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
 
@@ -114,5 +115,51 @@ public class UserServiceTest {
 
         // ensure the user is NOT saved to the repository
         verify(userRepository, never()).save(any());
+    }
+
+    /**
+     * Tests that loadUserByUsername() successfully retrieves a user.
+     */
+    @Test
+    public void testLoadUserByUsernameSuccess() {
+        User testUser = new User();
+        testUser.setUserId(1L);
+        testUser.setFullName("Test User");
+        testUser.setUsername("testUser");
+        testUser.setPassword("encodedPassword");
+
+        // mock repository behavior
+        when(userRepository.findByUsername("testUser")).thenReturn(testUser);
+
+        // create an ArgumentCaptor to capture the actual User object from findByUsername()
+        ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass(String.class);
+
+        // cal the method being tested
+        UserDetails userDetails = userService.loadUserByUsername("testUser");
+
+        verify(userRepository, times(1)).findByUsername(usernameCaptor.capture());
+        assertNotNull(userDetails);
+        assertEquals("testUser", usernameCaptor.getValue());
+        assertEquals("testUser", userDetails.getUsername());
+    }
+
+    /**
+     * Tests that loadUserByUsername() throws UsernameNotFoundException for an unknown username.
+     */
+    @Test
+    public void testLoadUserByUsernameThrowsException() {
+        // mock repository behavior
+        when(userRepository.findByUsername("unknownUser")).thenReturn(null);
+
+        // ensure an exception is thrown
+        Exception exception = null;
+        try {
+            userService.loadUserByUsername("unknownUser");
+        } catch (UsernameNotFoundException e) {
+            exception = e;
+        }
+        assertNotNull(exception);
+        assertEquals("Invalid username.", exception.getMessage());
+        verify(userRepository, times(1)).findByUsername("unknownUser");
     }
 }
