@@ -24,6 +24,11 @@ public class AuthenticatedUserProvider {
         return authentication.getAuthorities();
     }
 
+    public boolean checkUser(long userId) {
+        User user = getUser();
+        return user != null && user.getUserId() == userId;
+    }
+
     Authentication getAuthentication() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return securityContext == null ? null : securityContext.getAuthentication();

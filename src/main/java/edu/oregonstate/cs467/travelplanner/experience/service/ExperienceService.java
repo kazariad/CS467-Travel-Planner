@@ -46,8 +46,7 @@ public class ExperienceService {
     public void updateExperience(long experienceId, CreateUpdateExperienceDto experienceDto) {
         Experience experience = experienceDao.findById(experienceId).orElse(null);
         if (experience == null || experience.getDeletedAt() != null) throw new ResourceNotFoundException();
-        User user = authUserProvider.getUser();
-        if (user == null || user.getUserId() != experience.getUserId()) throw new AccessDeniedException("Access denied");
+        if (!authUserProvider.checkUser(experience.getUserId())) throw new AccessDeniedException("Access denied");
 
         experienceDto.transferTo(experience);
         experience.setUpdatedAt(Instant.now(clock));
@@ -57,8 +56,7 @@ public class ExperienceService {
     public void deleteExperience(long experienceId) {
         Experience experience = experienceDao.findById(experienceId).orElse(null);
         if (experience == null || experience.getDeletedAt() != null) return;
-        User user = authUserProvider.getUser();
-        if (user == null || user.getUserId() != experience.getUserId()) throw new AccessDeniedException("Access denied");
+        if (!authUserProvider.checkUser(experience.getUserId())) throw new AccessDeniedException("Access denied");
 
         experience.setDeletedAt(Instant.now(clock));
         experienceDao.update(experience);
