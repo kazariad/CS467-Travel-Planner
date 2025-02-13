@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>View User Details</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+</head>
+
+<body>
+<br>
+
+<!-- Div container for user profile settings -->
+
+<div class = "container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <!-- Section for user details -->
+            <form action="/user/updateName" method="post">
+                <label for="fullName">Full Name: </label>
+                <input type="text" th:value="${user.fullName}" name="fullName">
+                <button type="submit">Update</button>
+            </form>
+            <form action="/user/resetPassword" method="post">
+                <label for="password">Current Password: </label>
+                <input type="password" id="password" name="password" value="*****" disabled/>
+                <button type="submit">Update</button>
+            </form>
+
+
+            <!-- Notably missing: Email, location, etc.? Unsure on future design constraints -->
+
+            <tr th:each="exp : ${user.experienceList}">
+                <td th:text="${exp.title}"></td>
+                <!-- TODO: Need to make the 'View Experience' button work -->
+                <td><form action="@{/viewExperience}"><input type="submit" value="View Experience"></form></td>
+            </tr>
+
+            <tr th:each="trip: ${user.Triplist}"> 
+                <td th:text="${trip.title}"></td>
+            </tr>
+
+            <!-- User logout should go here I believe -->
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
+
+            <form action="/user/reset-password" method="post"><input type="submit" value="Reset Password"></form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
