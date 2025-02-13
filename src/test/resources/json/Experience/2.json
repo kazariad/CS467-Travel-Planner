@@ -2,10 +2,8 @@
   "experienceId": 2,
   "title": "Some title",
   "eventDate": "2025-01-27",
-  "location": {
-    "lat": 0,
-    "lng": 0
-  },
+  "locationLat": 0,
+  "locationLng": 0,
   "ratingCnt": 0,
   "ratingSum": 0,
   "userId": 2,

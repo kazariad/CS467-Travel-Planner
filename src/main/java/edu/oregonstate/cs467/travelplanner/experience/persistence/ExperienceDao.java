@@ -1,7 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.experience.persistence;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
 import jakarta.validation.Valid;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -31,7 +30,8 @@ public class ExperienceDao {
         exp.setTitle(rs.getString("title"));
         exp.setDescription(rs.getString("description"));
         exp.setEventDate(rs.getObject("event_date", LocalDate.class));
-        exp.setLocation(new GeoPoint(rs.getDouble("location_lat"), rs.getDouble("location_lng")));
+        exp.setLocationLat(rs.getDouble("location_lat"));
+        exp.setLocationLng(rs.getDouble("location_lng"));
         exp.setAddress(rs.getString("address"));
         exp.setImageUrl(rs.getString("image_url"));
         exp.setRatingCnt(rs.getInt("rating_cnt"));
@@ -87,7 +87,7 @@ public class ExperienceDao {
                 .param(idx++, experience.getDescription())
                 .param(idx++, experience.getEventDate(), Types.DATE)
                 // %f only prints 6 decimals, %s prints with full precision
-                .param(idx++, String.format("POINT(%s %s)", experience.getLocation().lat(), experience.getLocation().lng()))
+                .param(idx++, String.format("POINT(%s %s)", experience.getLocationLat(), experience.getLocationLng()))
                 .param(idx++, experience.getAddress())
                 .param(idx++, experience.getImageUrl())
                 .param(idx++, experience.getRatingCnt())
@@ -126,7 +126,7 @@ public class ExperienceDao {
                 .param(idx++, experience.getTitle())
                 .param(idx++, experience.getDescription())
                 .param(idx++, experience.getEventDate(), Types.DATE)
-                .param(idx++, String.format("POINT(%s %s)", experience.getLocation().lat(), experience.getLocation().lng()))
+                .param(idx++, String.format("POINT(%s %s)", experience.getLocationLat(), experience.getLocationLng()))
                 .param(idx++, experience.getAddress())
                 .param(idx++, experience.getImageUrl())
                 .param(idx++, experience.getRatingCnt())

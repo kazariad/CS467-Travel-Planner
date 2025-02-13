@@ -1,12 +1,8 @@
 package edu.oregonstate.cs467.travelplanner.experience.dto;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
 import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
@@ -23,9 +19,13 @@ public class CreateUpdateExperienceDto {
     @NotNull
     private LocalDate eventDate;
 
-    @NotNull
-    @Valid
-    private GeoPoint location;
+    @Min(-90)
+    @Max(90)
+    private double locationLat;
+
+    @Min(-180)
+    @Max(180)
+    private double locationLng;
 
     @NotBlankNull
     @Size(max = 255)
@@ -34,13 +34,26 @@ public class CreateUpdateExperienceDto {
     @URL
     private String imageUrl;
 
+    public CreateUpdateExperienceDto() {}
+
+    public CreateUpdateExperienceDto(Experience experience) {
+        this.title = experience.getTitle();
+        this.description = experience.getDescription();
+        this.eventDate = experience.getEventDate();
+        this.locationLat = experience.getLocationLat();
+        this.locationLng = experience.getLocationLng();
+        this.address = experience.getAddress();
+        this.imageUrl = experience.getImageUrl();
+    }
+
     public Experience transferTo(Experience experience) {
-        experience.setTitle(title);
-        experience.setDescription(description);
-        experience.setEventDate(eventDate);
-        experience.setLocation(location);
-        experience.setAddress(address);
-        experience.setImageUrl(imageUrl);
+        experience.setTitle(this.title);
+        experience.setDescription(this.description);
+        experience.setEventDate(this.eventDate);
+        experience.setLocationLat(this.locationLat);
+        experience.setLocationLng(this.locationLng);
+        experience.setAddress(this.address);
+        experience.setImageUrl(this.imageUrl);
         return experience;
     }
 
@@ -68,12 +81,20 @@ public class CreateUpdateExperienceDto {
         this.eventDate = eventDate;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public double getLocationLat() {
+        return locationLat;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public double getLocationLng() {
+        return locationLng;
+    }
+
+    public void setLocationLng(double locationLng) {
+        this.locationLng = locationLng;
     }
 
     public String getAddress() {

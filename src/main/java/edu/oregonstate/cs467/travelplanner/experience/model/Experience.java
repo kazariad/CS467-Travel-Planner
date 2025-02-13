@@ -1,7 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.experience.model;
 
 import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -23,9 +22,13 @@ public class Experience {
     @NotNull
     private LocalDate eventDate;
 
-    @NotNull
-    @Valid
-    private GeoPoint location;
+    @Min(-90)
+    @Max(90)
+    private double locationLat;
+
+    @Min(-180)
+    @Max(180)
+    private double locationLng;
 
     @NotBlankNull
     @Size(max = 255)
@@ -82,12 +85,20 @@ public class Experience {
         this.eventDate = eventDate;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public double getLocationLat() {
+        return locationLat;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public double getLocationLng() {
+        return locationLng;
+    }
+
+    public void setLocationLng(double locationLng) {
+        this.locationLng = locationLng;
     }
 
     public String getAddress() {

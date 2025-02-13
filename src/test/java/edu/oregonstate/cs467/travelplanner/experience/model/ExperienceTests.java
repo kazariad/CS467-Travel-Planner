@@ -17,11 +17,13 @@ class ExperienceTests extends AbstractBaseTest {
         exp.setTitle("   ");
         exp.setDescription("abcdef1234".repeat(1000));
         exp.setAddress("\t\n");
+        exp.setLocationLat(-90.000001);
+        exp.setLocationLng(180.000001);
         exp.setImageUrl("absadf");
         exp.setRatingCnt(-1);
         exp.setRatingSum(-1);
         exp.setUserId(0);
         var violations = validator.validate(exp);
-        assertThat(violations.size()).isEqualTo(10);
+        assertThat(violations.size()).isEqualTo(11);
     }
 }

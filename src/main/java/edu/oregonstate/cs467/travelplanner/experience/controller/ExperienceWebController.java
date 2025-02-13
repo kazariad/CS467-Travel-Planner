@@ -1,18 +1,20 @@
 package edu.oregonstate.cs467.travelplanner.experience.controller;
 
+import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
 import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
+import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,18 +25,21 @@ import java.time.Instant;
 @Controller
 @RequestMapping("/experience")
 public class ExperienceWebController {
+    private final AuthenticatedUserProvider authUserProvider;
     private final ExperienceService experienceService;
     private final UserService userService;
     private final TimeUtils timeUtils;
     private final String gmapsApiKey;
 
     public ExperienceWebController(
+            AuthenticatedUserProvider authUserProvider,
             ExperienceService experienceService,
             UserService userService,
             TimeUtils timeUtils,
             @Value("${google.maps.api.key}")
             String gmapsApiKey
     ) {
+        this.authUserProvider = authUserProvider;
         this.experienceService = experienceService;
         this.userService = userService;
         this.timeUtils = timeUtils;
@@ -42,7 +47,7 @@ public class ExperienceWebController {
     }
 
     @GetMapping("/{experienceId}")
-    public String getExperience(@PathVariable long experienceId, Model model) {
+    public String viewExperience(@PathVariable long experienceId, Model model) {
         Experience experience = experienceService.getExperience(experienceId);
         if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         model.addAttribute("experience", experience);
@@ -55,7 +60,6 @@ public class ExperienceWebController {
             model.addAttribute("rating", String.format("%.1f / 5.0", (double) experience.getRatingSum() / (double) experience.getRatingCnt()));
         }
 
-        GeoPoint gp = experience.getLocation();
         if (experience.getAddress() != null) {
             model.addAttribute("location", experience.getAddress());
             UriBuilder mapUrlBuilder = UriComponentsBuilder
@@ -66,12 +70,12 @@ public class ExperienceWebController {
                     .queryParam("zoom", 19);
             model.addAttribute("mapUrl", mapUrlBuilder.build());
         } else {
-            model.addAttribute("location", String.format("%.6f, %.6f", gp.lat(), gp.lng()));
+            model.addAttribute("location", String.format("%.6f, %.6f", experience.getLocationLat(), experience.getLocationLng()));
             UriBuilder mapUrlBuilder = UriComponentsBuilder
                     .fromUriString("https://www.google.com/maps/embed/v1/")
                     .path("view")
                     .queryParam("key", gmapsApiKey)
-                    .queryParam("center", String.format("%s,%s", gp.lat(), gp.lng()))
+                    .queryParam("center", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()))
                     .queryParam("zoom", 19);
             model.addAttribute("mapUrl", mapUrlBuilder.build());
         }
@@ -80,7 +84,7 @@ public class ExperienceWebController {
                 .fromUriString("https://www.google.com/maps/embed/v1/")
                 .path("streetview")
                 .queryParam("key", gmapsApiKey)
-                .queryParam("location", String.format("%s,%s", gp.lat(), gp.lng()))
+                .queryParam("location", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()))
                 .queryParam("fov", 90);
         model.addAttribute("streetViewUrl", streetViewUrlBuilder.build());
 
