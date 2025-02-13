@@ -19,13 +19,15 @@ public class CreateUpdateExperienceDto {
     @NotNull
     private LocalDate eventDate;
 
+    @NotNull
     @Min(-90)
     @Max(90)
-    private double locationLat;
+    private Double locationLat;
 
+    @NotNull
     @Min(-180)
     @Max(180)
-    private double locationLng;
+    private Double locationLng;
 
     @NotBlankNull
     @Size(max = 255)
@@ -62,7 +64,7 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title == null ? null : title.trim();
     }
 
     public String getDescription() {
@@ -70,7 +72,7 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description == null ? null : description.trim();
     }
 
     public LocalDate getEventDate() {
@@ -81,19 +83,19 @@ public class CreateUpdateExperienceDto {
         this.eventDate = eventDate;
     }
 
-    public double getLocationLat() {
+    public Double getLocationLat() {
         return locationLat;
     }
 
-    public void setLocationLat(double locationLat) {
+    public void setLocationLat(Double locationLat) {
         this.locationLat = locationLat;
     }
 
-    public double getLocationLng() {
+    public Double getLocationLng() {
         return locationLng;
     }
 
-    public void setLocationLng(double locationLng) {
+    public void setLocationLng(Double locationLng) {
         this.locationLng = locationLng;
     }
 
@@ -102,7 +104,7 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.address = address == null ? null : address.trim();
     }
 
     public String getImageUrl() {
@@ -110,6 +112,6 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.imageUrl = imageUrl == null ? null : imageUrl.trim();
     }
 }

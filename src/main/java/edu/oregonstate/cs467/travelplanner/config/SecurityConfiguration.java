@@ -23,11 +23,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/login", "/registration").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/experience/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/experience/*").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user/details", true)
+                        .defaultSuccessUrl("/user/details")
                         .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
