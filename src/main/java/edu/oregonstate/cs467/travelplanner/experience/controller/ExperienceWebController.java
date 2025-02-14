@@ -91,7 +91,33 @@ public class ExperienceWebController {
         return "experience/view-experience";
     }
 
-    @GetMapping(path = "/{experienceId}", params = "edit")
+    @GetMapping(path = "/create")
+    public String initCreateForm(Model model) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+
+        CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto();
+        // temporary dummy values until GMaps integration
+        experienceDto.setAddress("Atlantis");
+        experienceDto.setLocationLat(0.0);
+        experienceDto.setLocationLng(0.0);
+        model.addAttribute("experienceDto", experienceDto);
+        return "experience/create-experience";
+    }
+
+    @PostMapping(path = "/create")
+    public String createExperience(
+            @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
+            BindingResult bindingResult)
+    {
+        if (bindingResult.hasErrors()) {
+            return "experience/create-experience";
+        } else {
+            long experienceId = experienceService.createExperience(experienceDto);
+            return "redirect:/experience/" + experienceId;
+        }
+    }
+
+    @GetMapping(path = "/{experienceId}/update")
     public String initUpdateForm(@PathVariable long experienceId, Model model) {
         Experience experience = experienceService.getExperience(experienceId);
         if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -103,7 +129,7 @@ public class ExperienceWebController {
         return "experience/update-experience";
     }
 
-    @PostMapping(path = "/{experienceId}")
+    @PostMapping(path = "/{experienceId}/update")
     public String updateExperience(
             @PathVariable long experienceId,
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
