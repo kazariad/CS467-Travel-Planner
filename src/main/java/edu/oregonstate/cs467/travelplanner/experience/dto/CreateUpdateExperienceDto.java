@@ -60,16 +60,18 @@ public class CreateUpdateExperienceDto {
         return experience;
     }
 
+    private String formatString(String s) {
+        if (s == null) return s;
+        s = s.trim();
+        return s.isEmpty() ? null : s;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
-        if (this.title != null) {
-            this.title = this.title.trim();
-            if (this.title.isEmpty()) this.title = null;
-        }
+        this.title = formatString(title);
     }
 
     public String getDescription() {
@@ -77,11 +79,7 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setDescription(String description) {
-        this.description = description;
-        if (this.description != null) {
-            this.description = this.description.trim();
-            if (this.description.isEmpty()) this.description = null;
-        }
+        this.description = formatString(description);
     }
 
     public LocalDate getEventDate() {
@@ -113,11 +111,7 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setAddress(String address) {
-        this.address = address;
-        if (this.address != null) {
-            this.address = this.address.trim();
-            if (this.address.isEmpty()) this.address = null;
-        }
+        this.address = formatString(address);
     }
 
     public String getImageUrl() {
@@ -125,10 +119,6 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        if (this.imageUrl != null) {
-            this.imageUrl = this.imageUrl.trim();
-            if (this.imageUrl.isEmpty()) this.imageUrl = null;
-        }
+        this.imageUrl = formatString(imageUrl);
     }
 }
