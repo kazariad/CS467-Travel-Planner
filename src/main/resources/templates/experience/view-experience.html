@@ -49,15 +49,14 @@
     </div>
 
     <ul class="nav nav-tabs border-0" role="tablist" style="margin-bottom: 1px">
-        <li th:if="${experience.imageUrl}" class="nav-item" role="presentation">
-            <button class="nav-link active" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-tab-pane"
-                    type="button" role="tab" aria-controls="image-tab-pane" aria-selected="true">Image
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="photo-tab" data-bs-toggle="tab" data-bs-target="#photo-tab-pane"
+                    type="button" role="tab" aria-controls="photo-tab-pane" aria-selected="true">Photo
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button th:classappend="${experience.imageUrl == null ? 'active' : ''}" class="nav-link" id="map-tab"
-                    data-bs-toggle="tab" data-bs-target="#map-tab-pane" type="button"
-                    role="tab" aria-controls="map-tab-pane" aria-selected="false">Map
+            <button class="nav-link" id="map-tab" data-bs-toggle="tab" data-bs-target="#map-tab-pane"
+                    type="button" role="tab" aria-controls="map-tab-pane" aria-selected="false">Map
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -68,16 +67,21 @@
     </ul>
 
     <div class="tab-content overflow-hidden mb-4" style="height: 50vh">
-        <div th:if="${experience.imageUrl}" class="tab-pane w-100 h-100 bg-black fade show active" id="image-tab-pane"
-             role="tabpanel" aria-labelledby="image-tab" tabindex="0">
+        <div class="tab-pane w-100 h-100 bg-black fade show active" id="photo-tab-pane"
+             role="tabpanel" aria-labelledby="photo-tab" tabindex="0">
             <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-                <img class="mw-100 mh-100 object-fit-contain" th:src="${experience.imageUrl}" alt="Image"
+                <img th:if="${experience.imageUrl}" th:src="${experience.imageUrl}"
                      th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                     class="mw-100 mh-100 object-fit-contain"
+                     alt="Photo"
                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                <img th:unless="${experience.imageUrl}" th:src="@{/images/fallback-picture.png}"
+                     class="mw-100 mh-100 object-fit-contain"
+                     alt="Photo"
+                     src="../../static/images/fallback-picture.png">
             </div>
         </div>
-        <div th:classappend="${experience.imageUrl == null ? 'show active' : ''}" class="tab-pane w-100 h-100 fade"
-             id="map-tab-pane" role="tabpanel" aria-labelledby="map-tab" tabindex="0">
+        <div class="tab-pane w-100 h-100 fade" id="map-tab-pane" role="tabpanel" aria-labelledby="map-tab" tabindex="0">
             <iframe
                     class="w-100 h-100"
                     referrerpolicy="no-referrer-when-downgrade"

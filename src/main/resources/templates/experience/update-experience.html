@@ -52,7 +52,7 @@
         </div>
 
         <div class="row mb-3">
-            <label for="imageUrl" class="form-label">Image</label>
+            <label for="imageUrl" class="form-label">Photo</label>
             <input th:value="*{imageUrl}" th:classappend="${#fields.hasErrors('imageUrl')} ? 'is-invalid'" type="url"
                    id="imageUrl" name="imageUrl" class="form-control" value="http://image.url">
             <div th:if="${#fields.hasErrors('imageUrl')}" class="invalid-feedback">
