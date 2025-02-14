@@ -95,7 +95,7 @@ public class ExperienceWebController {
     public String initUpdateForm(@PathVariable long experienceId, Model model) {
         Experience experience = experienceService.getExperience(experienceId);
         if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        if (!authUserProvider.checkUser(experience.getUserId())) throw new AccessDeniedException("Access denied");
+        if (!authUserProvider.isUserWithId(experience.getUserId())) throw new AccessDeniedException("Access denied");
 
         CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto(experience);
         model.addAttribute("experienceId", experienceId);

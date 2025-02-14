@@ -12,25 +12,26 @@ import java.util.Collection;
 @Component
 public class AuthenticatedUserProvider {
     public User getUser() {
-        Authentication authentication = getAuthentication();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext == null ? null : securityContext.getAuthentication();
         if (authentication == null) return null;
         if (authentication.getPrincipal() instanceof User user) return user;
         return null;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Authentication authentication = getAuthentication();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext == null ? null : securityContext.getAuthentication();
         if (authentication == null) return null;
         return authentication.getAuthorities();
     }
 
-    public boolean checkUser(long userId) {
+    public boolean isUserWithId(long userId) {
         User user = getUser();
         return user != null && user.getUserId() == userId;
     }
 
-    Authentication getAuthentication() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return securityContext == null ? null : securityContext.getAuthentication();
+    public boolean isAnyUser() {
+        return getUser() != null;
     }
 }
