@@ -101,7 +101,7 @@ public class ExperienceWebController {
         experienceDto.setLocationLat(0.0);
         experienceDto.setLocationLng(0.0);
         model.addAttribute("experienceDto", experienceDto);
-        return "experience/create-experience";
+        return "experience/create-update-experience";
     }
 
     @PostMapping(path = "/create")
@@ -110,7 +110,7 @@ public class ExperienceWebController {
             BindingResult bindingResult)
     {
         if (bindingResult.hasErrors()) {
-            return "experience/create-experience";
+            return "experience/create-update-experience";
         } else {
             long experienceId = experienceService.createExperience(experienceDto);
             return "redirect:/experience/" + experienceId;
@@ -126,7 +126,7 @@ public class ExperienceWebController {
         CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto(experience);
         model.addAttribute("experienceId", experienceId);
         model.addAttribute("experienceDto", experienceDto);
-        return "experience/update-experience";
+        return "experience/create-update-experience";
     }
 
     @PostMapping(path = "/{experienceId}/update")
@@ -136,7 +136,7 @@ public class ExperienceWebController {
             BindingResult bindingResult)
     {
         if (bindingResult.hasErrors()) {
-            return "experience/update-experience";
+            return "experience/create-update-experience";
         } else {
             experienceService.updateExperience(experienceId, experienceDto);
             return "redirect:/experience/{experienceId}";
