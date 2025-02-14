@@ -40,9 +40,9 @@
                 <td><form action="@{/viewExperience}"><input type="submit" value="View Experience"></form></td>
             </tr>
 
-            <!--            <tr th:each="trip: ${user.Triplist}">-->
-            <!--                <td th:text="${trip.title}"></td>-->
-            <!--            </tr>-->
+            <tr th:each="trip: ${user.Triplist}"> 
+                <td th:text="${trip.title}"></td>
+            </tr>
 
             <!-- User logout should go here I believe -->
 

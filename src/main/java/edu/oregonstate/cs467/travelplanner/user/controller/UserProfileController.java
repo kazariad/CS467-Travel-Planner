@@ -20,6 +20,6 @@ public class UserProfileController {
     public String viewUserDetails(Model model, @AuthenticationPrincipal User user) {
         UserProfileDto userProfileDto = userService.getUserProfile(user);
         model.addAttribute("user", userProfileDto);
-        return "userDetails";
+        return "user-details";
     }
 }
