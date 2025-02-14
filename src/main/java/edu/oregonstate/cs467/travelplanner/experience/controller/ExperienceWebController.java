@@ -90,4 +90,30 @@ public class ExperienceWebController {
 
         return "experience/view-experience";
     }
+
+    @GetMapping(path = "/{experienceId}", params = "edit")
+    public String initUpdateForm(@PathVariable long experienceId, Model model) {
+        Experience experience = experienceService.getExperience(experienceId);
+        if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!authUserProvider.checkUser(experience.getUserId())) throw new AccessDeniedException("Access denied");
+
+        CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto(experience);
+        model.addAttribute("experienceId", experienceId);
+        model.addAttribute("experienceDto", experienceDto);
+        return "experience/update-experience";
+    }
+
+    @PostMapping(path = "/{experienceId}")
+    public String updateExperience(
+            @PathVariable long experienceId,
+            @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
+            BindingResult bindingResult)
+    {
+        if (bindingResult.hasErrors()) {
+            return "experience/update-experience";
+        } else {
+            experienceService.updateExperience(experienceId, experienceDto);
+            return "redirect:/experience/{experienceId}";
+        }
+    }
 }
