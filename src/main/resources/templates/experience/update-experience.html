@@ -22,19 +22,18 @@
             <label for="title" class="form-label">Title*</label>
             <input th:value="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" type="text"
                    id="title" name="title" class="form-control" spellcheck="true" maxlength="100"
-                   aria-describedby="titleFeedback" value="Experience Title">
-            <div th:if="${#fields.hasErrors('title')}" id="titleFeedback" class="invalid-feedback">Please enter a valid
-                title (100 chars max)
+                   value="Experience Title">
+            <div th:if="${#fields.hasErrors('title')}" class="invalid-feedback">
+                Please enter a valid title (100 chars max)
             </div>
         </div>
 
         <div class="row mb-3">
             <label for="eventDate" class="form-label">Date*</label>
             <input th:value="*{eventDate}" th:classappend="${#fields.hasErrors('eventDate')} ? 'is-invalid'" type="date"
-                   id="eventDate" name="eventDate" class="form-control" aria-describedby="eventDateFeedback"
-                   value="2025-01-01">
-            <div th:if="${#fields.hasErrors('eventDate')}" id="eventDateFeedback" class="invalid-feedback">Please enter
-                a valid date
+                   id="eventDate" name="eventDate" class="form-control" value="2025-01-01">
+            <div th:if="${#fields.hasErrors('eventDate')}" class="invalid-feedback">
+                Please enter a valid date
             </div>
         </div>
 
@@ -42,10 +41,10 @@
             <label for="addressInput" class="form-label">Address*</label>
             <input th:value="*{address}"
                    th:classappend="${#fields.hasErrors('address') || #fields.hasErrors('locationLat') || #fields.hasErrors('locationLng')} ? 'is-invalid'"
-                   type="text" id="addressInput" class="form-control" aria-describedby="addressInputFeedback"
-                   value="123 Fake St. City, State Country" disabled>
+                   type="text" id="addressInput" class="form-control" value="123 Fake St. City, State Country" disabled>
             <div th:if="${#fields.hasErrors('address') || #fields.hasErrors('locationLat') || #fields.hasErrors('locationLng')}"
-                 id="addressInputFeedback" class="invalid-feedback">Please select a valid address
+                 class="invalid-feedback">
+                Please select a valid address
             </div>
             <input th:value="*{address}" type="hidden" id="address" name="address">
             <input th:value="*{locationLat}" type="hidden" id="locationLat" name="locationLat">
@@ -55,10 +54,9 @@
         <div class="row mb-3">
             <label for="imageUrl" class="form-label">Image</label>
             <input th:value="*{imageUrl}" th:classappend="${#fields.hasErrors('imageUrl')} ? 'is-invalid'" type="url"
-                   id="imageUrl" name="imageUrl" class="form-control" aria-describedby="imageUrlFeedback"
-                   value="http://image.url">
-            <div th:if="${#fields.hasErrors('imageUrl')}" id="imageUrlFeedback" class="invalid-feedback">Please enter a
-                valid image URL
+                   id="imageUrl" name="imageUrl" class="form-control" value="http://image.url">
+            <div th:if="${#fields.hasErrors('imageUrl')}" class="invalid-feedback">
+                Please enter a valid image URL
             </div>
         </div>
 
@@ -66,9 +64,9 @@
             <label for="description" class="form-label">Description</label>
             <textarea th:text="*{description}" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
                       id="description" name="description" class="form-control " rows="10" maxlength="1000"
-                      aria-describedby="descriptionFeedback" style="white-space: pre-wrap">Description</textarea>
-            <div th:if="${#fields.hasErrors('description')}" id="descriptionFeedback" class="invalid-feedback">Please
-                enter a valid description (1000 chars max)
+                      style="white-space: pre-wrap">Description</textarea>
+            <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
+                Please enter a valid description (1000 chars max)
             </div>
         </div>
 

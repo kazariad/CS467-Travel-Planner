@@ -34,6 +34,7 @@ public class Experience {
     @Size(max = 255)
     private String address;
 
+    @NotBlankNull
     @URL
     private String imageUrl;
 

@@ -33,6 +33,7 @@ public class CreateUpdateExperienceDto {
     @Size(max = 255)
     private String address;
 
+    @NotBlankNull
     @URL
     private String imageUrl;
 
@@ -64,7 +65,11 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+        this.title = title;
+        if (this.title != null) {
+            this.title = this.title.trim();
+            if (this.title.isEmpty()) this.title = null;
+        }
     }
 
     public String getDescription() {
@@ -72,7 +77,11 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = description;
+        if (this.description != null) {
+            this.description = this.description.trim();
+            if (this.description.isEmpty()) this.description = null;
+        }
     }
 
     public LocalDate getEventDate() {
@@ -104,7 +113,11 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+        this.address = address;
+        if (this.address != null) {
+            this.address = this.address.trim();
+            if (this.address.isEmpty()) this.address = null;
+        }
     }
 
     public String getImageUrl() {
@@ -112,6 +125,10 @@ public class CreateUpdateExperienceDto {
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl == null ? null : imageUrl.trim();
+        this.imageUrl = imageUrl;
+        if (this.imageUrl != null) {
+            this.imageUrl = this.imageUrl.trim();
+            if (this.imageUrl.isEmpty()) this.imageUrl = null;
+        }
     }
 }

@@ -22,6 +22,6 @@ class CreateUpdateExperienceDtoTests extends AbstractBaseTest {
         dto.setAddress("\t\n");
         dto.setImageUrl("absadf");
         var violations = validator.validate(dto);
-        assertThat(violations.size()).isEqualTo(7);
+        assertThat(violations.size()).isEqualTo(6);
     }
 }

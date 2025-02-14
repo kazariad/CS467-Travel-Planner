@@ -72,6 +72,7 @@
              role="tabpanel" aria-labelledby="image-tab" tabindex="0">
             <div class="w-100 h-100 d-flex justify-content-center align-items-center">
                 <img class="mw-100 mh-100 object-fit-contain" th:src="${experience.imageUrl}" alt="Image"
+                     th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
             </div>
         </div>
