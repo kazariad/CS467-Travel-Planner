@@ -48,19 +48,28 @@ public class ExperienceWebController {
 
     @GetMapping("/{experienceId}")
     public String viewExperience(@PathVariable long experienceId, Model model) {
+        // retrieve the Experience object from persistent storage based on the path ID
         Experience experience = experienceService.getExperience(experienceId);
+        // if the Experience doesn't exist (or was deleted), return a 404 error
         if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        // add the Experience object to the model to make it accessible by the HTML template engine
         model.addAttribute("experience", experience);
 
+        // find the User who created this Experience and add their username to the model
         User author = userService.findById(experience.getUserId()).get();
         model.addAttribute("author", author.getUsername());
+        // how long ago this Experience was submitted as a relative duration, e.g. "12 hours ago", "5 days ago", etc.
+        // use relative time to avoid having to determine the client's timezone (surprisingly there isn't a standard header for this, requires JS)
         model.addAttribute("submittedDuration", timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
 
         if (experience.getRatingCnt() > 0) {
+            // the Experience avg. rating is calculated by dividing the cumulative rating sum by the number of ratings
+            // make sure Experience has at least 1 rating to avoid dividing by 0
             model.addAttribute("rating", String.format("%.1f / 5.0", (double) experience.getRatingSum() / (double) experience.getRatingCnt()));
         }
 
         if (experience.getAddress() != null) {
+            // use Experience address as query for Google Maps API lookup
             model.addAttribute("location", experience.getAddress());
             UriBuilder mapUrlBuilder = UriComponentsBuilder
                     .fromUriString("https://www.google.com/maps/embed/v1/")
@@ -70,6 +79,7 @@ public class ExperienceWebController {
                     .queryParam("zoom", 19);
             model.addAttribute("mapUrl", mapUrlBuilder.build());
         } else {
+            // if Experience doesn't have an address, use the lat/long coordinates instead
             model.addAttribute("location", String.format("%.6f, %.6f", experience.getLocationLat(), experience.getLocationLng()));
             UriBuilder mapUrlBuilder = UriComponentsBuilder
                     .fromUriString("https://www.google.com/maps/embed/v1/")
@@ -80,6 +90,7 @@ public class ExperienceWebController {
             model.addAttribute("mapUrl", mapUrlBuilder.build());
         }
 
+        // street view doesn't accept addresses
         UriBuilder streetViewUrlBuilder = UriComponentsBuilder
                 .fromUriString("https://www.google.com/maps/embed/v1/")
                 .path("streetview")
@@ -88,6 +99,8 @@ public class ExperienceWebController {
                 .queryParam("fov", 90);
         model.addAttribute("streetViewUrl", streetViewUrlBuilder.build());
 
+        // select the "view-experience" template for rendering
+        // Spring will automatically pass the model object and other contextual data to the template engine
         return "experience/view-experience";
     }
 

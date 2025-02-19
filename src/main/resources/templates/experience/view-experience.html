@@ -11,13 +11,30 @@
 </head>
 
 <body>
+<!-- header will go here -->
+
 <main class="container">
     <div class="row">
+        <!--
+        Thymeleaf template engine uses standard HTML files instead of a custom format.
+        This allows the HTML file to be previewed normally in the browser without having to process it through
+        the template engine first, which drastically enhances the developer experience.
+        When previewed in a browser, the custom "th:XXX" attributes are simply ignored, and the normal attribute/text
+        values are rendered.
+        When ran through Thymeleaf, the "th:XXX" tags are processed and their internal expressions are evaluated.
+        Thymeleaf will then use these dynamically-generated values to replace the default texts.
+        The expressions can access variables in the model through the ${varName} syntax.
+
+        For example, when this file is opened in a browser, this header will display "Experience Title".
+        But when running this Application and navigating to an Experience page, this header will display the
+        Experience's title instead.
+        -->
         <h1 class="col mb-4" th:text="${experience.title}">Experience Title</h1>
     </div>
 
     <div class="row">
         <p class="col mb-2">
+            <!-- Boostrap icon prepended to the text, in this case a map-pin -->
             <i class="bi bi-pin-map"></i>
             <span th:text="${location}">123 Fake St. City, State Country</span>
         </p>
@@ -48,6 +65,7 @@
         </p>
     </div>
 
+    <!-- Bootstrap tab component for switching between the Experience photo, map view, and street view displays -->
     <ul class="nav nav-tabs border-0" role="tablist" style="margin-bottom: 1px">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="photo-tab" data-bs-toggle="tab" data-bs-target="#photo-tab-pane"
@@ -67,9 +85,15 @@
     </ul>
 
     <div class="tab-content overflow-hidden mb-4" style="height: 50vh">
+        <!-- Add a black background to the photo -->
         <div class="tab-pane w-100 h-100 bg-black fade show active" id="photo-tab-pane"
              role="tabpanel" aria-labelledby="photo-tab" tabindex="0">
             <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                <!--
+                Use the Experience's imageUrl field, if available, otherwise fallback to a default image.
+                If the custom image cannot be loaded (invalid URL, network error, etc.), the 'onerror' handler will activate
+                and replace it with the fallback image instead.
+                -->
                 <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
                      th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
                      class="mw-100 mh-100 object-fit-contain"
@@ -96,11 +120,14 @@
         </div>
     </div>
 
+    <!-- th:if allows omitting HTML blocks based on some condition, in this case the Experience must have a description -->
     <div class="row" th:if="${experience.description}">
         <p class="col" th:text="${experience.description}" style="white-space: pre-wrap">Description</p>
     </div>
 </main>
+<!-- footer will go here -->
 
+<!-- Bootstrap JavaScript bundle, required for the interactive tab pane -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
