@@ -46,6 +46,11 @@ public class ExperienceWebController {
         this.gmapsApiKey = gmapsApiKey;
     }
 
+    @ModelAttribute
+    public void initModel(Model model) {
+        model.addAttribute("gmapsApiKey", gmapsApiKey);
+    }
+
     @GetMapping("/{experienceId}")
     public String viewExperience(@PathVariable long experienceId, Model model) {
         // retrieve the Experience object from persistent storage based on the path ID
@@ -109,10 +114,6 @@ public class ExperienceWebController {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
 
         CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto();
-        // temporary dummy values until GMaps integration
-        experienceDto.setAddress("Atlantis");
-        experienceDto.setLocationLat(0.0);
-        experienceDto.setLocationLng(0.0);
         model.addAttribute("experienceDto", experienceDto);
         return "experience/create-update-experience";
     }
