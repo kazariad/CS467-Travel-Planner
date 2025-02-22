@@ -20,7 +20,7 @@ CREATE TABLE `experience`  (
     `event_date` date NOT NULL,
     -- 4326 = Spatial Reference ID for surface of Earth (WGS 84)
     `location` point NOT NULL SRID 4326,
-    `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     -- text because URL technically doesn't have max length
     `image_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     -- number of ratings for this experience

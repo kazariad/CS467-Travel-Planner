@@ -29,7 +29,7 @@ public class CreateUpdateExperienceDto {
     @Max(180)
     private Double locationLng;
 
-    @NotBlankNull
+    @NotBlank
     @Size(max = 255)
     private String address;
 

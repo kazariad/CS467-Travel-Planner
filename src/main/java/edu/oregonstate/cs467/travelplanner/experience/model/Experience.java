@@ -30,7 +30,7 @@ public class Experience {
     @Max(180)
     private double locationLng;
 
-    @NotBlankNull
+    @NotBlank
     @Size(max = 255)
     private String address;
 

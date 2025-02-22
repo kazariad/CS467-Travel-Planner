@@ -73,29 +73,15 @@ public class ExperienceWebController {
             model.addAttribute("rating", String.format("%.1f / 5.0", (double) experience.getRatingSum() / (double) experience.getRatingCnt()));
         }
 
-        if (experience.getAddress() != null) {
-            // use Experience address as query for Google Maps API lookup
-            model.addAttribute("location", experience.getAddress());
-            UriBuilder mapUrlBuilder = UriComponentsBuilder
-                    .fromUriString("https://www.google.com/maps/embed/v1/")
-                    .path("place")
-                    .queryParam("key", gmapsApiKey)
-                    .queryParam("q", experience.getAddress())
-                    .queryParam("zoom", 19);
-            model.addAttribute("mapUrl", mapUrlBuilder.build());
-        } else {
-            // if Experience doesn't have an address, use the lat/long coordinates instead
-            model.addAttribute("location", String.format("%.6f, %.6f", experience.getLocationLat(), experience.getLocationLng()));
-            UriBuilder mapUrlBuilder = UriComponentsBuilder
-                    .fromUriString("https://www.google.com/maps/embed/v1/")
-                    .path("view")
-                    .queryParam("key", gmapsApiKey)
-                    .queryParam("center", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()))
-                    .queryParam("zoom", 19);
-            model.addAttribute("mapUrl", mapUrlBuilder.build());
-        }
+        model.addAttribute("location", experience.getAddress());
+        UriBuilder mapUrlBuilder = UriComponentsBuilder
+                .fromUriString("https://www.google.com/maps/embed/v1/")
+                .path("place")
+                .queryParam("key", gmapsApiKey)
+                .queryParam("q", experience.getAddress())
+                .queryParam("zoom", 19);
+        model.addAttribute("mapUrl", mapUrlBuilder.build());
 
-        // street view doesn't accept addresses
         UriBuilder streetViewUrlBuilder = UriComponentsBuilder
                 .fromUriString("https://www.google.com/maps/embed/v1/")
                 .path("streetview")
