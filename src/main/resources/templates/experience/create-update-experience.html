@@ -83,11 +83,11 @@
 
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <div style="width: 25%"></div>
+                <button type="submit" class="btn btn-success btn-sm" style="width: 4rem">Save</button>
+                <div style="width: 15%"></div>
                 <a th:href="${experienceId} ? @{/experience/{experienceId}(experienceId=${experienceId})} : @{/}"
                    href="#">
-                    <button type="button" class="btn btn-secondary">Cancel</button>
+                    <button type="button" class="btn btn-secondary btn-sm" style="width: 4rem">Cancel</button>
                 </a>
             </div>
         </div>

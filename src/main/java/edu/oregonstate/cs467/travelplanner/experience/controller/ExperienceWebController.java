@@ -63,6 +63,7 @@ public class ExperienceWebController {
         // find the User who created this Experience and add their username to the model
         User author = userService.findById(experience.getUserId()).get();
         model.addAttribute("author", author.getUsername());
+        model.addAttribute("isAuthor", authUserProvider.isUserWithId(experience.getUserId()));
         // how long ago this Experience was submitted as a relative duration, e.g. "12 hours ago", "5 days ago", etc.
         // use relative time to avoid having to determine the client's timezone (surprisingly there isn't a standard header for this, requires JS)
         model.addAttribute("submittedDuration", timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));

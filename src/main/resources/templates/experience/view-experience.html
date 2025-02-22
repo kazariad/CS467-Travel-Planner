@@ -32,6 +32,13 @@
         <h1 class="col mb-4" th:text="${experience.title}">Experience Title</h1>
     </div>
 
+    <div th:if="${isAuthor}" class="row mb-2">
+        <a th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
+           href="./create-update-experience.html" class="col-auto">
+            <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
+        </a>
+    </div>
+
     <div class="row">
         <p class="col mb-2">
             <!-- Boostrap icon prepended to the text, in this case a map-pin -->
