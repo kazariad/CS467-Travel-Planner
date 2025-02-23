@@ -45,16 +45,17 @@
         </div>
 
         <div class="row mb-1">
-            <label for="autocomplete-address" class="form-label">Address*</label>
-            <input th:value="*{address}"
-                   th:classappend="${#fields.hasErrors('address') || #fields.hasErrors('locationLat') || #fields.hasErrors('locationLng')} ? 'is-invalid'"
-                   type="text" id="autocomplete-address" class="form-control" value="123 Fake St. City, State Country">
+            <label for="autocompleteAddress" class="form-label">Address*</label>
+            <input th:value="*{address} ?: *{#numbers.formatDecimal(locationLat, 1, 6)} + ', ' + *{#numbers.formatDecimal(locationLng, 1, 6)}"
+                   th:classappend="${#fields.hasErrors('locationLat') || #fields.hasErrors('locationLng') || #fields.hasErrors('address') || #fields.hasErrors('placeId')} ? 'is-invalid'"
+                   type="text" id="autocompleteAddress" class="form-control" value="123 Fake St. City, State Country">
             <div class="invalid-feedback">
                 Please select a valid address
             </div>
-            <input th:value="*{address}" type="hidden" id="address" name="address">
             <input th:value="*{locationLat}" type="hidden" id="locationLat" name="locationLat">
             <input th:value="*{locationLng}" type="hidden" id="locationLng" name="locationLng">
+            <input th:value="*{address}" type="hidden" id="address" name="address">
+            <input th:value="*{placeId}" type="hidden" id="placeId" name="placeId">
         </div>
 
         <div class="row mb-3">

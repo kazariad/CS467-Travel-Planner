@@ -2,6 +2,5 @@
   "title": "Some title",
   "eventDate": "2025-01-27",
   "locationLat": 0,
-  "locationLng": 0,
-  "address": "123 Fake St. Atlantis, Earth 12345"
+  "locationLng": 0
 }

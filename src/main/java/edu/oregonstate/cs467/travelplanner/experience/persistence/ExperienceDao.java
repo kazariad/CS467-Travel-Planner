@@ -33,6 +33,7 @@ public class ExperienceDao {
         exp.setLocationLat(rs.getDouble("location_lat"));
         exp.setLocationLng(rs.getDouble("location_lng"));
         exp.setAddress(rs.getString("address"));
+        exp.setPlaceId(rs.getString("place_id"));
         exp.setImageUrl(rs.getString("image_url"));
         exp.setRatingCnt(rs.getInt("rating_cnt"));
         exp.setRatingSum(rs.getInt("rating_sum"));
@@ -78,7 +79,7 @@ public class ExperienceDao {
         if (experience.getExperienceId() != null) throw new IllegalArgumentException("Experience ID not null");
         String sql = """
                 INSERT INTO experience
-                VALUES (NULL, ?, ?, ?, ST_PointFromText(?, 4326), ?, ?, ?, ?, ?, ?, ?, ?)""";
+                VALUES (NULL, ?, ?, ?, ST_PointFromText(?, 4326), ?, ?, ?, ?, ?, ?, ?, ?, ?)""";
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int idx = 1;
@@ -89,6 +90,7 @@ public class ExperienceDao {
                 // %f only prints 6 decimals, %s prints with full precision
                 .param(idx++, String.format("POINT(%s %s)", experience.getLocationLat(), experience.getLocationLng()))
                 .param(idx++, experience.getAddress())
+                .param(idx++, experience.getPlaceId())
                 .param(idx++, experience.getImageUrl())
                 .param(idx++, experience.getRatingCnt())
                 .param(idx++, experience.getRatingSum())
@@ -112,6 +114,7 @@ public class ExperienceDao {
                     event_date = ?,
                     location = ST_PointFromText(?, 4326),
                     address = ?,
+                    place_id = ?,
                     image_url = ?,
                     rating_cnt = ?,
                     rating_sum = ?,
@@ -128,6 +131,7 @@ public class ExperienceDao {
                 .param(idx++, experience.getEventDate(), Types.DATE)
                 .param(idx++, String.format("POINT(%s %s)", experience.getLocationLat(), experience.getLocationLng()))
                 .param(idx++, experience.getAddress())
+                .param(idx++, experience.getPlaceId())
                 .param(idx++, experience.getImageUrl())
                 .param(idx++, experience.getRatingCnt())
                 .param(idx++, experience.getRatingSum())

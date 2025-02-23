@@ -29,9 +29,12 @@ public class CreateUpdateExperienceDto {
     @Max(180)
     private Double locationLng;
 
-    @NotBlank
+    @NotBlankNull
     @Size(max = 255)
     private String address;
+
+    @NotBlankNull
+    private String placeId;
 
     @NotBlankNull
     @URL
@@ -46,6 +49,7 @@ public class CreateUpdateExperienceDto {
         this.locationLat = experience.getLocationLat();
         this.locationLng = experience.getLocationLng();
         this.address = experience.getAddress();
+        this.placeId = experience.getPlaceId();
         this.imageUrl = experience.getImageUrl();
     }
 
@@ -56,6 +60,7 @@ public class CreateUpdateExperienceDto {
         experience.setLocationLat(this.locationLat);
         experience.setLocationLng(this.locationLng);
         experience.setAddress(this.address);
+        experience.setPlaceId(this.placeId);
         experience.setImageUrl(this.imageUrl);
         return experience;
     }
@@ -112,6 +117,14 @@ public class CreateUpdateExperienceDto {
 
     public void setAddress(String address) {
         this.address = formatString(address);
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = formatString(placeId);
     }
 
     public String getImageUrl() {

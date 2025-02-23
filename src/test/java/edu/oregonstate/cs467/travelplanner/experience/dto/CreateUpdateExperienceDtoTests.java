@@ -20,8 +20,10 @@ class CreateUpdateExperienceDtoTests extends AbstractBaseTest {
         dto.setLocationLat(null);
         dto.setLocationLng(180.000001);
         dto.setAddress("\t\n");
+        dto.setPlaceId("");
         dto.setImageUrl("absadf");
         var violations = validator.validate(dto);
-        assertThat(violations.size()).isEqualTo(7);
+        // address and placeId will be corrected by setter
+        assertThat(violations.size()).isEqualTo(6);
     }
 }

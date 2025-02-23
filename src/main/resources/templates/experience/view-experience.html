@@ -70,7 +70,9 @@
         <p class="col mb-2">
             <!-- Boostrap icon prepended to the text, in this case a map-pin -->
             <i class="bi bi-pin-map"></i>
-            <span th:text="${location}">123 Fake St. City, State Country</span>
+            <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                123 Fake St. City, State Country
+            </span>
         </p>
     </div>
 

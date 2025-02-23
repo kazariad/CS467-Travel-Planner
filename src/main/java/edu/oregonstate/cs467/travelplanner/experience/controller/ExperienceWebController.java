@@ -74,14 +74,19 @@ public class ExperienceWebController {
             model.addAttribute("rating", String.format("%.1f / 5.0", (double) experience.getRatingSum() / (double) experience.getRatingCnt()));
         }
 
-        model.addAttribute("location", experience.getAddress());
         UriBuilder mapUrlBuilder = UriComponentsBuilder
                 .fromUriString("https://www.google.com/maps/embed/v1/")
-                .path("place")
                 .queryParam("key", gmapsApiKey)
-                .queryParam("q", experience.getAddress())
-                .queryParam("center", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()))
                 .queryParam("zoom", 19);
+        if (experience.getPlaceId() != null) {
+            mapUrlBuilder = mapUrlBuilder
+                    .path("place")
+                    .queryParam("q", "place_id:" + experience.getPlaceId());
+        } else {
+            mapUrlBuilder = mapUrlBuilder
+                    .path("view")
+                    .queryParam("center", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()));
+        }
         model.addAttribute("mapUrl", mapUrlBuilder.build());
 
         UriBuilder streetViewUrlBuilder = UriComponentsBuilder

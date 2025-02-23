@@ -30,9 +30,12 @@ public class Experience {
     @Max(180)
     private double locationLng;
 
-    @NotBlank
+    @NotBlankNull
     @Size(max = 255)
     private String address;
+
+    @NotBlankNull
+    private String placeId;
 
     @NotBlankNull
     @URL
@@ -108,6 +111,14 @@ public class Experience {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getImageUrl() {
