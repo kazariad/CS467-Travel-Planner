@@ -20,12 +20,14 @@ function initMap() {
     autocomplete = new google.maps.places.Autocomplete(acAddressInput, {
         fields: ["place_id", "geometry", "formatted_address"]
     });
-    autocomplete.addListener("place_changed", placeChanged);
+    autocomplete.addListener("place_changed", autocompletePlaceSelected);
 
     map = new google.maps.Map(document.querySelector("#map"), {
+        mapId: "DEMO_MAP_ID",
         clickableIcons: false,
-        mapId: "DEMO_MAP_ID"
+        draggableCursor: "crosshair"
     });
+    map.addListener("click", mapLocationSelected);
 
     infoWindow = new google.maps.InfoWindow({
         content: document.querySelector("#infowindow"),
@@ -39,7 +41,7 @@ function initMap() {
     if (locationLatInput.value && locationLngInput.value) {
         let lat = Number(locationLatInput.value);
         let lng = Number(locationLngInput.value);
-        updateMap({lat: lat, lng: lng}, 19, addressInput.value ? addressInput.value : `${lat}, ${lng}`)
+        updateMap({lat: lat, lng: lng}, 19, addressInput.value ? addressInput.value : `${lat.toFixed(6)}, ${lng.toFixed(6)}`)
     } else {
         updateMap({lat: 0, lng: 0}, 1);
     }
@@ -61,7 +63,7 @@ function updateMap(location, zoom, infoText = null) {
     }
 }
 
-function placeChanged() {
+function autocompletePlaceSelected() {
     const place = autocomplete.getPlace();
     let placeId = place.place_id;
     let location = place.geometry?.location;
@@ -79,6 +81,21 @@ function placeChanged() {
     placeIdInput.value = placeId;
 
     updateMap(location, 19, formattedAddress);
+}
+
+function mapLocationSelected(mapMouseEvent) {
+    if (mapMouseEvent.latLng) {
+        let lat = mapMouseEvent.latLng.lat();
+        let lng = mapMouseEvent.latLng.lng();
+        let latLng = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        acAddressInput.classList.remove("is-invalid")
+        acAddressInput.value = latLng;
+        locationLatInput.value = lat;
+        locationLngInput.value = lng;
+        addressInput.value = "";
+        placeIdInput.value = "";
+        updateMap(mapMouseEvent.latLng, 19, latLng);
+    }
 }
 
 window.initMap = initMap;
