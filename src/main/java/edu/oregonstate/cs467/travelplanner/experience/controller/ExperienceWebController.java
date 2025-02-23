@@ -143,4 +143,10 @@ public class ExperienceWebController {
             return "redirect:/experience/{experienceId}";
         }
     }
+
+    @PostMapping(path = "/{experienceId}/delete")
+    public String deleteExperience(@PathVariable long experienceId) {
+        experienceService.deleteExperience(experienceId);
+        return "redirect:/";
+    }
 }

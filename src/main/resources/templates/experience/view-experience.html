@@ -32,11 +32,38 @@
         <h1 class="col mb-4" th:text="${experience.title}">Experience Title</h1>
     </div>
 
-    <div th:if="${isAuthor}" class="row mb-2">
+    <div th:if="${isAuthor}" class="row gx-5 mb-2">
         <a th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
            href="./create-update-experience.html" class="col-auto">
             <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
         </a>
+
+        <button type="button" class="btn btn-danger btn-sm col-auto"
+                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" style="width: 4rem">
+            Delete
+        </button>
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h1 class="modal-title fs-5 w-100" id="confirmDeleteModalLabel">
+                            Are you sure you want to delete this Experience?
+                        </h1>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <form th:action="@{/experience/{experienceId}/delete(experienceId=${experienceId})}"
+                              action="#" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
+                                Yes
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width: 3rem">
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
