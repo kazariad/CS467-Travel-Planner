@@ -80,6 +80,7 @@ public class ExperienceWebController {
                 .path("place")
                 .queryParam("key", gmapsApiKey)
                 .queryParam("q", experience.getAddress())
+                .queryParam("center", String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng()))
                 .queryParam("zoom", 19);
         model.addAttribute("mapUrl", mapUrlBuilder.build());
 
