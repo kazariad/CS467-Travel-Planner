@@ -156,6 +156,7 @@ public class ExperienceDao {
                     ST_X(location) AS location_lat,
                     ST_Y(location) AS location_lng,
                     address,
+                    place_id,
                     image_url,
                     rating_cnt,
                     rating_sum,
