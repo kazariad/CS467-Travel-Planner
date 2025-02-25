@@ -32,7 +32,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="samplelogo.png" class="d-inline-block align-top" alt="">  
+                <img th:src="@{/images/samplelogo.png}" class="d-inline-block align-top" alt="">
             </a>
           
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -46,11 +46,11 @@
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="user-details.html">Account</a>
+                    <a class="nav-link active" th:href="@{/user/details}">Account</a>
                 </li>
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post">
-                        <button type="submit" class="nav-link">Log Out</button>
+                        <button type="submit" class="btn btn-link nav-link">Log Out</button>
                     </form>
                 </li>
             </ul>
