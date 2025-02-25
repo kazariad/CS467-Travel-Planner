@@ -21,11 +21,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Checks whether a username already exists in the repository.
+     * @param username The username to check.
+     * @return true if the username exists, false otherwise.
+     */
     @Override
     public boolean usernameExists(String username) {
         return userRepository.findByUsername(username) != null;
     }
 
+    /**
+     * Saves a new user after validating that the username is unique.
+     * The password is securely hashed before saving.
+     * @param registrationDto The DTO containing user details upon registration.
+     * @throws IllegalArgumentException if the username is already taken.
+     */
     @Override
     public void save(UserRegistrationDto registrationDto) {
         if (usernameExists(registrationDto.getUsername())) {
@@ -36,6 +47,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Load user details based on the provided username.
+     * This method is used by Spring Security for authentication.
+     * @param username The user's username, to be retrieved.
+     * @return The User object, which implements UserDetails, so it can be used in authentication.
+     * @throws UsernameNotFoundException if no user is found with the provided username.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -46,9 +64,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Maps the relevant fields from the User object to the UserProfileDto, allowing the user details to be displayed
-     * in the view layer
-     * @param user The User entity to be converted
+     * Retrieve a user's profile details as a DTO.
+     * This method extracts relevant fields from the User entity, maps them to a UserProfileDto.
+     * @param user The User entity to be converted.
      * @return A UserProfileDto object containing the user's profile details
      */
     @Override
@@ -60,6 +78,11 @@ public class UserServiceImpl implements UserService {
         return userProfileDto;
     }
 
+    /**
+     * Finds a user by their unique ID.
+     * @param userId The ID associated with the user to find.
+     * @return  An Optional containing the user if found, empty Optional otherwise.
+     */
     @Override
     public Optional<User> findById(long userId) {
         return userRepository.findById(userId);
