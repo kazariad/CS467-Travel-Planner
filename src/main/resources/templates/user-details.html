@@ -49,14 +49,13 @@
                     <a class="nav-link active" href="user-details.html">Account</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Log Out</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link">Log Out</button>
+                    </form>
                 </li>
             </ul>
-            
-            
+
             <!-- This is demonstration for a search bar, not needed to be done today -->
-
-
 
             <form class="d-flex" role="search">
               <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
