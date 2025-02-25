@@ -1,15 +1,16 @@
 package edu.oregonstate.cs467.travelplanner.user.model;
 
-import jakarta.validation.Validator;
+import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.Set;
 
-@SpringBootTest
-public class UserTests {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class UserTests extends AbstractBaseTest {
 
     @Autowired
     private Validator validator;

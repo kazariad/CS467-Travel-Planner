@@ -1,7 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.model.GeoPoint;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.web.dto.UserProfileDto;
@@ -196,7 +195,8 @@ public class UserServiceTest {
                 "just soaking in the California vibes. Highly recommended for anyone looking to experience the heart " +
                 "of LA’s beach culture!'");
         experience1.setEventDate(LocalDate.of(2024, 12, 18));
-        experience1.setLocation(new GeoPoint(33.986267981122, -118.473022732421));
+        experience1.setLocationLat(33.986267981122);
+        experience1.setLocationLng(-118.473022732421);
         experience1.setAddress("1701 Ocean Front Walk, Venice, CA 90291");
         experience1.setImageUrl("'https://drupal-prod.visitcalifornia.com/sites/default/files/styles/fixed_300" +
                 "/public/VC_California101_VeniceBeach_Stock_RF_638340372_1280x640.jpg.webp?itok=vHd_tD-I");
