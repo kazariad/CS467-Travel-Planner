@@ -4,6 +4,8 @@ import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.persistence.ExperienceDao;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ExperienceService {
     private final ExperienceDao experienceDao;
@@ -17,4 +19,9 @@ public class ExperienceService {
         if (experience == null || experience.getDeletedAt() != null) return null;
         return experience;
     }
+
+    public List<Experience> findByUserId(long userId) {
+        return experienceDao.findByUserId(userId);
+    }
+
 }

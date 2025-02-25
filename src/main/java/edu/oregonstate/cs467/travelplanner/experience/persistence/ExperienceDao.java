@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -139,5 +140,29 @@ public class ExperienceDao {
                 .update();
         // make sure that an Experience was actually matched and updated
         if (affectedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
+    }
+
+    public List<Experience> findByUserId(long userId) {
+        String sql = """
+                SELECT
+                    experience_id,
+                    title,
+                    description,
+                    event_date,
+                    ST_X(location) AS location_lat,
+                    ST_Y(location) AS location_lng,
+                    address,
+                    image_url,
+                    rating_cnt,
+                    rating_sum,
+                    user_id,
+                    created_at,
+                    updated_at,
+                    deleted_at
+                FROM experience
+                WHERE user_id = ?""";
+        return jdbcClient.sql(sql)
+                .param(userId)
+                .query(rowMapper).list();
     }
 }

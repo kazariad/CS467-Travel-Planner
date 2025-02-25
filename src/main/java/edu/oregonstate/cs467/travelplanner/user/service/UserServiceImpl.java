@@ -1,5 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.user.service;
 
+import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.web.dto.UserProfileDto;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ExperienceService experienceService;
 
     /**
      * Checks whether a username already exists in the repository.
@@ -74,7 +78,7 @@ public class UserServiceImpl implements UserService {
         UserProfileDto userProfileDto = new UserProfileDto();
         userProfileDto.setFullName(user.getFullName());
         userProfileDto.setUsername(user.getUsername());
-        userProfileDto.setExperienceList(user.getExperienceList());
+        userProfileDto.setExperienceList(experienceService.findByUserId(user.getUserId()));
         return userProfileDto;
     }
 

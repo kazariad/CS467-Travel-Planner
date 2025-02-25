@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-    <title th:text="${experience.title}">Account Information</title>
+    <title> Account Information</title>
 
     <style>
         .navbar-custom {
@@ -46,7 +46,7 @@
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="userDetails.html">Account</a>
+                    <a class="nav-link active" href="user-details.html">Account</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Log Out</a>
@@ -85,7 +85,7 @@
                         <h2 class="text-center" style="color: white;">Profile Details</h2>
                         <div class="row m-2">
                             <h5 style="color: white;">Username:</h5>
-                            <input type="text" th:value="${user.userId}" class = "form-control" id ="username" name = "username"
+                            <input type="text" th:value="${user.username}" class = "form-control" id ="username" name = "username"
                                 placeholder="TravelLover97" autofocus="autofocus" readonly>
                             </div>
                         
@@ -98,7 +98,7 @@
                             <!-- Form here -->
                             <div class="row m-2">
                                 <h5 style="color: white;">Full name:</h5>
-                                <input type="text" th:value="${user.fullName}" class = "form-control" id ="username" name = "username"
+                                <input type="text" th:value="${user.fullName}" class = "form-control" id ="fullName" name = "fullName"
                                     placeholder="John Doe" autofocus="autofocus" readonly>
                             </div>
                             
@@ -121,29 +121,22 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th scope="col">Trip Title</th>
-                                <th scope="col">Date</th>
+                                <th scope="col">Experience Title</th>
                                 <th scope="col">View</th>
                             </tr>
                             </thead>
                             <tbody>
-                                <!-- Table formating in thymeleaf hidden for now, but this is where it should go, unsure on functionality here -->
-                                <tr th:each="exp : ${user.experienceList}" hidden>
-                                <td th:text="${exp.title}" hidden><button type="button" class="btn btn-primary" hidden>View Experience</button></td>
+                                <!-- If the experienceList is empty, show a message -->
+                                <tr th:if="${#lists.isEmpty(user.experienceList)}">
+                                    <td colspan="3" class="text-center">You have not added any experiences.</td>
                                 </tr>
-                                
-                                <tr>
-                            
-                                    <td>A Hiddem Gem for Seafood Lovers</td>
-                                    <td>01/30/2025</td>
-                                    <td><button type="button" class="btn btn-primary">View Experience</button></td>
+                                <tr th:if="${not #lists.isEmpty(user.experienceList)}" th:each="experience : ${user.experienceList}" >
+                                    <td th:text="${experience.title}"></td>
+                                    <td>
+                                        <a type="button" th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}" class="btn btn-primary">View Experience</a>
+                                    </td>
                                 </tr>
-                                <tr>
 
-                                    <td>Breathtaking Views and Vibrant Atmosphere</td>
-                                    <td>01/30/2025</td>
-                                    <td><button type="button" class="btn btn-primary">View Experience</button></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -158,7 +151,7 @@
                     
                     <ul style="color: white;">
                         <!-- Thymeleaf formatting here for the list of trips, again hidden until sorted out -->
-                        <li th:each="anItem : ${section.subList}" hidden></li>
+<!--                        <li th:each="anItem : ${section.subList}" hidden></li>-->
                         <li>You have not added any trips.</li>
                     </ul>
                 </div>
