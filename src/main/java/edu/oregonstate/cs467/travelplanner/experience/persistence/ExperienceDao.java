@@ -153,22 +153,9 @@ public class ExperienceDao {
      */
     public List<Experience> findByUserId(long userId) {
         String sql = """
-                SELECT
-                    experience_id,
-                    title,
-                    description,
-                    event_date,
-                    ST_X(location) AS location_lat,
-                    ST_Y(location) AS location_lng,
-                    address,
-                    place_id,
-                    image_url,
-                    rating_cnt,
-                    rating_sum,
-                    user_id,
-                    created_at,
-                    updated_at,
-                    deleted_at
+                SELECT *, 
+                       ST_Latitude(location) AS location_lat,
+                       ST_Longitude(location) AS location_lng 
                 FROM experience
                 WHERE user_id = ?
                 AND deleted_at IS NULL""";

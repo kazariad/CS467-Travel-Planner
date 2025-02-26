@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.web.dto.UserProfileDto;
@@ -17,9 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -30,6 +31,9 @@ public class UserServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ExperienceService experienceService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -204,24 +208,10 @@ public class UserServiceTest {
         experience1.setRatingSum(5);
         experience1.setUserId(1L);
         experience1.setCreatedAt(Instant.parse("2024-12-18T21:51:05.000000Z"));
+        when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
 
-        List<Experience> experienceList = new ArrayList<>();
-        experienceList.add(experience1);
-        testUser.setExperienceList(experienceList);
-
-        // cal the method being tested
-        UserProfileDto userProfileDto = userService.getUserProfile(testUser);
-
-        // assertions
-        assertNotNull(userProfileDto);
-        assertEquals("Test User", userProfileDto.getFullName());
-        assertEquals("testUser", userProfileDto.getUsername());
-
-        if (userProfileDto.getExperienceList() != null) {
-            assertNotNull(userProfileDto.getExperienceList());
-            assertEquals(1, userProfileDto.getExperienceList().size());
-            assertEquals("Breathtaking Views and Vibrant Atmosphere", userProfileDto.getExperienceList()
-                    .get(0).getTitle());
-        }
+        UserProfileDto actual = userService.getUserProfile(testUser);
+        UserProfileDto expected = new UserProfileDto("Test User", "testUser", List.of(experience1));
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
