@@ -165,7 +165,8 @@ public class ExperienceDao {
                     updated_at,
                     deleted_at
                 FROM experience
-                WHERE user_id = ?""";
+                WHERE user_id = ?
+                AND deleted_at IS NULL""";      // exclude soft-deleted records
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(rowMapper).list();
