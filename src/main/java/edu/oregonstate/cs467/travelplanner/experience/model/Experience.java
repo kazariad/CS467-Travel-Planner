@@ -22,13 +22,22 @@ public class Experience {
     @NotNull
     private LocalDate eventDate;
 
-    @NotNull
-    private GeoPoint location;
+    @Min(-90)
+    @Max(90)
+    private double locationLat;
+
+    @Min(-180)
+    @Max(180)
+    private double locationLng;
 
     @NotBlankNull
     @Size(max = 255)
     private String address;
 
+    @NotBlankNull
+    private String placeId;
+
+    @NotBlankNull
     @URL
     private String imageUrl;
 
@@ -80,12 +89,20 @@ public class Experience {
         this.eventDate = eventDate;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public double getLocationLat() {
+        return locationLat;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public double getLocationLng() {
+        return locationLng;
+    }
+
+    public void setLocationLng(double locationLng) {
+        this.locationLng = locationLng;
     }
 
     public String getAddress() {
@@ -94,6 +111,14 @@ public class Experience {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getImageUrl() {

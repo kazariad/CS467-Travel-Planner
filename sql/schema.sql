@@ -21,6 +21,8 @@ CREATE TABLE `experience`  (
     -- 4326 = Spatial Reference ID for surface of Earth (WGS 84)
     `location` point NOT NULL SRID 4326,
     `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    -- id used to identify locations in Google Maps Places API
+    `place_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     -- text because URL technically doesn't have max length
     `image_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     -- number of ratings for this experience
