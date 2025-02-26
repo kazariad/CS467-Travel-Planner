@@ -146,6 +146,11 @@ public class ExperienceDao {
         if (affectedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
     }
 
+    /**
+     * Retrieves a list of experiences associated with a specific user ID, excluding soft-deleted records
+     * @param userId The ID of the user whose experiences are to be retrieved.
+     * @return A list of Experience objects belonging to the user.
+     */
     public List<Experience> findByUserId(long userId) {
         String sql = """
                 SELECT
@@ -166,7 +171,7 @@ public class ExperienceDao {
                     deleted_at
                 FROM experience
                 WHERE user_id = ?
-                AND deleted_at IS NULL""";      // exclude soft-deleted records
+                AND deleted_at IS NULL""";
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(rowMapper).list();
