@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -143,5 +144,23 @@ public class ExperienceDao {
                 .update();
         // make sure that an Experience was actually matched and updated
         if (affectedRows == 0) throw new IncorrectResultSizeDataAccessException(1, 0);
+    }
+
+    /**
+     * Retrieves a list of experiences associated with a specific user ID, excluding soft-deleted records
+     * @param userId The ID of the user whose experiences are to be retrieved.
+     * @return A list of Experience objects belonging to the user.
+     */
+    public List<Experience> findByUserId(long userId) {
+        String sql = """
+                SELECT *, 
+                       ST_Latitude(location) AS location_lat,
+                       ST_Longitude(location) AS location_lng 
+                FROM experience
+                WHERE user_id = ?
+                AND deleted_at IS NULL""";
+        return jdbcClient.sql(sql)
+                .param(userId)
+                .query(rowMapper).list();
     }
 }

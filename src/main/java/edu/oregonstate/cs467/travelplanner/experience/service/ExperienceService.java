@@ -8,7 +8,7 @@ import edu.oregonstate.cs467.travelplanner.util.exception.ResourceNotFoundExcept
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.time.Clock;
 import java.time.Instant;
 
@@ -28,6 +28,10 @@ public class ExperienceService {
         Experience experience = experienceDao.findById(experienceId).orElse(null);
         if (experience == null || experience.getDeletedAt() != null) return null;
         return experience;
+    }
+
+    public List<Experience> findByUserId(long userId) {
+        return experienceDao.findByUserId(userId);
     }
 
     public long createExperience(CreateUpdateExperienceDto experienceDto) {

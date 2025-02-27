@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,180 +7,170 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-    <title th:text="${experience.title}">Account Information</title>
+    <title>Account Information</title>
 
     <style>
         .navbar-custom {
-    background-color: #020061; 
+            background-color: #020061;
         }
-        
-        .navbar-custom 
+
+        .navbar-custom,
         .navbar-brand,
-        .navbar-custom 
-        .navbar-nav 
+        .navbar-custom,
+        .navbar-nav,
         .nav-link {
-            color: #ffffff; 
+            color: #ffffff;
         }
-        
     </style>
+
 </head>
 
+<body>
 <header>
 
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="samplelogo.png" class="d-inline-block align-top" alt="">  
+                <img th:src="@{/images/samplelogo.png}" src="../static/images/samplelogo.png"
+                     class="d-inline-block align-top" alt="">
             </a>
-          
+
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="/home.html">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Experiences</a>
-              </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" th:href="@{/home}" href="/home.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Experiences</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="userDetails.html">Account</a>
+                    <a class="nav-link active" th:href="@{/login}" href="login.html">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Log Out</a>
+                    <a class="nav-link" th:href="@{/registration}" href="registration.html">Register</a>
                 </li>
             </ul>
-            
-            
+
+
             <!-- This is demonstration for a search bar, not needed to be done today -->
 
-
-
             <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-secondary" type="submit">Search</button>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
             </form>
 
 
         </div>
-      </nav>
+    </nav>
 </header>
 
-<body>
-    <main>
+<br>
+<main>
 
-<!-- Div container for user profile settings -->
+    <!-- Div container for user profile settings -->
 
-        <div class = "container">
-            
-            <div class="col-md-12">
-                <h1 class="col mb-4 text-center">Your Account</h1>
-            </div>
-            
-            <div class="row mt-3">
-                
-                <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
-                        <h2 class="text-center" style="color: white;">Profile Details</h2>
-                        <div class="row m-2">
-                            <h5 style="color: white;">Username:</h5>
-                            <input type="text" th:value="${user.userId}" class = "form-control" id ="username" name = "username"
-                                placeholder="TravelLover97" autofocus="autofocus" readonly>
-                            </div>
-                        
-                            <div class="row m-2">
-                                <div clas="col">
-                                    <button type="button" class="btn btn-primary float-end" style="width: 100px;">Edit</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Form here -->
-                            <div class="row m-2">
-                                <h5 style="color: white;">Full name:</h5>
-                                <input type="text" th:value="${user.fullName}" class = "form-control" id ="username" name = "username"
-                                    placeholder="John Doe" autofocus="autofocus" readonly>
-                            </div>
-                            
-                            
-                            <div class="row m-2">
-                                <div class="col">
-                                    <button type="button" class="btn btn-primary float-end" style="width: 100px;" >Edit</button>
-                                    
-                                </div>
-                            </div>
-                            
-                            <!-- Form here -->
-                </div>
-            
-                <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
-                    <h2 class="text-center" style="color: white;">
-                        Your Experiences
-                    </h2>
-                    <div class="row mt-5">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Trip Title</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">View</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Table formating in thymeleaf hidden for now, but this is where it should go, unsure on functionality here -->
-                                <tr th:each="exp : ${user.experienceList}" hidden>
-                                <td th:text="${exp.title}" hidden><button type="button" class="btn btn-primary" hidden>View Experience</button></td>
-                                </tr>
-                                
-                                <tr>
-                            
-                                    <td>A Hiddem Gem for Seafood Lovers</td>
-                                    <td>01/30/2025</td>
-                                    <td><button type="button" class="btn btn-primary">View Experience</button></td>
-                                </tr>
-                                <tr>
+    <div class="container">
 
-                                    <td>Breathtaking Views and Vibrant Atmosphere</td>
-                                    <td>01/30/2025</td>
-                                    <td><button type="button" class="btn btn-primary">View Experience</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
-                    <div class="col mb-5">
-                        <h2 class="text-center" style="color: white;">
-                        Your Trips
-                        </h2>
-                    </div>
-                    
-                    <ul style="color: white;">
-                        <!-- Thymeleaf formatting here for the list of trips, again hidden until sorted out -->
-                        <li th:each="anItem : ${section.subList}" hidden></li>
-                        <li>You have not added any trips.</li>
-                    </ul>
-                </div>
-            </div>
-
+        <div class="col-md-12">
+            <h1 class="col mb-4 text-center">Your Account</h1>
         </div>
-    
-        <footer class="mt-auto fixed-bottom">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Contact Us</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Privacy Policy</a></li>
-            </ul>
-            <p class="text-center text-body-secondary">Group Travel Planner Project © 2025</p>
-        </footer>
-    
-    </main>
 
-    
+        <div class="row mt-3">
 
-</body>
+            <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
+                <h2 class="text-center" style="color: white;">Profile Details</h2>
+                <div class="row m-2">
+                    <h5 style="color: white;">Username:</h5>
+                    <input type="text" th:value="${user.username}" class="form-control" id="username" name="username"
+                           placeholder="TravelLover97" autofocus="autofocus" readonly>
+                </div>
+
+                <div class="row m-2">
+                    <div clas="col">
+                        <button type="button" class="btn btn-primary float-end" style="width: 100px;">Edit</button>
+                    </div>
+                </div>
+
+                <!-- Form here -->
+                <div class="row m-2">
+                    <h5 style="color: white;">Full name:</h5>
+                    <input type="text" th:value="${user.fullName}" class="form-control" id="fullName" name="fullName"
+                           placeholder="John Doe" autofocus="autofocus" readonly>
+                </div>
+
+
+                <div class="row m-2">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary float-end" style="width: 100px;">Edit</button>
+
+                    </div>
+                </div>
+
+                <!-- Form here -->
+            </div>
+
+            <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
+                <h2 class="text-center" style="color: white;">
+                    Your Experiences
+                </h2>
+                <div class="row mt-5">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Experience Title</th>
+                            <th scope="col">View</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- If the experienceList is empty, show a message -->
+                        <tr th:if="${#lists.isEmpty(user.experienceList)}">
+                            <td colspan="3" class="text-center">You have not added any experiences.</td>
+                        </tr>
+                        <tr th:if="${not #lists.isEmpty(user.experienceList)}"
+                            th:each="experience : ${user.experienceList}">
+                            <td th:text="${experience.title}"></td>
+                            <td>
+                                <a type="button"
+                                   th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                                   class="btn btn-primary">View Experience</a>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
+                <div class="col mb-5">
+                    <h2 class="text-center" style="color: white;">
+                        Your Trips
+                    </h2>
+                </div>
+
+                <ul style="color: white;">
+                    <!-- Thymeleaf formatting here for the list of trips, again hidden until sorted out -->
+                    <!--                        <li th:each="anItem : ${section.subList}" hidden></li>-->
+                    <li>You have not added any trips.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="mt-auto fixed-bottom">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Contact Us</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Privacy Policy</a></li>
+    </ul>
+    <p class="text-center text-body-secondary">Group Travel Planner Project © 2025</p>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
+</body>
 </html>
