@@ -1,9 +1,13 @@
 package edu.oregonstate.cs467.travelplanner.experience.persistence.search;
 
+import edu.oregonstate.cs467.travelplanner.experience.persistence.search.ExperienceSearchParams.ValidExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
-import jakarta.validation.Valid;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 
+import java.lang.annotation.*;
+
+@ValidExperienceSearchParams
 public class ExperienceSearchParams {
     public record ExperienceSearchLocationParams(
             @Min(-90) @Max(90)
@@ -71,5 +75,25 @@ public class ExperienceSearchParams {
 
     public void setLimit(int limit) {
         this.limit = limit;
+    }
+
+    @Documented
+    @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Constraint(validatedBy = { ExperienceSearchParamsValidator.class })
+    @interface ValidExperienceSearchParams {
+        String message() default "has invalid sort";
+        Class<?>[] groups() default { };
+        Class<? extends Payload>[] payload() default { };
+    }
+
+    static class ExperienceSearchParamsValidator implements ConstraintValidator<ValidExperienceSearchParams, ExperienceSearchParams> {
+        @Override
+        public boolean isValid(ExperienceSearchParams params, ConstraintValidatorContext context) {
+            if (params == null) return true;
+            if (params.getKeywords() == null && params.getSort() == ExperienceSearchSort.KEYWORD_MATCH) return false;
+            if (params.getLocation() == null && params.getSort() == ExperienceSearchSort.DISTANCE) return false;
+            return true;
+        }
     }
 }
