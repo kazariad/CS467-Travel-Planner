@@ -23,6 +23,7 @@ public class ExperienceSearchParams {
     }
 
     @NotBlankNull
+    @Size(max = 100)
     private String keywords;
 
     @Valid

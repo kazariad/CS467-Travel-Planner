@@ -1,7 +1,12 @@
 package edu.oregonstate.cs467.travelplanner.experience.web;
 
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
+import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchForm;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchLocationParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchSort;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
@@ -118,8 +123,7 @@ public class ExperienceWebController {
     @PostMapping(path = "/create")
     public String createExperience(
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult)
-    {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "experience/create-update-experience";
         } else {
@@ -144,8 +148,7 @@ public class ExperienceWebController {
     public String updateExperience(
             @PathVariable long experienceId,
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult)
-    {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "experience/create-update-experience";
         } else {
@@ -184,5 +187,42 @@ public class ExperienceWebController {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
         tripService.addExperienceToTrip(experienceId, tripId);
         return "redirect:/trip/" + tripId + "?success=experience-added";
+    }
+
+    @GetMapping(path = "/search")
+    public String searchExperiences(@ModelAttribute ExperienceSearchForm searchForm) {
+        searchForm.normalize();
+        ExperienceSearchParams params = convertSearchFormToParams(searchForm);
+        ExperienceSearchResult result = experienceService.search(params);
+        return "n/a";
+    }
+
+    ExperienceSearchParams convertSearchFormToParams(ExperienceSearchForm form) {
+        ExperienceSearchParams params = new ExperienceSearchParams();
+        params.setKeywords(form.getKeywords());
+
+        if (form.getLocationLat() != null && form.getLocationLng() != null && form.getDistanceMiles() != null) {
+            params.setLocation(new ExperienceSearchLocationParams(
+                    form.getLocationLat(), form.getLocationLng(), form.getDistanceMiles() * 1609.34));
+        }
+
+        switch (form.getSort()) {
+            case "bestmatch":
+                params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
+                break;
+            case "distance":
+                params.setSort(ExperienceSearchSort.DISTANCE);
+                break;
+            case "rating":
+                params.setSort(ExperienceSearchSort.RATING);
+                break;
+            case "newest":
+                params.setSort(ExperienceSearchSort.NEWEST);
+                break;
+        }
+
+        params.setOffset(form.getOffset());
+        params.setLimit(10);
+        return params;
     }
 }
