@@ -75,8 +75,8 @@
         <div class="row mb-5">
             <label for="description" class="form-label">Description</label>
             <textarea th:text="*{description}" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
-                      id="description" name="description" class="form-control " rows="10" maxlength="1000"
-                      style="white-space: pre-wrap">Description</textarea>
+                      id="description" name="description" class="form-control " rows="10"  maxlength="1000"
+                      spellcheck="true" style="white-space: pre-wrap">Description</textarea>
             <div class="invalid-feedback">
                 Please enter a valid description (1000 chars max)
             </div>
