@@ -19,7 +19,7 @@ public class ExperienceSearchParams {
     ) {}
 
     public enum ExperienceSearchSort {
-        KEYWORD_MATCH, DISTANCE, EVENT_DATE, RATING, NEWEST
+        KEYWORD_MATCH, DISTANCE, RATING, NEWEST
     }
 
     @NotBlankNull
