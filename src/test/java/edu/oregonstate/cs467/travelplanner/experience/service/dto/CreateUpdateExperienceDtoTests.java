@@ -1,4 +1,4 @@
-package edu.oregonstate.cs467.travelplanner.experience.dto;
+package edu.oregonstate.cs467.travelplanner.experience.service.dto;
 
 import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
 import jakarta.validation.Validator;
