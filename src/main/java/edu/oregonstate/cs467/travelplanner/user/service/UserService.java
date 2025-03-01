@@ -1,8 +1,8 @@
 package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.user.model.User;
-import edu.oregonstate.cs467.travelplanner.web.dto.UserProfileDto;
-import edu.oregonstate.cs467.travelplanner.web.dto.UserRegistrationDto;
+import edu.oregonstate.cs467.travelplanner.user.dto.UserProfileDto;
+import edu.oregonstate.cs467.travelplanner.user.dto.UserRegistrationDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;

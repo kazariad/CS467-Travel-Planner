@@ -2,7 +2,7 @@ package edu.oregonstate.cs467.travelplanner.user.controller;
 
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
-import edu.oregonstate.cs467.travelplanner.web.dto.UserProfileDto;
+import edu.oregonstate.cs467.travelplanner.user.dto.UserProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
