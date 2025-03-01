@@ -1,6 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.experience.service;
 
-import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.persistence.ExperienceDao;
 import edu.oregonstate.cs467.travelplanner.user.model.User;

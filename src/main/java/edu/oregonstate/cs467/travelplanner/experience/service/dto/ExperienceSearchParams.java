@@ -1,6 +1,6 @@
-package edu.oregonstate.cs467.travelplanner.experience.persistence.search;
+package edu.oregonstate.cs467.travelplanner.experience.service.dto;
 
-import edu.oregonstate.cs467.travelplanner.experience.persistence.search.ExperienceSearchParams.ValidExperienceSearchParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ValidExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.util.validation.NotBlankNull;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;

@@ -1,9 +1,10 @@
-package edu.oregonstate.cs467.travelplanner.experience.persistence.search;
+package edu.oregonstate.cs467.travelplanner.experience.persistence;
 
 import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.persistence.search.ExperienceSearchParams.ExperienceSearchLocationParams;
-import edu.oregonstate.cs467.travelplanner.experience.persistence.search.ExperienceSearchParams.ExperienceSearchSort;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchLocationParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchSort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
