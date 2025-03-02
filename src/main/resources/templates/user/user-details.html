@@ -31,7 +31,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img th:src="@{/images/samplelogo.png}" src="../static/images/samplelogo.png"
+                <img th:src="@{/images/samplelogo.png}" src="../../static/images/samplelogo.png"
                      class="d-inline-block align-top" alt="">
             </a>
 
@@ -55,14 +55,10 @@
                 </li>
             </ul>
 
-
-            <!-- This is demonstration for a search bar, not needed to be done today -->
-
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-secondary" type="submit">Search</button>
             </form>
-
 
         </div>
     </nav>
@@ -85,32 +81,21 @@
                 <h2 class="text-center" style="color: white;">Profile Details</h2>
                 <div class="row m-2">
                     <h5 style="color: white;">Username:</h5>
-                    <input type="text" th:value="${user.username}" class="form-control" id="username" name="username"
-                           placeholder="TravelLover97" autofocus="autofocus" readonly>
-                </div>
-
-                <div class="row m-2">
-                    <div clas="col">
-                        <button type="button" class="btn btn-primary float-end" style="width: 100px;">Edit</button>
-                    </div>
+                    <p style="color: white; margin-left: 10px;" th:text="${user.username}"></p>
                 </div>
 
                 <!-- Form here -->
                 <div class="row m-2">
-                    <h5 style="color: white;">Full name:</h5>
-                    <input type="text" th:value="${user.fullName}" class="form-control" id="fullName" name="fullName"
-                           placeholder="John Doe" autofocus="autofocus" readonly>
+                    <h5 style="color: white;">Full Name:</h5>
+                    <p style="color: white; margin-left: 10px;" th:text="${user.fullName}"></p>
                 </div>
 
-
                 <div class="row m-2">
-                    <div class="col">
-                        <button type="button" class="btn btn-primary float-end" style="width: 100px;">Edit</button>
-
+                    <div class="col text-center">
+                        <a th:href="@{/user/update-password}" class="btn btn-primary" style="width: 200px;">Reset Password</a>
                     </div>
                 </div>
 
-                <!-- Form here -->
             </div>
 
             <div class="col m-2 p-3" style="background-color: #020061; border-radius: 25px;">
