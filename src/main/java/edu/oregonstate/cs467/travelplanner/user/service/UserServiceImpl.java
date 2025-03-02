@@ -5,12 +5,14 @@ import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.user.dto.UserProfileDto;
 import edu.oregonstate.cs467.travelplanner.user.dto.UserRegistrationDto;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -80,6 +82,14 @@ public class UserServiceImpl implements UserService {
         userProfileDto.setUsername(user.getUsername());
         userProfileDto.setExperienceList(experienceService.findByUserId(user.getUserId()));
         return userProfileDto;
+    }
+
+    @Transactional
+    @Override
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedAt(Instant.now());
+        userRepository.save(user);
     }
 
     /**

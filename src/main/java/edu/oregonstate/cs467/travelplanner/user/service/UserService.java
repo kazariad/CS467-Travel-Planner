@@ -14,4 +14,5 @@ public interface UserService extends UserDetailsService {
     UserProfileDto getUserProfile(User user);
 
     Optional<User> findById(long userId);
+    void updatePassword(User user, String newPassword);
 }
