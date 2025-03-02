@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ExperienceWebControllerTests extends AbstractBaseTest {
+class ExperienceSearchWebControllerTests extends AbstractBaseTest {
     @Autowired
-    private ExperienceWebController controller;
+    private ExperienceSearchWebController controller;
 
     @Test
     void convertSearchFormToParams() {
@@ -29,7 +29,7 @@ class ExperienceWebControllerTests extends AbstractBaseTest {
         form.setKeywords("abc 123");
         form.setLocationLat(0.0);
         form.setLocationLng(0.0);
-        form.setDistanceMiles(2.0);
+        form.setDistanceMiles(2);
         form.setSort("distance");
         params = controller.convertSearchFormToParams(form);
         expected.setKeywords("abc 123");

@@ -37,7 +37,7 @@ class ExperienceSearchFormTests {
         var form = new ExperienceSearchForm();
         form.setLocationLat(0.0);
         form.setLocationLng(0.0);
-        form.setDistanceMiles(-1.0);
+        form.setDistanceMiles(-1);
         form.setSort("distance");
         form.normalize();
         assertThat(form).usingRecursiveComparison().isEqualTo(expected);
@@ -45,7 +45,7 @@ class ExperienceSearchFormTests {
         form = new ExperienceSearchForm();
         form.setLocationLat(-90.1);
         form.setLocationLng(0.0);
-        form.setDistanceMiles(0.0);
+        form.setDistanceMiles(0);
         form.setSort("distance");
         form.normalize();
         assertThat(form).usingRecursiveComparison().isEqualTo(expected);
@@ -53,7 +53,7 @@ class ExperienceSearchFormTests {
         form = new ExperienceSearchForm();
         form.setLocationLat(-90.0);
         form.setLocationLng(null);
-        form.setDistanceMiles(0.0);
+        form.setDistanceMiles(0);
         form.setSort("distance");
         form.normalize();
         assertThat(form).usingRecursiveComparison().isEqualTo(expected);
@@ -66,14 +66,14 @@ class ExperienceSearchFormTests {
         form.setLocationText("xyz");
         form.setLocationLat(-90.0);
         form.setLocationLng(180.0);
-        form.setDistanceMiles(1.0);
+        form.setDistanceMiles(1);
         form.normalize();
         var expected = new ExperienceSearchForm();
         expected.setKeywords("abc 123");
         expected.setLocationText("xyz");
         expected.setLocationLat(-90.0);
         expected.setLocationLng(180.0);
-        expected.setDistanceMiles(1.0);
+        expected.setDistanceMiles(1);
         expected.setSort("distance");
         expected.setOffset(0);
         assertThat(form).usingRecursiveComparison().isEqualTo(expected);

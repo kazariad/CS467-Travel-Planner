@@ -1,13 +1,8 @@
 package edu.oregonstate.cs467.travelplanner.experience.web;
 
-import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
-import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchForm;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
-import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
-import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchLocationParams;
-import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchSort;
-import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
 import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
@@ -155,42 +150,5 @@ public class ExperienceWebController {
     public String deleteExperience(@PathVariable long experienceId) {
         experienceService.deleteExperience(experienceId);
         return "redirect:/";
-    }
-
-    @GetMapping(path = "/search")
-    public String searchExperiences(@ModelAttribute ExperienceSearchForm searchForm) {
-        searchForm.normalize();
-        ExperienceSearchParams params = convertSearchFormToParams(searchForm);
-        ExperienceSearchResult result = experienceService.search(params);
-        return "n/a";
-    }
-
-    ExperienceSearchParams convertSearchFormToParams(ExperienceSearchForm form) {
-        ExperienceSearchParams params = new ExperienceSearchParams();
-        params.setKeywords(form.getKeywords());
-
-        if (form.getLocationLat() != null && form.getLocationLng() != null && form.getDistanceMiles() != null) {
-            params.setLocation(new ExperienceSearchLocationParams(
-                    form.getLocationLat(), form.getLocationLng(), form.getDistanceMiles() * 1609.34));
-        }
-
-        switch (form.getSort()) {
-            case "bestmatch":
-                params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
-                break;
-            case "distance":
-                params.setSort(ExperienceSearchSort.DISTANCE);
-                break;
-            case "rating":
-                params.setSort(ExperienceSearchSort.RATING);
-                break;
-            case "newest":
-                params.setSort(ExperienceSearchSort.NEWEST);
-                break;
-        }
-
-        params.setOffset(form.getOffset());
-        params.setLimit(10);
-        return params;
     }
 }
