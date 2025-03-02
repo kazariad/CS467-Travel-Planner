@@ -9,7 +9,7 @@ public class ExperienceSearchForm {
 
     private Double locationLng;
 
-    private Double distanceMiles;
+    private Integer distanceMiles;
 
     private String sort;
 
@@ -29,6 +29,7 @@ public class ExperienceSearchForm {
         if (locationLat == null || locationLat < -90 || locationLat > 90
                 || locationLng == null || locationLng < -180 || locationLng > 180
                 || distanceMiles == null || distanceMiles < 0) {
+            locationText = null;
             locationLat = null;
             locationLng = null;
             distanceMiles = null;
@@ -84,11 +85,11 @@ public class ExperienceSearchForm {
         this.locationLng = locationLng;
     }
 
-    public Double getDistanceMiles() {
+    public Integer getDistanceMiles() {
         return distanceMiles;
     }
 
-    public void setDistanceMiles(Double distanceMiles) {
+    public void setDistanceMiles(Integer distanceMiles) {
         this.distanceMiles = distanceMiles;
     }
 
