@@ -91,7 +91,7 @@ public class UserRegistrationDto {
     }
 
     public List<Experience> getExperienceList() {
-        return experienceList;
+        return experienceList != null ? List.copyOf(experienceList) : List.of();
     }
 
     public void setExperienceList(List<Experience> experienceList) {
@@ -99,7 +99,7 @@ public class UserRegistrationDto {
     }
 
     public List<Trip> getTripList() {
-        return tripList;
+        return tripList != null ? List.copyOf(tripList) : List.of();
     }
 
     public void setTripList(List<Trip> tripList) {
@@ -114,8 +114,8 @@ public class UserRegistrationDto {
         user.setPassword(this.password);
         user.setCreatedAt(this.createdAt != null ? this.createdAt : Instant.now());
         user.setUpdatedAt(this.updatedAt);
-        user.setExperienceList(this.experienceList != null ? this.experienceList : List.of());
-        user.setTripList(this.tripList != null ? this.tripList : List.of());
+        user.setExperienceList(this.experienceList);
+        user.setTripList(this.tripList);
         return user;
     }
 }
