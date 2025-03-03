@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.user.model;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -17,6 +18,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Represents a user within the system. This entity is mapped to the "user" table and includes
+ * user-related data such as full name, username, password, and timestamps for creation and updates.
+
+ * Relationships:
+ * - One-To-Many: Each user can have multiple trips associated with them.
+ * - Transient: Each user can have a list of experiences that are not directly persisted in the database.
+ */
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Getter
@@ -50,6 +59,9 @@ public class User implements UserDetails, CredentialsContainer {
 
     @Transient
     private List<Experience> experienceList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Trip> tripList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

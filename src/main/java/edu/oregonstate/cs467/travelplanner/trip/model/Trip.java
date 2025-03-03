@@ -1,5 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.trip.model;
 
+import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.util.validation.ValidDateRange;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -12,6 +14,15 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Represents a planned or completed trip for a user. Each trip is associated with a specific user
+ * and includes details such as the title, start and end dates, creation and update timestamps,
+ * and a list of associated experiences.
+
+ * Relationships:
+ * - Many trips can be associated with a single user (Many-to-One relationship).
+ * - A trip can contain multiple experiences (not directly persisted).
+ */
 @Entity
 @ValidDateRange
 @Table(name = "trip")
@@ -21,21 +32,22 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tripId;
 
-    @NotNull(message = "User ID cannot be null")
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    // Many trips to one user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotBlank(message = "Trip title cannot be blank")
     @Size(max = 100, message = "Trip title must not exceed 100 characters")
     @Column(name = "trip_title", nullable = false)
     private String tripTitle;
 
-    @FutureOrPresent(message = "Start date must be today or in the future")
+    @FutureOrPresent(message = "Start date must not be in the past")
     @NotNull(message = "Start date is required")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @FutureOrPresent(message = "End date must be today or in the future")
+    @FutureOrPresent(message = "End date must not be in the past")
     @NotNull(message = "End date is required")
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
@@ -50,25 +62,23 @@ public class Trip {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "trip_experience_ids", joinColumns = @JoinColumn(name = "trip_id"))
-    @Column(name = "experience_id")
-    private Set<Long> experienceList = new LinkedHashSet<>();
+    @Transient
+    private Set<Experience> experienceList;
+
 
     public Trip() {
+        this.createdAt = Instant.now();
+        this.experienceList = new LinkedHashSet<>();
     }
 
-    public Trip(Long tripId, Long userId, String tripTitle, LocalDate startDate, LocalDate endDate, Set<Long> experienceList,
+    public Trip(Long tripId, User user, String tripTitle, LocalDate startDate, LocalDate endDate, Set<Experience> experienceList,
                 Instant createdAt, Instant updatedAt, Instant deletedAt) {
-        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
         this.tripId = tripId;
-        this.userId = userId;
+        this.user = user;
         this.tripTitle = tripTitle;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.createdAt = createdAt != null ? createdAt : Instant.now();
+        this.createdAt = (createdAt == null) ? Instant.now() : createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
         if (experienceList != null) {
@@ -85,12 +95,12 @@ public class Trip {
         this.tripId = tripId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTripTitle() {
@@ -141,19 +151,19 @@ public class Trip {
         this.deletedAt = deletedAt;
     }
 
-    public Set<Long> getExperienceList() {
+    public Set<Experience> getExperienceList() {
         return experienceList;
     }
 
-    public void setExperienceList(Set<Long> experienceList) {
+    public void setExperienceList(Set<Experience> experienceList) {
         this.experienceList = experienceList;
     }
 
-    public boolean addExperience(Long experienceId) {
-        return this.experienceList.add(experienceId); // Returns true if the set was changed
+    public boolean addExperience(Experience experience) {
+        return this.experienceList.add(experience); // Returns true if the set was changed
     }
 
-    public boolean removeExperience(Long experienceId) {
-        return this.experienceList.remove(experienceId); // Returns true if the set was changed
+    public boolean removeExperience(Experience experience) {
+        return this.experienceList.remove(experience); // Returns true if the set was changed
     }
 }
