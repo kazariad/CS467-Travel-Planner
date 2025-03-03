@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.user.dto;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
+import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
@@ -18,14 +19,19 @@ public class UserRegistrationDto {
 
     @NotBlank(message = "Password cannot be blank")
     private String password;
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
     private Instant updatedAt;
     private List<Experience> experienceList;
+    private List<Trip> tripList;
 
     public UserRegistrationDto() {
+        this.createdAt = Instant.now();
+        this.experienceList = List.of();
+        this.tripList = List.of();
     }
 
-    public UserRegistrationDto(Long userId, String fullName, String username, String password, Instant createdAt, Instant updatedAt, List<Experience> experienceList) {
+    public UserRegistrationDto(Long userId, String fullName, String username, String password, Instant createdAt,
+                               Instant updatedAt, List<Experience> experienceList, List<Trip> tripList) {
         this.userId = userId;
         this.fullName = fullName;
         this.username = username;
@@ -33,6 +39,7 @@ public class UserRegistrationDto {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.experienceList = experienceList;
+        this.tripList = tripList;
     }
 
     public Long getUserId() {
@@ -88,7 +95,15 @@ public class UserRegistrationDto {
     }
 
     public void setExperienceList(List<Experience> experienceList) {
-        this.experienceList = experienceList;
+        this.experienceList = experienceList != null ? experienceList : List.of();
+    }
+
+    public List<Trip> getTripList() {
+        return tripList;
+    }
+
+    public void setTripList(List<Trip> tripList) {
+        this.tripList = tripList != null ? tripList : List.of();
     }
 
     public User toEntity() {
@@ -97,11 +112,10 @@ public class UserRegistrationDto {
         user.setFullName(this.fullName);
         user.setUsername(this.username);
         user.setPassword(this.password);
-        if (this.createdAt == null) {
-            user.setCreatedAt(Instant.now());
-        } else {
-            user.setCreatedAt(this.createdAt);
-        }
+        user.setCreatedAt(this.createdAt != null ? this.createdAt : Instant.now());
+        user.setUpdatedAt(this.updatedAt);
+        user.setExperienceList(this.experienceList != null ? this.experienceList : List.of());
+        user.setTripList(this.tripList != null ? this.tripList : List.of());
         return user;
     }
 }
