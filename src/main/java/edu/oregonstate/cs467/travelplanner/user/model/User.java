@@ -28,10 +28,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class User implements UserDetails, CredentialsContainer {
 
     @Id
@@ -62,6 +59,84 @@ public class User implements UserDetails, CredentialsContainer {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Trip> tripList = new ArrayList<>();
+
+    public User() {
+    }
+
+    public User(Long userId, String fullName, String username, String password, Instant createdAt, Instant updatedAt, List<Experience> experienceList, List<Trip> tripList) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.experienceList = experienceList;
+        this.tripList = tripList;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Experience> getExperienceList() {
+        return experienceList;
+    }
+
+    public void setExperienceList(List<Experience> experienceList) {
+        this.experienceList = experienceList;
+    }
+
+    public List<Trip> getTripList() {
+        return tripList;
+    }
+
+    public void setTripList(List<Trip> tripList) {
+        this.tripList = tripList;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
