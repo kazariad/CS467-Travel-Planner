@@ -65,7 +65,6 @@ public class Trip {
     @Transient
     private Set<Experience> experienceList;
 
-
     public Trip() {
         this.createdAt = Instant.now();
         this.experienceList = new LinkedHashSet<>();
