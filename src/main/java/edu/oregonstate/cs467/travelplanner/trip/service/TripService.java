@@ -5,7 +5,8 @@ import edu.oregonstate.cs467.travelplanner.trip.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TripService {
@@ -22,15 +23,13 @@ public class TripService {
      * @return an Optional containing the trip if found and not marked as deleted;
      *         otherwise, an empty Optional
      */
-    public Optional<Trip> getTripByUserId(Long userId) {
-        Optional<Trip> tripOptional = tripRepository.findByUserId(userId);
-
-        if (tripOptional.isPresent()) {
-            Trip trip = tripOptional.get();
-            if (trip.getDeletedAt() != null) {
-                return Optional.empty();
-            }
+    public List<Trip> getTripsByUserId(Long userId) {
+        List<Trip> trips = tripRepository.findAllByUserId(userId);
+        if (trips.isEmpty()) {
+            return trips;
         }
-        return tripOptional;
+        return trips.stream()
+                .filter(trip -> trip.getDeletedAt() == null) // Filter out deleted trips
+                .collect(Collectors.toList());
     }
 }
