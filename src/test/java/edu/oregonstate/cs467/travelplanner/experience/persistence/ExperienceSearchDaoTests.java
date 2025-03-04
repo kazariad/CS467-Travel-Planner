@@ -45,7 +45,7 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
     void search_by_keywords() {
         var params = new ExperienceSearchParams();
         params.setKeywords("echo velvet breeze");
-        params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
+        params.setSort(ExperienceSearchSort.BEST_MATCH);
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
@@ -84,7 +84,7 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         var params = new ExperienceSearchParams();
         params.setKeywords("lantern");
         params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10*1000));
-        params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
+        params.setSort(ExperienceSearchSort.BEST_MATCH);
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);

@@ -27,7 +27,7 @@ public class ExperienceSearchDao {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT *, ST_Latitude(location) AS location_lat, ST_Longitude(location) AS location_lng");
         if (params.getKeywords() != null) {
-            sb.append(",\nMATCH(title, description, address) AGAINST (? IN NATURAL LANGUAGE MODE) AS keyword_match");
+            sb.append(",\nMATCH(title, description, address) AGAINST (? IN NATURAL LANGUAGE MODE) AS match_score");
         }
         if (params.getLocation() != null) {
             sb.append(",\nST_Distance_Sphere(location, ST_PointFromText(?, 4326)) AS distance");
@@ -45,7 +45,7 @@ public class ExperienceSearchDao {
         }
         sb.append("\nORDER BY ");
         switch (params.getSort()) {
-            case KEYWORD_MATCH -> sb.append("keyword_match DESC");
+            case BEST_MATCH -> sb.append("match_score DESC");
             case DISTANCE -> sb.append("distance ASC");
             case RATING -> sb.append("rating DESC");
             case NEWEST -> sb.append("created_at DESC");

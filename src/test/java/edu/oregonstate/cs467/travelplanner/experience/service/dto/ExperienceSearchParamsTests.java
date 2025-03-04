@@ -26,7 +26,7 @@ class ExperienceSearchParamsTests extends AbstractBaseTest {
 
         params.setKeywords(null);
         params.setLocation(null);
-        params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
+        params.setSort(ExperienceSearchSort.BEST_MATCH);
         params.setOffset(1);
         params.setLimit(1);
         violations = validator.validate(params);
