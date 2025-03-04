@@ -1,6 +1,5 @@
 package edu.oregonstate.cs467.travelplanner.trip.model;
 
-import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.util.validation.ValidDateRange;
 import jakarta.persistence.*;
@@ -8,6 +7,8 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -52,25 +53,32 @@ public class Trip {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @NotNull
+    @NotNull(message = "Creation timestamp cannot be null")
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @Transient
-    private Set<Experience> experienceList;
+    @ElementCollection
+    @CollectionTable(
+            name = "trip_experience",
+            joinColumns = @JoinColumn(name = "trip_id")
+    )
+    @Column(name = "experience_id")
+    private Set<Long> experienceList;
 
     public Trip() {
         this.createdAt = Instant.now();
         this.experienceList = new LinkedHashSet<>();
     }
 
-    public Trip(Long tripId, User user, String tripTitle, LocalDate startDate, LocalDate endDate, Set<Experience> experienceList,
+    public Trip(Long tripId, User user, String tripTitle, LocalDate startDate, LocalDate endDate, Set<Long> experienceList,
                 Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.tripId = tripId;
         this.user = user;
@@ -80,9 +88,7 @@ public class Trip {
         this.createdAt = (createdAt == null) ? Instant.now() : createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
-        if (experienceList != null) {
-            this.experienceList = experienceList;
-        }
+        this.experienceList = experienceList != null ? Set.copyOf(experienceList) : Set.of();
     }
 
     // Getters and Setters
@@ -115,6 +121,9 @@ public class Trip {
     }
 
     public void setStartDate(LocalDate startDate) {
+        if (this.endDate != null && startDate.isAfter(this.endDate)) {
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
         this.startDate = startDate;
     }
 
@@ -123,6 +132,9 @@ public class Trip {
     }
 
     public void setEndDate(LocalDate endDate) {
+        if (this.startDate != null && endDate.isBefore(this.startDate)) {
+            throw new IllegalArgumentException("End date cannot be before start date");
+        }
         this.endDate = endDate;
     }
 
@@ -150,19 +162,14 @@ public class Trip {
         this.deletedAt = deletedAt;
     }
 
-    public Set<Experience> getExperienceList() {
-        return experienceList;
+    public Set<Long> getExperienceList() {
+        if (this.experienceList == null) {
+            this.experienceList = new LinkedHashSet<>();
+        }
+        return this.experienceList;
     }
 
-    public void setExperienceList(Set<Experience> experienceList) {
-        this.experienceList = experienceList;
-    }
-
-    public boolean addExperience(Experience experience) {
-        return this.experienceList.add(experience); // Returns true if the set was changed
-    }
-
-    public boolean removeExperience(Experience experience) {
-        return this.experienceList.remove(experience); // Returns true if the set was changed
+    public void setExperienceList(Set<Long> experienceList) {
+        this.experienceList = experienceList != null ? new LinkedHashSet<>(experienceList) : new LinkedHashSet<>();
     }
 }
