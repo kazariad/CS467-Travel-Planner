@@ -222,7 +222,7 @@ public class UserServiceTest {
         trip.setTripTitle("California Beach Trip");
         trip.setStartDate(LocalDate.of(2024, 12, 15));
         trip.setEndDate(LocalDate.of(2024, 12, 20));
-        trip.setExperienceList(Set.of(experience1));
+        trip.setExperienceList(Set.of(experience1.getExperienceId()));
 
         // Mock the services to return the expected data
         when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
