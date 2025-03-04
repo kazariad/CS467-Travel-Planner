@@ -127,6 +127,13 @@
 
                         </tbody>
                     </table>
+                    <!-- Button to search experiences (visible only when the list is empty) -->
+                    <div class="row mt-3" th:if="${#lists.isEmpty(user.experienceList)}">
+                        <div class="col text-center">
+                            <a th:href="@{/experience/search}" class="btn btn-primary" style="width: 200px;">Explore Experiences</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -137,11 +144,40 @@
                     </h2>
                 </div>
 
-                <ul style="color: white;">
-                    <!-- Thymeleaf formatting here for the list of trips, again hidden until sorted out -->
-                    <!--                        <li th:each="anItem : ${section.subList}" hidden></li>-->
-                    <li>You have not added any trips.</li>
-                </ul>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Trip Title</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">View</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- If the tripList is empty, show a message -->
+                    <tr th:if="${#lists.isEmpty(user.tripList)}">
+                        <td colspan="4" class="text-center">You have not planned any trips.</td>
+                    </tr>
+                    <!-- If the tripList is not empty, iterate over the list of trips -->
+                    <tr th:if="${not #lists.isEmpty(user.tripList)}"
+                        th:each="trip : ${user.tripList}">
+                        <td th:text="${trip.tripTitle}"></td>
+                        <td th:text="${trip.startDate}"></td>
+                        <td th:text="${trip.endDate}"></td>
+                        <td>
+                            <a type="button"
+                               th:href="@{/trip/{tripId}(tripId=${trip.tripId})}"
+                               class="btn btn-primary">View Trip</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Button to add a trip (visible only when the list is empty) -->
+                <div class="row mt-3" th:if="${#lists.isEmpty(user.tripList)}">
+                    <div class="col text-center">
+                        <a th:href="@{/trip/add}" class="btn btn-primary" style="width: 200px;">Add a Trip</a>
+                    </div>
+                </div>
             </div>
         </div>
 
