@@ -1,7 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.user.controller;
 
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
-import edu.oregonstate.cs467.travelplanner.web.dto.UserRegistrationDto;
+import edu.oregonstate.cs467.travelplanner.user.dto.UserRegistrationDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

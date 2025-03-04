@@ -1,4 +1,4 @@
-package edu.oregonstate.cs467.travelplanner.web.dto;
+package edu.oregonstate.cs467.travelplanner.user.dto;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
