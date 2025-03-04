@@ -16,7 +16,7 @@ let autocomplete;
 let map;
 let infoWindow;
 let marker;
-function initMap() {
+function initGMapsApi() {
     autocomplete = new google.maps.places.Autocomplete(acAddressInput, {
         fields: ["place_id", "geometry", "formatted_address"]
     });
@@ -98,4 +98,4 @@ function mapLocationSelected(mapMouseEvent) {
     }
 }
 
-window.initMap = initMap;
+window.initGMapsApi = initGMapsApi;
