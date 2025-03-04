@@ -19,7 +19,7 @@ public class ExperienceSearchParams {
     ) {}
 
     public enum ExperienceSearchSort {
-        KEYWORD_MATCH, DISTANCE, RATING, NEWEST
+        BEST_MATCH, DISTANCE, RATING, NEWEST
     }
 
     @NotBlankNull
@@ -92,7 +92,7 @@ public class ExperienceSearchParams {
         @Override
         public boolean isValid(ExperienceSearchParams params, ConstraintValidatorContext context) {
             if (params == null) return true;
-            if (params.getKeywords() == null && params.getSort() == ExperienceSearchSort.KEYWORD_MATCH) return false;
+            if (params.getKeywords() == null && params.getSort() == ExperienceSearchSort.BEST_MATCH) return false;
             if (params.getLocation() == null && params.getSort() == ExperienceSearchSort.DISTANCE) return false;
             return true;
         }
