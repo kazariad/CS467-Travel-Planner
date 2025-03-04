@@ -2,6 +2,7 @@ package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.trip.dto.TripDto;
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
@@ -180,23 +181,21 @@ public class UserServiceTest {
         verify(userRepository, times(1)).findByUsername("unknownUser");
     }
 
+
     /**
-     * Tests getUserProfile() method to ensure it correctly converts a User entity into UserProfileDto
+     * Tests that the getUserProfile() method in the UserService class retrieves the correct
+     * user profile.
      *
-     * Verifies:
-     *  - The returned UserProfileDto is not null.
-     *  - fullName and username fields are correctly mapped.
-     *  - The
+     * This ensures that the UserProfileDto returned by the getUserProfile() method matches
+     * the expected output and that external service dependencies are invoked properly.
      */
     @Test
     public void testGetUserProfile() {
-        // create a test User
         User testUser = new User();
         testUser.setUserId(1L);
         testUser.setFullName("Test User");
         testUser.setUsername("testUser");
 
-        // create a test Experience
         Experience experience1 = new Experience();
         experience1.setExperienceId(2L);
         experience1.setTitle("Breathtaking Views and Vibrant Atmosphere");
@@ -216,7 +215,6 @@ public class UserServiceTest {
         experience1.setUserId(1L);
         experience1.setCreatedAt(Instant.parse("2024-12-18T21:51:05.000000Z"));
 
-        // Create a trip
         Trip trip = new Trip();
         trip.setTripId(3L);
         trip.setTripTitle("California Beach Trip");
@@ -226,20 +224,33 @@ public class UserServiceTest {
 
         // Mock the services to return the expected data
         when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
-        when(tripService.getTripsByUserId(1L)).thenReturn(List.of(trip)); // Mock the new behavior
+
+        // Convert Trip to TripDto because UserProfileDto expects TripDto
+        TripDto tripDto = new TripDto(
+                trip.getTripTitle(),
+                trip.getStartDate(),
+                trip.getEndDate(),
+                trip.getExperienceList()
+        );
+
+        when(tripService.getTripsByUserId(1L)).thenReturn(List.of(tripDto));
 
         // Call the method under test
         UserProfileDto actual = userService.getUserProfile(testUser);
 
         // the expected UserProfileDto
-        UserProfileDto expected = new UserProfileDto(
+        UserProfileDto expectedUserProfile = new UserProfileDto(
                 "Test User",
                 "testUser",
                 List.of(experience1),
-                List.of(trip)
+                List.of(tripDto)
         );
 
         // Verify the results
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expectedUserProfile);
+
+        // verifications to ensure mocks were invoked
+        verify(experienceService).findByUserId(1L);
+        verify(tripService).getTripsByUserId(1L);
     }
 }
