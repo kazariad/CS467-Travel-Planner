@@ -56,7 +56,16 @@ CREATE TABLE `trip` (
     `updated_at` DATETIME(6) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(6),
     `deleted_at` DATETIME(6) DEFAULT NULL,
     PRIMARY KEY (`trip_id`) USING BTREE,
-    CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `user_id_fk_trip` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB CHARACTER SET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+
+-- join table
+DROP TABLE IF EXISTS `trip_experience`;
+CREATE TABLE `trip_experience` (
+    `trip_id` BIGINT NOT NULL,
+    `experience_id` BIGINT NOT NULL,
+    PRIMARY KEY (`trip_id`, `experience_id`) USING BTREE,
+    CONSTRAINT `trip_fk` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB CHARACTER SET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
