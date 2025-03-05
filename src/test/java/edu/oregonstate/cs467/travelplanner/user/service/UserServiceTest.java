@@ -224,16 +224,7 @@ public class UserServiceTest {
 
         // Mock the services to return the expected data
         when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
-
-        // Convert Trip to TripDto because UserProfileDto expects TripDto
-        TripDto tripDto = new TripDto(
-                trip.getTripTitle(),
-                trip.getStartDate(),
-                trip.getEndDate(),
-                trip.getExperienceList()
-        );
-
-        when(tripService.getTripsByUserId(1L)).thenReturn(List.of(tripDto));
+        when(tripService.getTripsByUserId(1L)).thenReturn(List.of(trip));
 
         // Call the method under test
         UserProfileDto actual = userService.getUserProfile(testUser);
@@ -243,7 +234,7 @@ public class UserServiceTest {
                 "Test User",
                 "testUser",
                 List.of(experience1),
-                List.of(tripDto)
+                List.of(trip)
         );
 
         // Verify the results
