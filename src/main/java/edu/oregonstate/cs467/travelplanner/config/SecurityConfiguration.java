@@ -30,10 +30,6 @@ public class SecurityConfiguration {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/user/details")
-                        .permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
                         .permitAll());
         return http.build();
     }
