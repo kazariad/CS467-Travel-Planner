@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class ExperienceService {
@@ -31,7 +33,8 @@ public class ExperienceService {
     }
 
     public List<Experience> findByUserId(long userId) {
-        return experienceDao.findByUserId(userId);
+        return Optional.ofNullable(experienceDao.findByUserId(userId))
+                .orElseGet(ArrayList::new);
     }
 
     public long createExperience(CreateUpdateExperienceDto experienceDto) {
