@@ -51,6 +51,12 @@
         </div>
     </nav>
 </header>
+
+<footer th:fragment="footer" class="mt-5 mb-2">
+    <div th:text="|© ${#temporals.year(#temporals.createNow())} Travel Planner|" class="container text-center fw-light">
+        © 2025 Travel Planner
+    </div>
+</footer>
 </body>
 
 </html>
