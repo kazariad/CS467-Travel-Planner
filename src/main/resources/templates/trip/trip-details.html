@@ -7,8 +7,6 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    
-    <!-- TODO: Dynamically altered site title -->
 
     <title>Trip Details</title>
 
@@ -30,7 +28,6 @@
 
 <body>
     <header>
-
         <nav class="navbar navbar-expand-lg navbar-custom">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
@@ -67,57 +64,79 @@
         </nav>
     </header>
 
-    
-
     <div class="container-xl mt-5">
         <div class="row">
-            <div class="col-sm-2 m-2 text-center">
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1 mb-2"><h3>Your Description</h3></label>
-                        <textarea class="form-control mb-3" id="exampleFormControlTextarea1" rows="3"></textarea>
-                        <div class="row-sm text-center">
-                            <button type="button mt-3" class="btn btn-success">Edit</button>
+            <div class="col align-self-center">
+
+                <h3 th:text="${trip.tripTitle}">Trip Title</h3>
+
+                <div th:if="${isAuthor}" class="row gx-5 mb-2">
+                    <!-- Edit Button -->
+                    <a th:href="@{/trip/{tripId}/update(tripId=${trip.tripId})}" class="col-auto">
+                        <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
+                    </a>
+
+                    <!-- Delete Button -->
+                    <button type="button" class="btn btn-danger btn-sm col-auto"
+                            data-bs-toggle="modal" data-bs-target="#confirmTripDeleteModal" style="width: 4rem">
+                        Delete
+                    </button>
+
+                    <!-- Delete Confirmation Modal -->
+                    <div class="modal fade" id="confirmTripDeleteModal" tabindex="-1" aria-labelledby="confirmTripDeleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header text-center">
+                                    <h1 class="modal-title fs-5 w-100" id="confirmTripDeleteModalLabel">
+                                        Are you sure you want to delete this Trip?
+                                    </h1>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <form th:action="@{/trip/{tripId}/delete(tripId=${trip.tripId})}" method="post">
+                                        <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
+                                            Yes
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width: 3rem">
+                                        No
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-            </div>
-            <div class="col align-self-center">
-            
-                <h3>Trip Title</h3>
+                </div>
+
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">Experience</th>
-                        <th scope="col">Date Visited</th>
-                        <th scope="col">Rating</th>
                         <th scope="col">View</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Delete</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row" class="align-middle">A Hidden Gem for Seafood Lovers</th>
-                        <td class="align-middle">01/01/2025</td>
-                        <td class="align-middle">4.6/5</td>
-                        <td class="align-middle"><button type="button" class="btn btn-primary">View Experience</button></td>
-                        <td class="align-middle"><button type="button mt-3" class="btn btn-success">Edit</button></td>
-                        <td class="align-middle"><button type="button mt-3" class="btn btn-danger">Delete</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="align-middle">Breathtaking Views and Vibrant Atmosphere</th>
-                        <td class="align-middle">01/01/2025</td>
-                        <td class="align-middle">3.8/5</td>
-                        <td class="align-middle"><button type="button" class="btn btn-primary">View Experience</button></td>
-                        <td class="align-middle"><button type="button mt-3" class="btn btn-success">Edit</button></td>
-                        <td class="align-middle"><button type="button mt-3" class="btn btn-danger">Delete</button></td>
+                    <!-- If the experienceList is empty, show a message -->
+                    <div th:if="${user.experienceList == null or #lists.isEmpty(user.experienceList)}">No experience listed</div>
+
+                    <tr th:if="${trip.experienceList != null and not #lists.isEmpty(trip.experienceList)}"
+                        th:each="experience : ${trip.experienceList}">
+                        <td th:text="${experience.title}"></td>
+                        <td>
+                            <a type="button"
+                               th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                               class="btn btn-primary">View Experience</a>
+                        </td>
                     </tr>
                     </tbody>
-                    </table>
+
+                </table>
+                <!-- Button to search experiences (visible only when the list is empty) -->
+                <div class="row mt-3" th:if="${#lists.isEmpty(user.experienceList)}">
+                    <div class="col text-center">
+                        <a th:href="@{/experience/search}" class="btn btn-primary"> <i class="bi bi-map"></i> Explore Experiences</a>
+                    </div>
+                </div>
             </div>
-            
-            <div class="row-sm text-center">
-                <button type="button" class="btn btn-primary">Return</button>
-            </div>
+
         </div>
     </div>
 
@@ -128,6 +147,6 @@
         </ul>
         <p class="text-center text-body-secondary">Group Travel Planner Project © 2025</p>
     </footer>
-    
+
     </body>
     </html>
