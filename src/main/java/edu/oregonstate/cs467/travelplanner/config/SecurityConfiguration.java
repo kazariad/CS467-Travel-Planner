@@ -22,7 +22,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/images/**", "/js/**").permitAll()
+                        .requestMatchers("/css/**", "/images/**", "/js/**").permitAll()
                         .requestMatchers("/login", "/registration").permitAll()
                         .requestMatchers(HttpMethod.GET, "/experience/create").authenticated()
                         .requestMatchers(HttpMethod.GET, "/experience/*").permitAll()
