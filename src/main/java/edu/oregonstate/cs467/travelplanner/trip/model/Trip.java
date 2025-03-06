@@ -1,9 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.trip.model;
 
 import edu.oregonstate.cs467.travelplanner.user.model.User;
-import edu.oregonstate.cs467.travelplanner.util.validation.ValidDateRange;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,8 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a planned or completed trip for a user. Each trip is associated with a specific user
@@ -25,7 +23,6 @@ import java.util.Set;
  * - A trip can contain multiple experiences (not directly persisted).
  */
 @Entity
-@ValidDateRange
 @Table(name = "trip")
 public class Trip {
 
@@ -43,12 +40,10 @@ public class Trip {
     @Column(name = "trip_title", nullable = false)
     private String tripTitle;
 
-    @FutureOrPresent(message = "Start date must not be in the past")
     @NotNull(message = "Start date is required")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @FutureOrPresent(message = "End date must not be in the past")
     @NotNull(message = "End date is required")
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
@@ -71,14 +66,14 @@ public class Trip {
             joinColumns = @JoinColumn(name = "trip_id")
     )
     @Column(name = "experience_id")
-    private Set<Long> experienceList;
+    private List<Long> experienceList;
 
     public Trip() {
         this.createdAt = Instant.now();
-        this.experienceList = new LinkedHashSet<>();
+        this.experienceList = new ArrayList<>();
     }
 
-    public Trip(Long tripId, User user, String tripTitle, LocalDate startDate, LocalDate endDate, Set<Long> experienceList,
+    public Trip(Long tripId, User user, String tripTitle, LocalDate startDate, LocalDate endDate, List<Long> experienceList,
                 Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.tripId = tripId;
         this.user = user;
@@ -88,7 +83,7 @@ public class Trip {
         this.createdAt = (createdAt == null) ? Instant.now() : createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
-        this.experienceList = experienceList != null ? Set.copyOf(experienceList) : Set.of();
+        this.experienceList = experienceList != null ? List.copyOf(experienceList) : List.of();
     }
 
     // Getters and Setters
@@ -121,7 +116,7 @@ public class Trip {
     }
 
     public void setStartDate(LocalDate startDate) {
-        if (this.endDate != null && startDate.isAfter(this.endDate)) {
+        if (this.endDate != null && !startDate.isBefore(this.endDate)) {
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
         this.startDate = startDate;
@@ -161,15 +156,10 @@ public class Trip {
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
-
-    public Set<Long> getExperienceList() {
-        if (this.experienceList == null) {
-            this.experienceList = new LinkedHashSet<>();
-        }
-        return this.experienceList;
+    public List<Long> getExperienceList() {
+        return experienceList;
     }
-
-    public void setExperienceList(Set<Long> experienceList) {
-        this.experienceList = experienceList != null ? new LinkedHashSet<>(experienceList) : new LinkedHashSet<>();
+    public void setExperienceList(List<Long> experienceList) {
+        this.experienceList = experienceList != null ? List.copyOf(experienceList) : List.of();
     }
 }
