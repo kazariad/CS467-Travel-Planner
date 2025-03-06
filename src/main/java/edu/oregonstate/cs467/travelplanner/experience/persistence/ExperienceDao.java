@@ -73,12 +73,11 @@ public class ExperienceDao {
                 .optional();
     }
 
+
     /**
-     * Retrieves a list of Experience objects based on the provided list of experience IDs.
-     *
-     * @param experienceIds a list of IDs representing the experiences to be retrieved
-     * @return a list of Experience objects corresponding to the provided IDs; may return an empty list if no matches
-     * are found
+     * Retrieves a list of experiences based on the provided list of experience IDs, excluding soft-deleted records
+     * @param experienceIds A list of experience IDs to search for.
+     * @return A list of {@link Experience} objects matching the provided IDs, or an empty list if no matches are found.
      */
     public List<Experience> findByIds(List<Long> experienceIds) {
         if (experienceIds == null || experienceIds.isEmpty()) {
@@ -91,6 +90,7 @@ public class ExperienceDao {
                    ST_Longitude(location) AS location_lng 
             FROM experience
             WHERE experience_id IN (:experienceIds)
+            AND deleted_at IS NULL
             """;
 
         return jdbcClient.sql(sql)
