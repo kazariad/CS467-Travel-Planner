@@ -18,9 +18,9 @@
 <body>
 <header th:fragment="header" class="mb-3">
     <nav class="navbar navbar-expand py-1 bg-black">
-        <div class="container">
+        <div class="container-fluid">
             <a th:href="@{/}" href="/" class="navbar-brand d-flex align-items-center text-white">
-                <img th:src="@{/images/site-logo.png}" src="../static/images/site-logo.png" alt="Logo" class="me-2">
+                <img th:src="@{/images/site-logo.png}" src="../static/images/site-logo.png" alt="Logo" class="img-fluid me-2">
                 <span class="fs-3">Travel Planner</span>
             </a>
             <ul class="navbar-nav">
@@ -47,6 +47,13 @@
                             </form>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <form th:action="@{/experience/search}" th:object="${searchForm}" action="#" method="get" class="d-flex" id="searchForm" novalidate>
+                        <input th:value="${keywords}" type="search" name="keywords" placeholder="Keywords" aria-label="Keywords"
+                   class="form-control me-2" spellcheck="true" maxlength="100">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </form>
                 </li>
             </ul>
         </div>
