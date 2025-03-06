@@ -1,20 +1,20 @@
 "use strict";
 
-let searchForm = document.querySelector("#searchForm");
-let acLocationInput = document.querySelector("#acLocationInput");
-let locationTextInput = document.querySelector("[name='locationText']");
-let locationLatInput = document.querySelector("[name='locationLat']");
-let locationLngInput = document.querySelector("[name='locationLng']");
+const searchForm = document.querySelector("#searchForm");
+const autocompleteInput = searchForm.querySelector("#autocomplete");
+const locationTextInput = searchForm.querySelector("[name='locationText']");
+const locationLatInput = searchForm.querySelector("[name='locationLat']");
+const locationLngInput = searchForm.querySelector("[name='locationLng']");
 
 searchForm.addEventListener("submit", event => {
-    if (acLocationInput.value.trim() === "") {
+    if (autocompleteInput.value.trim() === "") {
         locationTextInput.value = "";
         locationLatInput.value = "";
         locationLngInput.value = "";
     }
 });
 
-acLocationInput.addEventListener("keydown", (event) => {
+autocompleteInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         event.preventDefault();
     }
@@ -22,10 +22,56 @@ acLocationInput.addEventListener("keydown", (event) => {
 
 let autocomplete;
 function initGMapsApi() {
-    autocomplete = new google.maps.places.Autocomplete(acLocationInput, {
+    autocomplete = new google.maps.places.Autocomplete(autocompleteInput, {
         fields: ["geometry", "formatted_address"]
     });
     autocomplete.addListener("place_changed", autocompletePlaceSelected);
+
+    const map = new google.maps.Map(document.querySelector("#map"), {
+        mapId: "DEMO_MAP_ID",
+        clickableIcons: false
+    });
+
+    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const experiences = document.querySelectorAll(".experience:not([hidden])");
+    const markers = [];
+    const bounds = {}
+    for (let i = 0; i < experiences.length; i++) {
+        const experience = experiences[i];
+
+        const label = labels[i % labels.length];
+        const pinGlyph = new google.maps.marker.PinElement({
+            glyph: label,
+            glyphColor: "white",
+        });
+
+        const position = {
+            lat: Number(experience.querySelector("[name='locationLat']").value),
+            lng: Number(experience.querySelector("[name='locationLng']").value)
+        };
+        extendBounds(bounds, position);
+
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+            map,
+            position,
+            content: pinGlyph.element,
+        });
+        markers.push(marker);
+    }
+    new markerClusterer.MarkerClusterer({ markers, map });
+
+    // https://stackoverflow.com/a/4065006
+    google.maps.event.addListenerOnce(map, "idle", function() {
+        if (!map.getZoom() || map.getZoom() > 16) map.setZoom(16);
+    });
+    map.fitBounds(bounds);
+}
+
+function extendBounds(bounds, latlng) {
+    if (!bounds.north || latlng.lat > bounds.north) bounds.north = latlng.lat;
+    if (!bounds.south || latlng.lat < bounds.south) bounds.south = latlng.lat;
+    if (!bounds.east || latlng.lng > bounds.east) bounds.east = latlng.lng;
+    if (!bounds.west || latlng.lng < bounds.west) bounds.west = latlng.lng;
 }
 
 function autocompletePlaceSelected() {
@@ -33,12 +79,12 @@ function autocompletePlaceSelected() {
     let location = place.geometry?.location;
     let formattedAddress = place.formatted_address;
     if (!formattedAddress || !location) {
-        // acLocationInput.classList.add("is-invalid");
+        // autocompleteInput.classList.add("is-invalid");
         return;
     }
 
-    // acLocationInput.classList.remove("is-invalid")
-    acLocationInput.value = formattedAddress;
+    // autocompleteInput.classList.remove("is-invalid")
+    autocompleteInput.value = formattedAddress;
     locationTextInput.value = formattedAddress;
     locationLatInput.value = location.lat();
     locationLngInput.value = location.lng();

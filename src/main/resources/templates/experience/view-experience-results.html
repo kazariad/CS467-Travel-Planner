@@ -7,6 +7,7 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js" defer></script>
     <script th:src="@{/js/view-experience-results.js}"
             src="../../static/js/view-experience-results.js"
             defer></script>
@@ -33,9 +34,9 @@
 <body>
 <main class="container">
     <form th:action="@{/experience/search}" th:object="${searchForm}" action="#" method="get"
-          class="row gx-0 mx-auto justify-content-center" id="searchForm" novalidate>
+          class="row gx-0 mx-auto justify-content-center mb-3" id="searchForm" novalidate>
         <div class="col-9 col-lg">
-            <input th:value="*{locationText}" type="search" id="acLocationInput" placeholder="Location"
+            <input th:value="*{locationText}" type="search" id="autocomplete" placeholder="Location"
                    aria-label="Location" class="form-control mb-1 rounded-end-0" maxlength="1000">
         </div>
         <input th:value="*{locationText}" type="hidden" name="locationText">
@@ -67,10 +68,10 @@
         </div>
     </form>
 
-    <div class="row justify-content-between align-items-end my-4">
+    <div class="row justify-content-between align-items-center">
         <h1 class="col">Results</h1>
         <div class="dropdown col-auto">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Sort By
             </button>
             <ul class="dropdown-menu">
@@ -88,12 +89,20 @@
         </div>
     </div>
 
-    <div th:each="experience : ${searchResult.experiences}" class="row mb-3">
-        <div th:text="${experience.experienceId}" class="col-auto">1</div>
+    <div class="row mb-3">
+        <div id="map" class="w-100" style="height: 50vh"></div>
+        <div id="infowindow"></div>
+    </div>
+
+    <div th:each="experience : ${searchResult.experiences}" th:id="${experience.experienceId}" id="0"
+         class="row mb-3 experience" th:attr="hidden=''" hidden="hidden">
         <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
            href="view-experience.html" class="col-auto">
             <div th:text="${experience.title}" class="col-auto">Experience title</div>
         </a>
+        <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
+        <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
+        <input th:value="${experience.address}" type="hidden" name="address">
     </div>
 
     <div th:if="${!searchResult.hasNext}" class="row text-center my-5">
@@ -102,10 +111,10 @@
 
     <nav aria-label="Pagination">
         <ul class="pagination justify-content-center">
-            <li th:classappend="${prevPageUrl == null ? 'disabled' : ''}" class="page-item" style="min-width: 106px">
-                <a th:href="${prevPageUrl}" class="page-link"><i class="bi bi-arrow-left-short"></i>Previous</a>
+            <li th:classappend="${prevPageUrl == null ? 'disabled' : ''}" class="page-item" style="min-width: 76px">
+                <a th:href="${prevPageUrl}" class="page-link"><i class="bi bi-arrow-left-short"></i>Prev.</a>
             </li>
-            <li th:classappend="${nextPageUrl == null ? 'disabled' : ''}" class="page-item text-center" style="min-width: 106px">
+            <li th:classappend="${nextPageUrl == null ? 'disabled' : ''}" class="page-item text-center" style="min-width: 76px">
                 <a th:href="${nextPageUrl}" class="page-link">Next<i class="bi bi-arrow-right-short"></i></a>
             </li>
         </ul>
