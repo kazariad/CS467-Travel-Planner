@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Controller
+@RequestMapping("/trip")
 public class TripController {
 
     @Autowired
@@ -30,8 +31,10 @@ public class TripController {
     @Autowired
     private AuthenticatedUserProvider authUserProvider;
 
-    @GetMapping("/trip-details/{tripId}")
-    public String viewTripDetails(@PathVariable("tripId") Long tripId, Model model) {
+    @GetMapping("/{tripId}")
+    public String viewTripDetails(@PathVariable("tripId") Long tripId,
+                                  @RequestParam(name = "success", required = false) String success,
+                                  Model model) {
         if (!authUserProvider.isAnyUser()) {
             throw new AccessDeniedException("Access denied");
         }
@@ -40,11 +43,15 @@ public class TripController {
         if (trip == null) {
             throw new IllegalArgumentException("Trip not found for id: " + tripId);
         }
-        List<Experience> experiences = experienceService.findByUserId(user.getUserId());
-
         // Ensure experienceList is initialized to avoid null in the template
-        if (user.getExperienceList() == null) {
-            user.setExperienceList(new ArrayList<>());
+        if (trip.getExperienceList() == null) {
+            trip.setExperienceList(new ArrayList<>());
+        }
+        List<Experience> experiences = experienceService.getExperiencesByIds(trip.getExperienceList());
+
+        // Add 'success' to the model if it exists
+        if ("true".equals(success)) {
+            model.addAttribute("successMessage", "Trip updated successfully!");
         }
 
         model.addAttribute("trip", trip);
@@ -55,24 +62,50 @@ public class TripController {
     /**
      * Show the trip creation form.
      */
-    @GetMapping("/add-trip")
+    @GetMapping(path = "/create")
     public String showAddTripForm(Model model) {
         model.addAttribute("trip", new TripDto());
         return "trip/create-update-trip";
     }
 
-    /**
-     * Handle form submission to persist the trip.
-     */
-    @PostMapping("/add-trip")
-    public String addTrip(@Valid @ModelAttribute("trip") TripDto tripDto,
-                          BindingResult result, Model model) {
+    @GetMapping(path = "/edit/{tripId}")
+    public String editTripForm(@PathVariable Long tripId, Model model) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        Trip trip = tripService.getTripById(tripId);
+        if (trip == null) {
+            throw new IllegalArgumentException("Trip ID not found: " + tripId);
+        }
+        TripDto tripDto = new TripDto(
+                trip.getTripTitle(),
+                trip.getStartDate(),
+                trip.getEndDate(),
+                trip.getExperienceList()
+        );
+        model.addAttribute("tripId", tripId);
+        model.addAttribute("trip", tripDto);
+        return "trip/create-update-trip";
+    }
+
+    @PostMapping(path = "/save/{tripId}")
+    public String saveTrip(@PathVariable Long tripId, @Valid @ModelAttribute("trip") TripDto tripDto,
+                           BindingResult result, Model model) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+
         if (result.hasErrors()) {
             model.addAttribute("errors", result.getAllErrors());
             return "trip/create-update-trip";
         }
-        tripService.addTrip(tripDto);
-        return "redirect:/user/details?success=true";
+        try{
+            if (tripDto.getTripTitle() == null || tripId == 0) {
+                tripService.createTrip(tripDto);
+            } else {
+                tripService.updateTrip(tripId, tripDto);
+            }
+            return "redirect:/trip/{tripId}?success=true";
+        } catch (IllegalArgumentException e) {
+            // Add the error message to the model for displaying in the view
+            model.addAttribute("error", e.getMessage());
+            return "trip/create-update-trip";
+        }
     }
 }

@@ -5,9 +5,11 @@ import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.repository.TripRepository;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -49,20 +51,52 @@ public class TripService {
      * @return the Trip object if found, or null if no trip exists.
      */
     public Trip getTripById(Long tripId) {
-        return tripRepository.findById(tripId).orElse(null);
+        User currentUser = authUserProvider.getUser();
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new IllegalArgumentException("Trip not found"));
+        return trip;
     }
 
-    /**
-     * Adds a new trip to the system for the authenticated user.
-     * The trip is created from the provided TripDto and associated with the currently authenticated user.
-     *
-     * @param tripDto the data transfer object containing the details of the trip to be added
-     */
-    public void addTrip(TripDto tripDto) {
+    public void createTrip(TripDto tripDto) {
         User user = authUserProvider.getUser();
         Trip trip = tripDto.toEntity();
         trip.setUser(user);
         tripRepository.save(trip);
     }
 
+    @Transactional
+    public void updateTrip(Long tripId, TripDto tripDto) {
+        // Find the trip to update
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + tripId + " does not exist"));
+
+        // Validate the provided data
+        validateTripDates(tripDto.getStartDate(), tripDto.getEndDate());
+
+        // Update the trip with valid data
+        trip.setEndDate(tripDto.getEndDate());
+        trip.setStartDate(tripDto.getStartDate());
+        trip.setTripTitle(tripDto.getTripTitle());
+
+        // Save the updated trip
+        tripRepository.save(trip);
+    }
+
+    private void validateTripDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date cannot be null");
+        }
+        if (endDate == null) {
+            throw new IllegalArgumentException("End date cannot be null");
+        }
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Start date must not be in the past");
+        }
+        if (endDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("End date must not be in the past");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must not be after the end date");
+        }
+    }
 }
