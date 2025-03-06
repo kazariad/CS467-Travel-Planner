@@ -9,6 +9,8 @@ html, body {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
     background-color: #f1f1f1;
 }
 
@@ -24,8 +26,16 @@ header .navbar-brand span {
 }
 
 main {
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     background-color: white;
     box-shadow: -3px 0 5px rgb(0 0 0 / 0.15), 3px 0 5px rgb(0 0 0 / 0.15);
+}
+
+footer {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
 }

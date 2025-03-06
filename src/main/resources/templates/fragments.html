@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:fragment="head" th:remove="tag">
+<!--th:remove="tag"-->
+<head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,7 +17,7 @@
 </head>
 
 <body>
-<header th:fragment="header" class="mb-3">
+<header th:fragment="header">
     <nav class="navbar navbar-expand py-1 bg-black">
         <div class="container">
             <a th:href="@{/}" href="/" class="navbar-brand d-flex align-items-center text-white">
@@ -53,12 +54,18 @@
     </nav>
 </header>
 
-<footer th:fragment="footer">
-    <div th:text="|© ${#temporals.year(#temporals.createNow())} Travel Planner|"
-         class="container text-center fw-light pt-5 pb-3">
-        © 2025 Travel Planner
+<main class="container pt-3">
+    <div>
+        Content
     </div>
-</footer>
+
+    <footer>
+        <div th:text="|© ${#temporals.year(#temporals.createNow())} Travel Planner|"
+             class="container text-center fw-light pt-5 pb-3">
+            © 2025 Travel Planner
+        </div>
+    </footer>
+</main>
 </body>
 
 </html>

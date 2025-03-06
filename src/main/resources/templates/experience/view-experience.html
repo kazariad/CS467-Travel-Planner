@@ -207,11 +207,12 @@
         <p class="col" th:text="${experience.description}" style="white-space: pre-wrap">Description</p>
     </div>
 
-    <div class="flex-grow-1"></div>
-    <div th:text="|© ${#temporals.year(#temporals.createNow())} Travel Planner|"
-         class="container text-center fw-light pt-5 pb-3">
-        © 2025 Travel Planner
-    </div>
+    <footer>
+        <div th:text="|© ${#temporals.year(#temporals.createNow())} Travel Planner|"
+             class="container text-center fw-light pt-5 pb-3">
+            © 2025 Travel Planner
+        </div>
+    </footer>
 </main>
 </body>
 
