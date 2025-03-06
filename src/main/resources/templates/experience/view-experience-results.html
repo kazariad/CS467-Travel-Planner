@@ -89,20 +89,41 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div id="map" class="w-100" style="height: 50vh"></div>
-        <div id="infowindow"></div>
-    </div>
+    <div class="row">
+        <div th:each="experience : ${searchResult.experiences}" class="col d-flex align-items-stretch mb-5">
+            <!-- <div th:text="${experience.experienceId}" class="col-auto">1</div>
 
-    <div th:each="experience : ${searchResult.experiences}" th:id="${experience.experienceId}" id="0"
-         class="row mb-3 experience" th:attr="hidden=''" hidden="hidden">
-        <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
-           href="view-experience.html" class="col-auto">
-            <div th:text="${experience.title}" class="col-auto">Experience title</div>
-        </a>
-        <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
-        <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
-        <input th:value="${experience.address}" type="hidden" name="address">
+            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+            href="view-experience.html" class="col-auto">
+                <div th:text="${experience.title}" class="col-auto">Experience title</div>
+            </a> -->
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
+                    th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
+                    alt="Experience Photo">
+                    <div class="card-body">
+                        <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                        href="view-experience.html" class="col-auto">
+                            <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
+                        </a>
+                        <p class="card-text" th:text="${#strings.abbreviate(experience.description, 150)}">Experience text</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="bi bi-calendar-date"></i>
+                            <span th:text="${#temporals.format(experience.eventDate)}">January 1, 2025</span>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-star"></i>
+                            <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                            <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.67 / 5.0</span>
+                            <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                            <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                                  th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                        </li>
+                    </ul>
+                </div>
+        </div>
     </div>
 
     <div th:if="${!searchResult.hasNext}" class="row text-center my-5">
