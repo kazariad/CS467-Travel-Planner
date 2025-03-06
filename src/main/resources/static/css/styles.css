@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Sriracha&display=swap');
 
+html, body {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1116px;
+}
+
+body {
+    background-color: #f1f1f1;
+}
+
 header .navbar-brand img {
     width: 2.5rem;
     height: 2.5rem;
@@ -9,4 +21,11 @@ header .navbar-brand span {
     font-family: "Sriracha", cursive;
     font-weight: 400;
     font-style: normal;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: -3px 0 5px rgb(0 0 0 / 0.15), 3px 0 5px rgb(0 0 0 / 0.15);
 }
