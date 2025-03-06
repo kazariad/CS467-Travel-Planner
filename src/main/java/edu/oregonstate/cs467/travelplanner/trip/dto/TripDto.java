@@ -2,22 +2,24 @@ package edu.oregonstate.cs467.travelplanner.trip.dto;
 
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TripDto {
     private String tripTitle;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Set<Long> experienceList; // IDs of related experiences
+    private List<Long> experienceList; // IDs of related experiences
 
     public TripDto() {
+        this.experienceList = new ArrayList<>();
     }
 
-    public TripDto(String tripTitle, LocalDate startDate, LocalDate endDate, Set<Long> experienceList) {
+    public TripDto(String tripTitle, LocalDate startDate, LocalDate endDate, List<Long> experienceList) {
         this.tripTitle = tripTitle;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.experienceList = experienceList;
+        this.experienceList = (experienceList != null) ? experienceList : new ArrayList<>();
     }
 
     // Getters and setters
@@ -44,10 +46,13 @@ public class TripDto {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-    public Set<Long> getExperienceList() {
+    public List<Long> getExperienceList() {
+        if (experienceList == null) {
+            experienceList = new ArrayList<>();
+        }
         return experienceList;
     }
-    public void setExperienceList(Set<Long> experienceList) {
+    public void setExperienceList(List<Long> experienceList) {
         this.experienceList = experienceList;
     }
 
