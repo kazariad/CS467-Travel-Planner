@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
@@ -70,9 +71,6 @@ public class TripService {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + tripId + " does not exist"));
 
-        // Validate the provided data
-        validateTripDates(tripDto.getStartDate(), tripDto.getEndDate());
-
         // Update the trip with valid data
         trip.setEndDate(tripDto.getEndDate());
         trip.setStartDate(tripDto.getStartDate());
@@ -82,21 +80,10 @@ public class TripService {
         tripRepository.save(trip);
     }
 
-    private void validateTripDates(LocalDate startDate, LocalDate endDate) {
-        if (startDate == null) {
-            throw new IllegalArgumentException("Start date cannot be null");
-        }
-        if (endDate == null) {
-            throw new IllegalArgumentException("End date cannot be null");
-        }
-        if (startDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Start date must not be in the past");
-        }
-        if (endDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("End date must not be in the past");
-        }
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Start date must not be after the end date");
-        }
+    public void deleteTrip(long tripId) {
+        Trip trip = tripRepository.findById(tripId).orElse(null);
+        if (trip == null || trip.getDeletedAt() != null) return;
+        trip.setDeletedAt(Instant.now());
+        tripRepository.save(trip);
     }
 }

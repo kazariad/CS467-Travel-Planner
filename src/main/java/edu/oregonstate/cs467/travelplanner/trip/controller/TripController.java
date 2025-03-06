@@ -108,4 +108,11 @@ public class TripController {
             return "trip/create-update-trip";
         }
     }
+
+    @PostMapping(path = "/delete/{tripId}")
+    public String deleteTrip(@PathVariable long tripId) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        tripService.deleteTrip(tripId);
+        return "redirect:/user/details?success=true";
+    }
 }

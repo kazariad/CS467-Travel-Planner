@@ -116,10 +116,8 @@ public class Trip {
     }
 
     public void setStartDate(LocalDate startDate) {
-        if (this.endDate != null && !startDate.isBefore(this.endDate)) {
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
         this.startDate = startDate;
+        validateTripDates();
     }
 
     public LocalDate getEndDate() {
@@ -127,10 +125,8 @@ public class Trip {
     }
 
     public void setEndDate(LocalDate endDate) {
-        if (this.startDate != null && endDate.isBefore(this.startDate)) {
-            throw new IllegalArgumentException("End date cannot be before start date");
-        }
         this.endDate = endDate;
+        validateTripDates();
     }
 
     public Instant getCreatedAt() {
@@ -161,5 +157,23 @@ public class Trip {
     }
     public void setExperienceList(List<Long> experienceList) {
         this.experienceList = experienceList != null ? List.copyOf(experienceList) : List.of();
+    }
+
+    private void validateTripDates() {
+        if (startDate == null) {
+            throw new IllegalArgumentException("Start date cannot be null");
+        }
+        if (endDate == null) {
+            throw new IllegalArgumentException("End date cannot be null");
+        }
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Start date must not be in the past");
+        }
+        if (endDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("End date must not be in the past");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must not be after the end date");
+        }
     }
 }
