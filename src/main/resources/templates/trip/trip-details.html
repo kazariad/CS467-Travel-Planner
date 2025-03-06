@@ -75,7 +75,7 @@
 
                 <div>
                     <!-- Edit Button -->
-                    <a th:href="@{/trip/edit/{tripId}(tripId=${trip.tripId})}" class="col-auto">
+                    <a th:href="@{/trip/update/{tripId}(tripId=${trip.tripId})}" class="col-auto">
                         <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
                     </a>
 
@@ -116,8 +116,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- If the list is empty, show a message -->
-                    <div th:if="${experiences == null or #lists.isEmpty(experiences)}">No experience listed</div>
 
                     <tr th:if="${not #lists.isEmpty(experiences)}"
                         th:each="experience : ${experiences}">

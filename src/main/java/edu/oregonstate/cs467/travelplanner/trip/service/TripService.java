@@ -67,16 +67,11 @@ public class TripService {
 
     @Transactional
     public void updateTrip(Long tripId, TripDto tripDto) {
-        // Find the trip to update
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + tripId + " does not exist"));
-
-        // Update the trip with valid data
         trip.setEndDate(tripDto.getEndDate());
         trip.setStartDate(tripDto.getStartDate());
         trip.setTripTitle(tripDto.getTripTitle());
-
-        // Save the updated trip
         tripRepository.save(trip);
     }
 
@@ -85,5 +80,21 @@ public class TripService {
         if (trip == null || trip.getDeletedAt() != null) return;
         trip.setDeletedAt(Instant.now());
         tripRepository.save(trip);
+    }
+
+    @Transactional
+    public void addExperienceToTrip(Long experienceId, Long tripId) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + tripId + " does not exist"));
+
+        if (trip.getExperienceList().contains(experienceId)) {
+            throw new IllegalArgumentException("Experience with ID " + experienceId + " is already added to this trip.");
+        }
+        trip.getExperienceList().add(experienceId);
+        tripRepository.save(trip);
+    }
+
+    public List<Trip> getRecentTripsByUserId(Long userId) {
+        return tripRepository.findTop10ByUserIdOrderByCreatedDateDesc(userId);
     }
 }
