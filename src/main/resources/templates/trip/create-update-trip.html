@@ -78,34 +78,30 @@
     <div class="form-container">
         <h2 class="text-center">Trip Form</h2>
 
-        <form th:action=@{'/add-trip'} th:object="${trip}" method="post">
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <p th:text="${error}"></p>
+        </div>
 
-            <div class="mb-3">
-                <label for="title" class="form-label">Trip Title</label>
-                <input type="text" id="tripTitle" name="tripTitle" th:field="*{tripTitle}" class="form-control"
-                       placeholder="Enter your trip title" required>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('tripTitle')}" th:errors="*{tripTitle}">Error</div>
-            </div>
+        <form th:action="@{/trip/save/{tripId}(tripId=${trip != null ? tripId : 0})}" method="post">
+            <input type="hidden" name="tripId" th:value="${trip != null ? tripId : ''}" />
 
-            <div class="mb-3">
-                <label for="startDate" class="form-label">Start Date</label>
-                <input type="date" id="startDate" name="startDate" th:field="*{startDate}" class="form-control"
-                       required>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
-                    Error
-                </div>
-            </div>
+            <!-- Input for Trip Title -->
+            <label for="tripTitle">Trip Title</label>
+            <input type="text" id="tripTitle" name="tripTitle" th:value="${trip != null ? trip.tripTitle : ''}" required />
 
-            <div class="mb-3">
-                <label for="endDate" class="form-label">End Date</label>
-                <input type="date" id="endDate" name="endDate" th:field="*{endDate}" class="form-control"
-                       required>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Error</div>
-            </div>
+            <!-- Input for Start Date -->
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" name="startDate" th:value="${trip != null ? trip.startDate : ''}" required />
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-success">Save</button>
-            </div>
+            <!-- Input for End Date -->
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" name="endDate" th:value="${trip != null ? trip.endDate : ''}" required />
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">
+                <span th:text="${trip != null ? 'Update Trip' : 'Add Trip'}">Add Trip</span>
+            </button>
         </form>
 
     </div>

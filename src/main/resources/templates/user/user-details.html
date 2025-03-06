@@ -165,7 +165,7 @@
                         <td th:text="${trip.endDate}"></td>
                         <td>
                             <a type="button"
-                               th:href="@{/trip-details/{tripId}(tripId=${trip.tripId})}"
+                               th:href="@{/trip/{tripId}(tripId=${trip.tripId})}"
                                class="btn btn-primary">View Trip Details</a>
                         </td>
                     </tr>
@@ -174,7 +174,7 @@
                 <!-- Button to add a trip (visible only when the list is empty) -->
                 <div class="row mt-3">
                     <div class="col text-center">
-                        <a th:href="@{/add-trip}" class="btn btn-primary" style="width: 200px;">Add a Trip</a>
+                        <a th:href="@{/trip/create}" class="btn btn-primary" style="width: 200px;">Add a Trip</a>
                     </div>
                 </div>
             </div>

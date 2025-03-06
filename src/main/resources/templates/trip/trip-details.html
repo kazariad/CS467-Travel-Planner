@@ -69,10 +69,14 @@
             <div class="col align-self-center">
 
                 <h3 th:text="${trip.tripTitle}">Trip Title</h3>
+                <p>
+                    <strong>Start Date:</strong> <span th:text="${trip.startDate}"></span><br>
+                    <strong>End Date:</strong> <span th:text="${trip.endDate}"></span>
+                </p>
 
-                <div th:if="${isAuthor}" class="row gx-5 mb-2">
+                <div>
                     <!-- Edit Button -->
-                    <a th:href="@{/trip/{tripId}/update(tripId=${trip.tripId})}" class="col-auto">
+                    <a th:href="@{/trip/edit/{tripId}(tripId=${trip.tripId})}" class="col-auto">
                         <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
                     </a>
 
@@ -114,11 +118,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- If the experienceList is empty, show a message -->
-                    <div th:if="${user.experienceList == null or #lists.isEmpty(user.experienceList)}">No experience listed</div>
+                    <!-- If the list is empty, show a message -->
+                    <div th:if="${experiences == null or #lists.isEmpty(experiences)}">No experience listed</div>
 
-                    <tr th:if="${trip.experienceList != null and not #lists.isEmpty(trip.experienceList)}"
-                        th:each="experience : ${trip.experienceList}">
+                    <tr th:if="${not #lists.isEmpty(experiences)}"
+                        th:each="experience : ${experiences}">
                         <td th:text="${experience.title}"></td>
                         <td>
                             <a type="button"
@@ -130,7 +134,7 @@
 
                 </table>
                 <!-- Button to search experiences (visible only when the list is empty) -->
-                <div class="row mt-3" th:if="${#lists.isEmpty(user.experienceList)}">
+                <div class="row mt-3" th:if="${#lists.isEmpty(experiences)}">
                     <div class="col text-center">
                         <a th:href="@{/experience/search}" class="btn btn-primary"> <i class="bi bi-map"></i> Explore Experiences</a>
                     </div>
