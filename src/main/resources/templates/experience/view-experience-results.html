@@ -15,7 +15,7 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuFGE39oMheD0Y3071eSpRdA8ib4F5OFw&loading=async&libraries=marker,places&callback=initGMapsApi"
             defer></script>
 
-    <title>Results</title>
+    <title>Search Results</title>
 
     <style>
         #searchForm input:focus, #searchForm select:focus {
@@ -68,7 +68,11 @@
         </div>
     </form>
 
-    <div class="row justify-content-between align-items-center">
+    <div th:if="${searchResult.experiences().isEmpty()}" class="row text-center mt-5">
+        <h2>No results</h2>
+    </div>
+
+    <div th:if="${!searchResult.experiences().isEmpty()}" class="row justify-content-between align-items-center">
         <h1 class="col">Results</h1>
         <div class="dropdown col-auto">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -89,12 +93,12 @@
         </div>
     </div>
 
-    <div class="row mb-4">
+    <div th:if="${!searchResult.experiences().isEmpty()}" class="row mb-4">
         <div id="map" class="w-100" style="height: 50vh"></div>
         <div id="infowindow"></div>
     </div>
 
-    <div th:each="experience : ${searchResult.experiences}" th:id="${experience.experienceId}" id="0"
+    <div th:each="experience : ${searchResult.experiences()}" th:id="${experience.experienceId}" id="0"
          class="experience card bg-body-tertiary border-secondary rounded-start overflow-hidden mb-4 m-auto"
          style="max-width: 800px">
         <div class="row g-0">
@@ -139,11 +143,11 @@
         </div>
     </div>
 
-    <div th:if="${!searchResult.hasNext}" class="row text-center my-5">
+    <div th:if="${!searchResult.experiences().isEmpty() && !searchResult.hasNext()}" class="row text-center my-5">
         <h6>End of results</h6>
     </div>
 
-    <nav aria-label="Pagination">
+    <nav th:if="${!searchResult.experiences().isEmpty()}" aria-label="Pagination">
         <ul class="pagination justify-content-center">
             <li th:classappend="${prevPageUrl == null ? 'disabled' : ''}" class="page-item" style="min-width: 76px">
                 <a th:href="${prevPageUrl}" class="page-link"><i class="bi bi-arrow-left-short"></i>Prev.</a>
