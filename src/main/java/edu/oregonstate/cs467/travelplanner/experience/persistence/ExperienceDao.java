@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +71,32 @@ public class ExperienceDao {
                 .param(experienceId)
                 .query(rowMapper)
                 .optional();
+    }
+
+    /**
+     * Retrieves a list of Experience objects based on the provided list of experience IDs.
+     *
+     * @param experienceIds a list of IDs representing the experiences to be retrieved
+     * @return a list of Experience objects corresponding to the provided IDs; may return an empty list if no matches
+     * are found
+     */
+    public List<Experience> findByIds(List<Long> experienceIds) {
+        if (experienceIds == null || experienceIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String sql = """
+            SELECT *, 
+                   ST_Latitude(location) AS location_lat, 
+                   ST_Longitude(location) AS location_lng 
+            FROM experience
+            WHERE experience_id IN (:experienceIds)
+            """;
+
+        return jdbcClient.sql(sql)
+                .param("experienceIds", experienceIds) // Bind the IDs to the query
+                .query(rowMapper)
+                .list();
     }
 
     /**
