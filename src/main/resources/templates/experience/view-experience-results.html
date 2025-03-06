@@ -34,7 +34,7 @@
 <body>
 <main class="container">
     <form th:action="@{/experience/search}" th:object="${searchForm}" action="#" method="get"
-          class="row gx-0 mx-auto justify-content-center mb-3" id="searchForm" novalidate>
+          class="row gx-0 mx-auto justify-content-center mb-4" id="searchForm" novalidate>
         <div class="col-9 col-lg">
             <input th:value="*{locationText}" type="search" id="autocomplete" placeholder="Location"
                    aria-label="Location" class="form-control mb-1 rounded-end-0" maxlength="1000">
@@ -89,40 +89,53 @@
         </div>
     </div>
 
-    <div class="row">
-        <div th:each="experience : ${searchResult.experiences}" class="col d-flex align-items-stretch mb-5">
-            <!-- <div th:text="${experience.experienceId}" class="col-auto">1</div>
+    <div class="row mb-4">
+        <div id="map" class="w-100" style="height: 50vh"></div>
+        <div id="infowindow"></div>
+    </div>
 
+    <div th:each="experience : ${searchResult.experiences}" th:id="${experience.experienceId}" id="0"
+         class="experience card bg-body-tertiary border-secondary rounded-start overflow-hidden mb-4 m-auto"
+         style="max-width: 800px">
+        <div class="row g-0">
             <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
-            href="view-experience.html" class="col-auto">
-                <div th:text="${experience.title}" class="col-auto">Experience title</div>
-            </a> -->
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
-                    th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
-                    alt="Experience Photo">
-                    <div class="card-body">
-                        <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
-                        href="view-experience.html" class="col-auto">
-                            <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
-                        </a>
-                        <p class="card-text" th:text="${#strings.abbreviate(experience.description, 150)}">Experience text</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <i class="bi bi-calendar-date"></i>
-                            <span th:text="${#temporals.format(experience.eventDate)}">January 1, 2025</span>
-                        </li>
-                        <li class="list-group-item">
-                            <i class="bi bi-star"></i>
-                            <span th:if="${experience.ratingCnt == 0}">No ratings</span>
-                            <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.67 / 5.0</span>
-                            <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                            <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                                  th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
-                        </li>
-                    </ul>
+               href="view-experience.html" class="col-4 bg-black d-flex align-items-center">
+                <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
+                     th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                     class="w-100 object-fit-cover" alt="Experience photo" style="min-height: 100%; max-height: 18vh"
+                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+            </a>
+            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+               href="view-experience.html" class="col d-flex flex-column row-gap-1 ps-4"
+               style="text-decoration: inherit; color: inherit">
+                <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
+                <div class="card-text">
+                    <i class="bi bi-pin-map"></i>
+                    <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                            123 Fake St. City, State Country
+                        </span>
                 </div>
+                <div class="card-text">
+                    <i class="bi bi-star"></i>
+                    <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                    <span th:if="${experience.ratingCnt > 0}"
+                          th:text="${ratings.get(experience.experienceId)}">4.6 / 5.0</span>
+                    <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                    <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                          th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                </div>
+                <div class="card-text">
+                    <i class="bi bi-person"></i>
+                    <span th:with="submittedDuration = ${submittedDurations.get(experience.experienceId)}, author = ${searchResult.experienceIdAuthors().get(experience.experienceId)}"
+                          th:text="${'Submitted ' + submittedDuration + ' ago by ' + author}">
+                        Submitted 5 days ago by username
+                    </span>
+                </div>
+            </a>
+
+            <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
+            <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
+            <input th:value="${experience.address}" type="hidden" name="address">
         </div>
     </div>
 

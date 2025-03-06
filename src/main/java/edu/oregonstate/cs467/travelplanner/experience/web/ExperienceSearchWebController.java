@@ -77,11 +77,18 @@ public class ExperienceSearchWebController {
         model.addAttribute("searchResult", searchResult);
 
         Map<Long, String> submittedDurations = new HashMap<>();
+        Map<Long, String> ratings = new HashMap<>();
         searchResult.experiences().forEach(experience -> {
             submittedDurations.put(experience.getExperienceId(),
                     timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
+            if (experience.getRatingCnt() > 0) {
+                String rating = String.format("%.1f / 5.0",
+                        (double) experience.getRatingSum() / (double) experience.getRatingCnt());
+                ratings.put(experience.getExperienceId(), rating);
+            }
         });
         model.addAttribute("submittedDurations", submittedDurations);
+        model.addAttribute("ratings", ratings);
 
         UriComponentsBuilder resultUriBuilder = createResultUriBuilder(searchForm);
 
