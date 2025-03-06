@@ -19,7 +19,7 @@ public class ExperienceSearchForm {
     private Integer offset;
 
     public void normalize() {
-        if (locationLat == null || locationLng == null || distanceMiles == null) {
+        if (locationLat == null || locationLng == null) {
             locationText = null;
             locationLat = null;
             locationLng = null;
@@ -27,11 +27,11 @@ public class ExperienceSearchForm {
         }
 
         if ((sort == ExperienceSearchFormSort.BEST_MATCH && keywords == null) ||
-                (sort == ExperienceSearchFormSort.DISTANCE && distanceMiles == null)) {
+                (sort == ExperienceSearchFormSort.DISTANCE && locationLat == null)) {
             sort = null;
         }
         if (sort == null) {
-            sort = distanceMiles != null ? ExperienceSearchFormSort.DISTANCE :
+            sort = locationLat != null ? ExperienceSearchFormSort.DISTANCE :
                     keywords != null ? ExperienceSearchFormSort.BEST_MATCH :
                             ExperienceSearchFormSort.NEWEST;
         }
@@ -42,9 +42,9 @@ public class ExperienceSearchForm {
     public ExperienceSearchParams convertToSearchParams() {
         ExperienceSearchParams searchParams = new ExperienceSearchParams();
         searchParams.setKeywords(keywords);
-        if (locationLat != null && locationLng != null && distanceMiles != null) {
-            searchParams.setLocation(new ExperienceSearchLocationParams(
-                    locationLat, locationLng, distanceMiles * 1609.34));
+        if (locationLat != null && locationLng != null) {
+            Double distanceMeters = distanceMiles == null ? null : distanceMiles * 1609.34;
+            searchParams.setLocation(new ExperienceSearchLocationParams(locationLat, locationLng, distanceMeters));
         }
         searchParams.setSort(sort.toSearchSort());
         searchParams.setOffset(offset);

@@ -38,14 +38,6 @@ class ExperienceSearchFormTests {
         expected.setOffset(0);
 
         var form = new ExperienceSearchForm();
-        form.setLocationLat(0.0);
-        form.setLocationLng(0.0);
-        form.setDistanceMiles(-1);
-        form.setSort(ExperienceSearchFormSort.DISTANCE);
-        form.normalize();
-        assertThat(form).usingRecursiveComparison().isEqualTo(expected);
-
-        form = new ExperienceSearchForm();
         form.setLocationLat(-90.1);
         form.setLocationLng(0.0);
         form.setDistanceMiles(0);

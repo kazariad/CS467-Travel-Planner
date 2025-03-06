@@ -15,7 +15,7 @@ public class ExperienceSearchParams {
             @Min(-180) @Max(180)
             double lng,
             @PositiveOrZero
-            double distanceMeters
+            Double distanceMeters
     ) {}
 
     public enum ExperienceSearchSort {

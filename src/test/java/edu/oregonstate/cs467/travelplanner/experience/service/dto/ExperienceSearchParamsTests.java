@@ -17,7 +17,7 @@ class ExperienceSearchParamsTests extends AbstractBaseTest {
     void validation() {
         var params = new ExperienceSearchParams();
         params.setKeywords("  ");
-        params.setLocation(new ExperienceSearchLocationParams(-90.01, 180.01, -1));
+        params.setLocation(new ExperienceSearchLocationParams(-90.01, 180.01, -1.0));
         params.setSort(null);
         params.setOffset(-1);
         params.setLimit(0);

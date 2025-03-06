@@ -95,7 +95,7 @@ public class ExperienceSearchWebController {
         Map<String, String> sortByUrls = new LinkedHashMap<>();
         for (var sort : ExperienceSearchFormSort.values()) {
             if (sort == ExperienceSearchFormSort.BEST_MATCH && searchForm.getKeywords() == null) continue;
-            if (sort == ExperienceSearchFormSort.DISTANCE && searchForm.getDistanceMiles() == null) continue;
+            if (sort == ExperienceSearchFormSort.DISTANCE && searchForm.getLocationLat() == null) continue;
             String url = sort == searchForm.getSort() ? null :
                     resultUriBuilder.cloneBuilder().queryParam("sort", sort).toUriString();
             sortByUrls.put(sort.getDisplayName(), url);

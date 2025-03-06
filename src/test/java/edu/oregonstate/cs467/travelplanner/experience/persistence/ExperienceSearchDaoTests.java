@@ -66,20 +66,25 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
     @Test
     void search_by_location() {
         var params = new ExperienceSearchParams();
-        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10*1000));
+        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, null));
         params.setSort(ExperienceSearchSort.DISTANCE);
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
+        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L), experiences.get(3L), experiences.get(5L)));
+        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
+
+        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10.0*1000));
+        result = dao.search(params);
         assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L), experiences.get(3L)));
         assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1"));
 
-        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 1*1000));
+        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 1.0*1000));
         result = dao.search(params);
         assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L)));
         assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(4L, "user1"));
 
-        params.setLocation(new ExperienceSearchLocationParams(0, 0, 0));
+        params.setLocation(new ExperienceSearchLocationParams(0, 0, 0.0));
         result = dao.search(params);
         assertThat(result.experiences()).isEmpty();
         assertThat(result.experienceIdAuthors()).isEmpty();
@@ -89,7 +94,7 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
     void search_by_keywords_location() {
         var params = new ExperienceSearchParams();
         params.setKeywords("lantern");
-        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10*1000));
+        params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10.0*1000));
         params.setSort(ExperienceSearchSort.BEST_MATCH);
         params.setOffset(0);
         params.setLimit(10);

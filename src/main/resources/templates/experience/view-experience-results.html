@@ -44,11 +44,11 @@
         <input th:value="*{locationLng}" type="hidden" name="locationLng">
         <div class="col-3 col-lg-auto">
             <select name="distanceMiles" aria-label="Distance" class="form-select rounded-start-0">
+                <option value="-1" th:selected="*{distanceMiles == null}">Anywhere</option>
                 <option value="1" th:selected="*{distanceMiles == 1}">1 mile</option>
                 <option value="5" th:selected="*{distanceMiles == 5}">5 miles</option>
                 <option value="25" th:selected="*{distanceMiles == 25}">25 miles</option>
                 <option value="100" th:selected="*{distanceMiles == 100}">100 miles</option>
-                <option value="500" th:selected="*{distanceMiles == 500}">500 miles</option>
             </select>
         </div>
         <!--

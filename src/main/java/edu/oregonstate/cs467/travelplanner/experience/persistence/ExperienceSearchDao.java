@@ -41,7 +41,7 @@ public class ExperienceSearchDao {
         sb.append("\nFROM experience");
         sb.append("\nLEFT JOIN user ON experience.user_id = user.user_id");
         sb.append("\nWHERE deleted_at IS NULL");
-        if (params.getLocation() != null) {
+        if (params.getLocation() != null && params.getLocation().distanceMeters() != null) {
             sb.append("\nAND ST_Distance_Sphere(location, ST_PointFromText(?, 4326)) <= ?");
         }
         if (params.getKeywords() != null) {
@@ -62,8 +62,10 @@ public class ExperienceSearchDao {
         if (params.getLocation() != null) {
             String point = String.format("POINT(%s %s)", params.getLocation().lat(), params.getLocation().lng());
             ss = ss.param(idx++, point);
-            ss = ss.param(idx++, point);
-            ss = ss.param(idx++, params.getLocation().distanceMeters());
+            if (params.getLocation().distanceMeters() != null) {
+                ss = ss.param(idx++, point);
+                ss = ss.param(idx++, params.getLocation().distanceMeters());
+            }
         }
         if (params.getKeywords() != null) ss = ss.param(idx++, params.getKeywords());
         ss = ss.param(idx++, params.getLimit() + 1);
