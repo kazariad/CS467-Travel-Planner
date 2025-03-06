@@ -3,35 +3,11 @@ package edu.oregonstate.cs467.travelplanner.experience.service.dto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 
 import java.util.List;
+import java.util.Map;
 
-public class ExperienceSearchResult {
-    private List<Experience> experiences;
-
-    private int offset;
-
-    private boolean hasNext;
-
-    public List<Experience> getExperiences() {
-        return experiences;
-    }
-
-    public void setExperiences(List<Experience> experiences) {
-        this.experiences = experiences;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public boolean getHasNext() {
-        return hasNext;
-    }
-
-    public void setHasNext(boolean hasNext) {
-        this.hasNext = hasNext;
-    }
-}
+public record ExperienceSearchResult(
+        List<Experience> experiences,
+        Map<Long, String> experienceIdAuthors,
+        int offset,
+        boolean hasNext
+) {}

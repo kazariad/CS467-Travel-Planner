@@ -10,7 +10,9 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Validated
@@ -26,6 +28,7 @@ public class ExperienceSearchDao {
     public ExperienceSearchResult search(@Valid ExperienceSearchParams params) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT *, ST_Latitude(location) AS location_lat, ST_Longitude(location) AS location_lng");
+        sb.append(",\nuser.username");
         if (params.getKeywords() != null) {
             sb.append(",\nMATCH(title, description, address) AGAINST (? IN NATURAL LANGUAGE MODE) AS match_score");
         }
@@ -36,6 +39,7 @@ public class ExperienceSearchDao {
             sb.append(",\n(rating_sum / rating_cnt) AS rating");
         }
         sb.append("\nFROM experience");
+        sb.append("\nLEFT JOIN user ON experience.user_id = user.user_id");
         sb.append("\nWHERE deleted_at IS NULL");
         if (params.getLocation() != null) {
             sb.append("\nAND ST_Distance_Sphere(location, ST_PointFromText(?, 4326)) <= ?");
@@ -48,7 +52,7 @@ public class ExperienceSearchDao {
             case BEST_MATCH -> sb.append("match_score DESC");
             case DISTANCE -> sb.append("distance ASC");
             case RATING -> sb.append("rating DESC");
-            case NEWEST -> sb.append("created_at DESC");
+            case NEWEST -> sb.append("experience.created_at DESC");
         }
         sb.append("\nLIMIT ? OFFSET ?");
 
@@ -65,14 +69,17 @@ public class ExperienceSearchDao {
         ss = ss.param(idx++, params.getLimit() + 1);
         ss = ss.param(idx++, params.getOffset());
 
-        List<Experience> experiences = ss.query(rowMapper).list();
-        boolean hasNext = experiences.size() > params.getLimit();
-        if (hasNext) experiences.removeLast();
+        Map<Long, String> experienceIdAuthors = new HashMap<>();
+        List<Experience> experiences = ss.query((rs, rowNum) -> {
+            Experience experience = rowMapper.mapRow(rs, rowNum);
+            String username = rs.getString("username");
+            experienceIdAuthors.put(experience.getExperienceId(), username);
+            return experience;
+        }).list();
 
-        ExperienceSearchResult result = new ExperienceSearchResult();
-        result.setExperiences(experiences);
-        result.setOffset(params.getOffset());
-        result.setHasNext(hasNext);
-        return result;
+        boolean hasNext = experiences.size() > params.getLimit();
+        if (hasNext) experienceIdAuthors.remove(experiences.removeLast().getExperienceId());
+
+        return new ExperienceSearchResult(experiences, experienceIdAuthors, params.getOffset(), hasNext);
     }
 }

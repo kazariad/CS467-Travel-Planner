@@ -5,6 +5,7 @@ import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSear
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
 import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchForm;
 import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchFormSort;
+import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,12 +29,14 @@ import java.util.Optional;
 public class ExperienceSearchWebController {
     private final ExperienceService experienceService;
     private final Formatter<ExperienceSearchFormSort> searchFormSortFormatter;
+    private final TimeUtils timeUtils;
     private final String gmapsApiKey;
     private final int limit;
 
     public ExperienceSearchWebController(
             ExperienceService experienceService,
             Formatter<ExperienceSearchFormSort> searchFormSortFormatter,
+            TimeUtils timeUtils,
             @Value("${google.maps.api.key}")
             String gmapsApiKey,
             @Value("10")
@@ -38,6 +44,7 @@ public class ExperienceSearchWebController {
     ) {
         this.experienceService = experienceService;
         this.searchFormSortFormatter = searchFormSortFormatter;
+        this.timeUtils = timeUtils;
         this.gmapsApiKey = gmapsApiKey;
         this.limit = limit;
     }
@@ -69,6 +76,13 @@ public class ExperienceSearchWebController {
         ExperienceSearchResult searchResult = experienceService.search(searchParams);
         model.addAttribute("searchResult", searchResult);
 
+        Map<Long, String> submittedDurations = new HashMap<>();
+        searchResult.experiences().forEach(experience -> {
+            submittedDurations.put(experience.getExperienceId(),
+                    timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
+        });
+        model.addAttribute("submittedDurations", submittedDurations);
+
         UriComponentsBuilder resultUriBuilder = createResultUriBuilder(searchForm);
 
         Map<String, String> sortByUrls = new LinkedHashMap<>();
@@ -81,18 +95,18 @@ public class ExperienceSearchWebController {
         }
         model.addAttribute("sortByUrls", sortByUrls);
 
-        if (searchResult.getHasNext()) {
+        if (searchResult.hasNext()) {
             String nextPageUrl = resultUriBuilder.cloneBuilder()
                     .queryParam("sort", searchForm.getSort())
-                    .queryParam("offset", searchResult.getOffset() + limit)
+                    .queryParam("offset", searchResult.offset() + limit)
                     .toUriString();
             model.addAttribute("nextPageUrl", nextPageUrl);
         }
 
-        if (searchResult.getOffset() > 0) {
+        if (searchResult.offset() > 0) {
             String prevPageUrl = resultUriBuilder.cloneBuilder()
                     .queryParam("sort", searchForm.getSort())
-                    .queryParam("offset", searchResult.getOffset() - limit)
+                    .queryParam("offset", searchResult.offset() - limit)
                     .toUriString();
             model.addAttribute("prevPageUrl", prevPageUrl);
         }
