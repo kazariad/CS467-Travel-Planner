@@ -165,7 +165,9 @@ public class ExperienceWebController {
             @PathVariable Long experienceId,
             Model model
     ) {
-        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        if (!authUserProvider.isAnyUser()) {
+            return "redirect:/registration";
+        }
         User currentUser = authUserProvider.getUser();
         List<Trip> userTrips = tripService.getRecentTripsByUserId(currentUser.getUserId());
         Experience experience = experienceService.getExperience(experienceId);
