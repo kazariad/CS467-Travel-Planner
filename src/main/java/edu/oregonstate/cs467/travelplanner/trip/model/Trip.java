@@ -117,7 +117,6 @@ public class Trip {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
-        validateTripDates();
     }
 
     public LocalDate getEndDate() {
@@ -126,7 +125,6 @@ public class Trip {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
-        validateTripDates();
     }
 
     public Instant getCreatedAt() {
@@ -159,7 +157,7 @@ public class Trip {
         this.experienceList = experienceList != null ? List.copyOf(experienceList) : List.of();
     }
 
-    private void validateTripDates() {
+    public void validateTripDates() {
         if (startDate == null) {
             throw new IllegalArgumentException("Start date cannot be null");
         }
