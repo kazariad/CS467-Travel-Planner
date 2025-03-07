@@ -24,6 +24,10 @@ public class SecurityConfiguration {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/css/**", "/images/**", "/js/**").permitAll()
                         .requestMatchers("/login", "/registration").permitAll()
+                        
+                        // note here to test home page
+                        .requestMatchers("/landing").permitAll()
+                        
                         .requestMatchers(HttpMethod.GET, "/experience/create").authenticated()
                         .requestMatchers(HttpMethod.GET, "/experience/*").permitAll()
                         .anyRequest().authenticated())

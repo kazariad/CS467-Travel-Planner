@@ -10,4 +10,11 @@ public class MainController {
         return "login";
     }
 
+    // changed to test home page
+
+    @GetMapping("/landing")
+    public String landing() {
+        return "landing";
+    }
+
 }

@@ -16,7 +16,10 @@
 </head>
 
 <body>
-<header th:fragment="header" class="mb-3">
+
+<!-- TODO: Removed bottom margins from header for all pages due to difficulty with stylizing viewport elsewhere,
+ modifications may be needed per-page -->
+<header th:fragment="header">
     <nav class="navbar navbar-expand py-1 bg-black">
         <div class="container-fluid">
             <a th:href="@{/}" href="/" class="navbar-brand d-flex align-items-center text-white">
