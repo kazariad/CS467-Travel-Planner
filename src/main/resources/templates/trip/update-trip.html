@@ -68,28 +68,25 @@
     </div>
 
     <form th:action="@{/trip/update/{tripId}(tripId=${tripId})}" th:object="${trip}" method="post" novalidate>
-      <!-- Title -->
+
       <div class="mb-3">
         <label for="tripTitle" class="form-label">Trip Title*</label>
         <input type="text" id="tripTitle" th:field="*{tripTitle}" class="form-control" maxlength="100" required>
         <div class="invalid-feedback">Trip title is required (max 100 characters).</div>
       </div>
 
-      <!-- Start Date -->
       <div class="mb-3">
         <label for="startDate" class="form-label">Start Date*</label>
         <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required>
         <div class="invalid-feedback">Start date is required.</div>
       </div>
 
-      <!-- End Date -->
       <div class="mb-3">
         <label for="endDate" class="form-label">End Date*</label>
         <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required>
         <div class="invalid-feedback">End date is required.</div>
       </div>
 
-      <!-- Submit Button -->
       <div class="row mt-4">
         <button type="submit" class="btn btn-primary">Update Trip</button>
       </div>
