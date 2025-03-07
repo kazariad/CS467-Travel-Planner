@@ -33,10 +33,21 @@ public class UserProfileController {
      * @throws AccessDeniedException if no user is authenticated
      */
     @GetMapping("/user/details")
-    public String viewUserDetails(Model model) {
+    public String viewUserDetails(@RequestParam(name = "success", required = false) String success,
+                                  @RequestParam(name = "action", required = false) String action,
+                                  Model model) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
         User user = authUserProvider.getUser();
         UserProfileDto userProfileDto = userService.getUserProfile(user);
+        if ("true".equals(success)) {
+            if ("delete".equals(action)) {
+                model.addAttribute("successMessage", "Trip was successfully deleted!");
+            } else if ("add".equals(action)) {
+                model.addAttribute("successMessage", "Trip was successfully added!");
+            } else {
+                model.addAttribute("successMessage", "Action completed successfully!");
+            }
+        }
         model.addAttribute("user", userProfileDto);
         return "user/user-details";
     }

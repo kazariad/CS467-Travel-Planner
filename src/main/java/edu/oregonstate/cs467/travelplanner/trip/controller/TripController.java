@@ -65,12 +65,13 @@ public class TripController {
     @GetMapping(path = "/create")
     public String showAddTripForm(Model model) {
         model.addAttribute("trip", new TripDto());
-        return "trip/create-update-trip";
+        return "trip/create-trip";
     }
 
-    @GetMapping(path = "/edit/{tripId}")
-    public String editTripForm(@PathVariable Long tripId, Model model) {
+    @GetMapping(path = "/update/{tripId}")
+    public String showUpdateTripForm(@PathVariable Long tripId, Model model) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+
         Trip trip = tripService.getTripById(tripId);
         if (trip == null) {
             throw new IllegalArgumentException("Trip ID not found: " + tripId);
@@ -83,29 +84,46 @@ public class TripController {
         );
         model.addAttribute("tripId", tripId);
         model.addAttribute("trip", tripDto);
-        return "trip/create-update-trip";
+        return "trip/update-trip";
     }
 
-    @PostMapping(path = "/save/{tripId}")
-    public String saveTrip(@PathVariable Long tripId, @Valid @ModelAttribute("trip") TripDto tripDto,
-                           BindingResult result, Model model) {
-        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+    @PostMapping("/create")
+    public String createTrip(@Valid @ModelAttribute("trip") TripDto tripDto, BindingResult result, Model model) {
+        if (!authUserProvider.isAnyUser()) {
+            throw new AccessDeniedException("Access denied");
+        }
 
+        // Check for validation errors in TripDto
         if (result.hasErrors()) {
             model.addAttribute("errors", result.getAllErrors());
-            return "trip/create-update-trip";
+            return "trip/create-trip"; // Return to form with error messages
+        }
+
+        // Attempt to create the trip
+        try {
+            tripService.createTrip(tripDto);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "trip/create-trip"; // Return to form with error message
+        }
+
+        return "redirect:/user/details?success=true&action=add";
+    }
+
+    @PostMapping("/update/{tripId}")
+    public String updateTrip(@PathVariable Long tripId, @Valid @ModelAttribute("trip") TripDto tripDto,
+                           BindingResult result, Model model) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        if (result.hasErrors()) {
+            model.addAttribute("errors", result.getAllErrors());
+            return "trip/update-trip";
         }
         try{
-            if (tripDto.getTripTitle() == null || tripId == 0) {
-                tripService.createTrip(tripDto);
-            } else {
-                tripService.updateTrip(tripId, tripDto);
-            }
+            tripService.updateTrip(tripId, tripDto);
             return "redirect:/trip/{tripId}?success=true";
         } catch (IllegalArgumentException e) {
-            // Add the error message to the model for displaying in the view
             model.addAttribute("error", e.getMessage());
-            return "trip/create-update-trip";
+            return "trip/update-trip";
         }
     }
 
@@ -113,6 +131,6 @@ public class TripController {
     public String deleteTrip(@PathVariable long tripId) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
         tripService.deleteTrip(tripId);
-        return "redirect:/user/details?success=true";
+        return "redirect:/user/details?success=true&action=delete";
     }
 }

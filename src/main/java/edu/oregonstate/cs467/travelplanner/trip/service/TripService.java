@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -59,6 +58,12 @@ public class TripService {
     }
 
     public void createTrip(TripDto tripDto) {
+        if (tripDto.getStartDate() == null || tripDto.getEndDate() == null) {
+            throw new IllegalArgumentException("Start date and end date are required");
+        }
+        if (tripDto.getStartDate().isAfter(tripDto.getEndDate())) {
+            throw new IllegalArgumentException("Start date must not be after the end date");
+        }
         User user = authUserProvider.getUser();
         Trip trip = tripDto.toEntity();
         trip.setUser(user);

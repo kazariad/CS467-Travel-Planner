@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.trip.dto;
 
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class TripDto {
         trip.setStartDate(this.getStartDate());
         trip.setEndDate(this.getEndDate());
         trip.setExperienceList(this.getExperienceList());
+        trip.validateTripDates();
         return trip;
     }
 }
