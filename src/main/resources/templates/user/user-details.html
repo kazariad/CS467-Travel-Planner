@@ -137,8 +137,8 @@
             </div>
 
             <div class="col-12 mt-3">
-                <div th:if="${param.success}" class="alert alert-success text-center" role="alert">
-                    <span>Trip was successfully deleted!</span>
+                <div th:if="${successMessage}" class="alert alert-success text-center" role="alert">
+                    <span th:text="${successMessage}"></span>
                 </div>
             </div>
 
@@ -163,6 +163,7 @@
                     <tr th:if="${#lists.isEmpty(user.tripList)}">
                         <td colspan="4" class="text-center">You have not planned any trips.</td>
                     </tr>
+
                     <!-- If the tripList is not empty, iterate over the list of trips -->
                     <tr th:if="${not #lists.isEmpty(user.tripList)}"
                         th:each="trip : ${user.tripList}">
@@ -177,7 +178,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- Button to add a trip (visible only when the list is empty) -->
+                <!-- Button to add a trip-->
                 <div class="row mt-3">
                     <div class="col text-center">
                         <a th:href="@{/trip/create}" class="btn btn-primary" style="width: 200px;">Add a Trip</a>
