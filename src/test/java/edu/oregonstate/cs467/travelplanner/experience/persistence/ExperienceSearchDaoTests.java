@@ -5,6 +5,7 @@ import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchLocationParams;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchSort;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult.ExperienceDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +50,22 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(3L), experiences.get(5L), experiences.get(4L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(3L), "user1", null),
+                new ExperienceDetails(experiences.get(5L), "user2", null),
+                new ExperienceDetails(experiences.get(4L), "user1", null)
+        ));
 
         params.setKeywords("Los Angeles");
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(3L), experiences.get(4L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(3L), "user1", null),
+                new ExperienceDetails(experiences.get(4L), "user1", null)
+        ));
 
         params.setKeywords("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         result = dao.search(params);
-        assertThat(result.experiences()).isEmpty();
-        assertThat(result.experienceIdAuthors()).isEmpty();
+        assertThat(result.getExperienceDetailsList()).isEmpty();
     }
 
     @Test
@@ -71,23 +76,28 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L), experiences.get(3L), experiences.get(5L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(4L), "user1", 0.0),
+                new ExperienceDetails(experiences.get(3L), "user1", 8171.669809040829),
+                new ExperienceDetails(experiences.get(5L), "user2", 9086160.393496402)
+        ));
 
         params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 10.0*1000));
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L), experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(4L), "user1", 0.0),
+                new ExperienceDetails(experiences.get(3L), "user1", 8171.669809040829)
+        ));
 
         params.setLocation(new ExperienceSearchLocationParams(34.06413001564114, -118.35870084280937, 1.0*1000));
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(4L, "user1"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(4L), "user1", 0.0)
+        ));
 
         params.setLocation(new ExperienceSearchLocationParams(0, 0, 0.0));
         result = dao.search(params);
-        assertThat(result.experiences()).isEmpty();
-        assertThat(result.experienceIdAuthors()).isEmpty();
+        assertThat(result.getExperienceDetailsList()).isEmpty();
     }
 
     @Test
@@ -99,8 +109,9 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(3L), "user1", 8171.669809040829)
+        ));
     }
 
     @Test
@@ -110,8 +121,11 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L), experiences.get(5L), experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(4L), "user1", null),
+                new ExperienceDetails(experiences.get(5L), "user2", null),
+                new ExperienceDetails(experiences.get(3L), "user1", null)
+        ));
     }
 
     @Test
@@ -121,8 +135,11 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(10);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(5L), experiences.get(4L), experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(5L), "user2", null),
+                new ExperienceDetails(experiences.get(4L), "user1", null),
+                new ExperienceDetails(experiences.get(3L), "user1", null)
+        ));
     }
 
     @Test
@@ -132,41 +149,47 @@ class ExperienceSearchDaoTests extends AbstractBaseTest {
         params.setOffset(0);
         params.setLimit(5);
         var result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(5L), experiences.get(4L), experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1", 4L, "user1", 5L, "user2"));
-        assertThat(result.offset()).isEqualTo(0);
-        assertThat(result.hasNext()).isFalse();
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(5L), "user2", null),
+                new ExperienceDetails(experiences.get(4L), "user1", null),
+                new ExperienceDetails(experiences.get(3L), "user1", null)
+        ));
+        assertThat(result.getOffset()).isEqualTo(0);
+        assertThat(result.getHasNext()).isFalse();
 
         params.setOffset(0);
         params.setLimit(2);
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(5L), experiences.get(4L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(4L, "user1", 5L, "user2"));
-        assertThat(result.offset()).isEqualTo(0);
-        assertThat(result.hasNext()).isTrue();
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(5L), "user2", null),
+                new ExperienceDetails(experiences.get(4L), "user1", null)
+        ));
+        assertThat(result.getOffset()).isEqualTo(0);
+        assertThat(result.getHasNext()).isTrue();
 
         params.setOffset(1);
         params.setLimit(1);
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(4L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(4L, "user1"));
-        assertThat(result.offset()).isEqualTo(1);
-        assertThat(result.hasNext()).isTrue();
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(4L), "user1", null)
+        ));
+        assertThat(result.getOffset()).isEqualTo(1);
+        assertThat(result.getHasNext()).isTrue();
 
         params.setOffset(2);
         params.setLimit(1);
         result = dao.search(params);
-        assertThat(result.experiences()).usingRecursiveComparison().isEqualTo(List.of(experiences.get(3L)));
-        assertThat(result.experienceIdAuthors()).isEqualTo(Map.of(3L, "user1"));
-        assertThat(result.offset()).isEqualTo(2);
-        assertThat(result.hasNext()).isFalse();
+        assertThat(result.getExperienceDetailsList()).usingRecursiveComparison().isEqualTo(List.of(
+                new ExperienceDetails(experiences.get(3L), "user1", null)
+        ));
+        assertThat(result.getOffset()).isEqualTo(2);
+        assertThat(result.getHasNext()).isFalse();
 
         params.setOffset(3);
         params.setLimit(1);
         result = dao.search(params);
-        assertThat(result.experiences()).isEmpty();
-        assertThat(result.experienceIdAuthors()).isEmpty();
-        assertThat(result.offset()).isEqualTo(3);
-        assertThat(result.hasNext()).isFalse();
+        assertThat(result.getExperienceDetailsList()).isEmpty();
+        assertThat(result.getOffset()).isEqualTo(3);
+        assertThat(result.getHasNext()).isFalse();
     }
 }

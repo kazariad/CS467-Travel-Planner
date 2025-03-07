@@ -1,5 +1,6 @@
 package edu.oregonstate.cs467.travelplanner.experience.web;
 
+import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
@@ -76,44 +77,45 @@ public class ExperienceSearchWebController {
         ExperienceSearchResult searchResult = experienceService.search(searchParams);
         model.addAttribute("searchResult", searchResult);
 
-        Map<Long, String> submittedDurations = new HashMap<>();
-        Map<Long, String> ratings = new HashMap<>();
-        searchResult.experiences().forEach(experience -> {
-            submittedDurations.put(experience.getExperienceId(),
+        Map<Long, String> submittedDurationMap = new HashMap<>();
+        Map<Long, String> ratingMap = new HashMap<>();
+        searchResult.getExperienceDetailsList().forEach(details -> {
+            Experience experience = details.getExperience();
+            submittedDurationMap.put(experience.getExperienceId(),
                     timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
             if (experience.getRatingCnt() > 0) {
                 String rating = String.format("%.1f / 5.0",
                         (double) experience.getRatingSum() / (double) experience.getRatingCnt());
-                ratings.put(experience.getExperienceId(), rating);
+                ratingMap.put(experience.getExperienceId(), rating);
             }
         });
-        model.addAttribute("submittedDurations", submittedDurations);
-        model.addAttribute("ratings", ratings);
+        model.addAttribute("submittedDurationMap", submittedDurationMap);
+        model.addAttribute("ratingMap", ratingMap);
 
         UriComponentsBuilder resultUriBuilder = createResultUriBuilder(searchForm);
 
-        Map<String, String> sortByUrls = new LinkedHashMap<>();
+        Map<String, String> sortByUrlMap = new LinkedHashMap<>();
         for (var sort : ExperienceSearchFormSort.values()) {
             if (sort == ExperienceSearchFormSort.BEST_MATCH && searchForm.getKeywords() == null) continue;
             if (sort == ExperienceSearchFormSort.DISTANCE && searchForm.getLocationLat() == null) continue;
             String url = sort == searchForm.getSort() ? null :
                     resultUriBuilder.cloneBuilder().queryParam("sort", sort).toUriString();
-            sortByUrls.put(sort.getDisplayName(), url);
+            sortByUrlMap.put(sort.getDisplayName(), url);
         }
-        model.addAttribute("sortByUrls", sortByUrls);
+        model.addAttribute("sortByUrlMap", sortByUrlMap);
 
-        if (searchResult.hasNext()) {
+        if (searchResult.getHasNext()) {
             String nextPageUrl = resultUriBuilder.cloneBuilder()
                     .queryParam("sort", searchForm.getSort())
-                    .queryParam("offset", searchResult.offset() + limit)
+                    .queryParam("offset", searchResult.getOffset() + limit)
                     .toUriString();
             model.addAttribute("nextPageUrl", nextPageUrl);
         }
 
-        if (searchResult.offset() > 0) {
+        if (searchResult.getOffset() > 0) {
             String prevPageUrl = resultUriBuilder.cloneBuilder()
                     .queryParam("sort", searchForm.getSort())
-                    .queryParam("offset", searchResult.offset() - limit)
+                    .queryParam("offset", searchResult.getOffset() - limit)
                     .toUriString();
             model.addAttribute("prevPageUrl", prevPageUrl);
         }

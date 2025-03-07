@@ -4,15 +4,14 @@ import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams.ExperienceSearchSort;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult.ExperienceDetails;
 import jakarta.validation.Valid;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @Validated
@@ -27,32 +26,32 @@ public class ExperienceSearchDao {
 
     public ExperienceSearchResult search(@Valid ExperienceSearchParams params) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT *, ST_Latitude(location) AS location_lat, ST_Longitude(location) AS location_lng");
-        sb.append(",\nuser.username");
+        sb.append("SELECT t1.*, ST_Latitude(t1.location) AS location_lat, ST_Longitude(t1.location) AS location_lng");
+        sb.append(",\nt2.username");
         if (params.getKeywords() != null) {
-            sb.append(",\nMATCH(title, description, address) AGAINST (? IN NATURAL LANGUAGE MODE) AS match_score");
+            sb.append(",\nMATCH(t1.title, t1.description, t1.address) AGAINST (? IN NATURAL LANGUAGE MODE) AS match_score");
         }
         if (params.getLocation() != null) {
-            sb.append(",\nST_Distance_Sphere(location, ST_PointFromText(?, 4326)) AS distance");
+            sb.append(",\nST_Distance_Sphere(t1.location, ST_PointFromText(?, 4326)) AS distance");
         }
         if (params.getSort() == ExperienceSearchSort.RATING) {
-            sb.append(",\n(rating_sum / rating_cnt) AS rating");
+            sb.append(",\n(t1.rating_sum / t1.rating_cnt) AS rating");
         }
-        sb.append("\nFROM experience");
-        sb.append("\nLEFT JOIN user ON experience.user_id = user.user_id");
-        sb.append("\nWHERE deleted_at IS NULL");
+        sb.append("\nFROM experience AS t1");
+        sb.append("\nLEFT JOIN user AS t2 ON t1.user_id = t2.user_id");
+        sb.append("\nWHERE t1.deleted_at IS NULL");
         if (params.getLocation() != null && params.getLocation().distanceMeters() != null) {
-            sb.append("\nAND ST_Distance_Sphere(location, ST_PointFromText(?, 4326)) <= ?");
+            sb.append("\nAND ST_Distance_Sphere(t1.location, ST_PointFromText(?, 4326)) <= ?");
         }
         if (params.getKeywords() != null) {
-            sb.append("\nAND MATCH(title, description, address) AGAINST (? IN NATURAL LANGUAGE MODE) > 0");
+            sb.append("\nAND MATCH(t1.title, t1.description, t1.address) AGAINST (? IN NATURAL LANGUAGE MODE) > 0");
         }
         sb.append("\nORDER BY ");
         switch (params.getSort()) {
             case BEST_MATCH -> sb.append("match_score DESC");
             case DISTANCE -> sb.append("distance ASC");
             case RATING -> sb.append("rating DESC");
-            case NEWEST -> sb.append("experience.created_at DESC");
+            case NEWEST -> sb.append("t1.created_at DESC");
         }
         sb.append("\nLIMIT ? OFFSET ?");
 
@@ -71,17 +70,15 @@ public class ExperienceSearchDao {
         ss = ss.param(idx++, params.getLimit() + 1);
         ss = ss.param(idx++, params.getOffset());
 
-        Map<Long, String> experienceIdAuthors = new HashMap<>();
-        List<Experience> experiences = ss.query((rs, rowNum) -> {
+        List<ExperienceDetails> experienceDetailsList = ss.query((rs, rowNum) -> {
             Experience experience = rowMapper.mapRow(rs, rowNum);
             String username = rs.getString("username");
-            experienceIdAuthors.put(experience.getExperienceId(), username);
-            return experience;
+            Double distanceMeters = params.getLocation() != null ? rs.getDouble("distance") : null;
+            return new ExperienceDetails(experience, username, distanceMeters);
         }).list();
 
-        boolean hasNext = experiences.size() > params.getLimit();
-        if (hasNext) experienceIdAuthors.remove(experiences.removeLast().getExperienceId());
-
-        return new ExperienceSearchResult(experiences, experienceIdAuthors, params.getOffset(), hasNext);
+        boolean hasNext = experienceDetailsList.size() > params.getLimit();
+        if (hasNext) experienceDetailsList.removeLast();
+        return new ExperienceSearchResult(experienceDetailsList, params.getOffset(), hasNext);
     }
 }

@@ -29,7 +29,8 @@ function initGMapsApi() {
 
     const map = new google.maps.Map(document.querySelector("#map"), {
         mapId: "DEMO_MAP_ID",
-        clickableIcons: false
+        clickableIcons: false,
+        gestureHandling: "cooperative"
     });
 
     const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
