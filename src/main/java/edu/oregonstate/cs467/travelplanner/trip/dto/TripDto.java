@@ -58,9 +58,10 @@ public class TripDto {
     }
 
     /**
-     * Converts the current TripDto instance into a Trip entity to facilitate interactions with the persistence layer.
+     * Converts the current TripDto object into a Trip entity object.
      *
-     * @return a Trip entity populated with values from the current TripDto instance
+     * @return a Trip entity object populated with the corresponding data
+     *         from this TripDto instance.
      */
     public Trip toEntity() {
         Trip trip = new Trip();
