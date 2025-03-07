@@ -4,6 +4,7 @@ import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult.ExperienceDetails;
 import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchForm;
 import edu.oregonstate.cs467.travelplanner.experience.web.form.ExperienceSearchFormSort;
 import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
@@ -79,7 +80,9 @@ public class ExperienceSearchWebController {
 
         Map<Long, String> submittedDurationMap = new HashMap<>();
         Map<Long, String> ratingMap = new HashMap<>();
-        searchResult.getExperienceDetailsList().forEach(details -> {
+        Map<Long, String> labelMap = new HashMap<>();
+        char c = 65;
+        for (ExperienceDetails details : searchResult.getExperienceDetailsList()) {
             Experience experience = details.getExperience();
             submittedDurationMap.put(experience.getExperienceId(),
                     timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
@@ -88,9 +91,12 @@ public class ExperienceSearchWebController {
                         (double) experience.getRatingSum() / (double) experience.getRatingCnt());
                 ratingMap.put(experience.getExperienceId(), rating);
             }
-        });
+            labelMap.put(experience.getExperienceId(), String.valueOf(c++));
+            if (c > 90) c = 65;
+        }
         model.addAttribute("submittedDurationMap", submittedDurationMap);
         model.addAttribute("ratingMap", ratingMap);
+        model.addAttribute("labelMap", labelMap);
 
         UriComponentsBuilder resultUriBuilder = createResultUriBuilder(searchForm);
 

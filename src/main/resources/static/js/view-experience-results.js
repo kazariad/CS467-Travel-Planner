@@ -21,22 +21,24 @@ autocompleteInput.addEventListener("keydown", (event) => {
 });
 
 let autocomplete;
+let map;
+let infoWindow;
+let selectedMarker;
 function initGMapsApi() {
     autocomplete = new google.maps.places.Autocomplete(autocompleteInput, {
         fields: ["geometry", "formatted_address"]
     });
     autocomplete.addListener("place_changed", autocompletePlaceSelected);
 
-    const map = new google.maps.Map(document.querySelector("#map"), {
+    map = new google.maps.Map(document.querySelector("#map"), {
         mapId: "DEMO_MAP_ID",
         clickableIcons: false,
         gestureHandling: "cooperative"
     });
 
-    const infoWindow = new google.maps.InfoWindow({
+    infoWindow = new google.maps.InfoWindow({
         headerDisabled: true
     });
-    let selectedMarker;
     map.addListener("click", (mapMouseEvent) => {
         infoWindow.close();
         selectedMarker = null;
@@ -74,17 +76,19 @@ function initGMapsApi() {
         });
 
         marker.addListener("click", (mapMouseEvent) => {
-            infoWindow.close();
             if (selectedMarker !== marker) {
-                infoWindow.setContent(thisInfoWindow);
-                infoWindow.open(marker.map, marker);
-                selectedMarker = marker;
+                showInfoWindow(marker, thisInfoWindow);
             } else {
+                infoWindow.close();
                 selectedMarker = null;
             }
         });
-
         markers.push(marker);
+
+        experience.querySelector(".view-on-map").addEventListener("click", event => {
+            searchForm.scrollIntoView({behavior: "smooth"});
+            showInfoWindow(marker, thisInfoWindow, 16);
+        });
     }
     new markerClusterer.MarkerClusterer({ markers, map });
 
@@ -95,11 +99,24 @@ function initGMapsApi() {
     map.fitBounds(bounds);
 }
 
-function extendBounds(bounds, latlng) {
-    if (!bounds.north || latlng.lat > bounds.north) bounds.north = latlng.lat;
-    if (!bounds.south || latlng.lat < bounds.south) bounds.south = latlng.lat;
-    if (!bounds.east || latlng.lng > bounds.east) bounds.east = latlng.lng;
-    if (!bounds.west || latlng.lng < bounds.west) bounds.west = latlng.lng;
+function extendBounds(bounds, position) {
+    if (!bounds.north || position.lat > bounds.north) bounds.north = position.lat;
+    if (!bounds.south || position.lat < bounds.south) bounds.south = position.lat;
+    if (!bounds.east || position.lng > bounds.east) bounds.east = position.lng;
+    if (!bounds.west || position.lng < bounds.west) bounds.west = position.lng;
+}
+
+function showInfoWindow(marker, content, zoom) {
+    infoWindow.close();
+    map.setCenter(marker.position);
+    if (zoom !== undefined) map.setZoom(zoom);
+    infoWindow.setContent(content);
+    infoWindow.open({
+        anchor: marker,
+        map: map,
+        shouldFocus: false
+    });
+    selectedMarker = marker;
 }
 
 function autocompletePlaceSelected() {
