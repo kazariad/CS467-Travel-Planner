@@ -7,6 +7,8 @@ import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,12 +25,11 @@ public class TripService {
     private AuthenticatedUserProvider authUserProvider;
 
     /**
-     * Retrieves a list of trips associated with a specific user.
-     * Only trips that are not marked as deleted are included in the result.
+     * Retrieves a list of active trips associated with a specific user, identified by their user ID.
+     * Active trips are those that have not been marked as deleted.
      *
-     * @param userId the unique identifier of the user whose trips are to be retrieved
-     * @return a list of TripDto objects representing the trips of the specified user,
-     *         or an empty list if no trips are found, or all trips are marked as deleted
+     * @param userId the ID of the user
+     * @return a list of active trips, or an empty list if no active trips exist
      */
     public List<Trip> getTripsByUserId(Long userId) {
         List<Trip> trips = tripRepository.findAllByUserId(userId);
@@ -47,8 +48,9 @@ public class TripService {
     /**
      * Retrieves a trip by its unique identifier.
      *
-     * @param tripId the unique identifier of the trip to be retrieved
-     * @return the Trip object if found, or null if no trip exists.
+     * @param tripId the ID of the trip to be retrieved
+     * @return the trip associated with the provided ID
+     * @throws IllegalArgumentException if no trip is found
      */
     public Trip getTripById(Long tripId) {
         User currentUser = authUserProvider.getUser();
@@ -57,6 +59,13 @@ public class TripService {
         return trip;
     }
 
+    /**
+     * Creates a new trip for the currently authenticated user based on the provided trip data.
+     *
+     * @param tripDto the data transfer object containing details of the trip
+     * @throws IllegalArgumentException if the start date or end date is missing, or if the start date is after the end
+     * date.
+     */
     public void createTrip(TripDto tripDto) {
         if (tripDto.getStartDate() == null || tripDto.getEndDate() == null) {
             throw new IllegalArgumentException("Start date and end date are required");
@@ -70,6 +79,13 @@ public class TripService {
         tripRepository.save(trip);
     }
 
+    /**
+     * Updates the details of an existing trip with the provided information.
+     * If the trip does not exist, an IllegalArgumentException is thrown.
+     *
+     * @param tripId the ID of the trip to update
+     * @param tripDto an object containing the updated trip details such as title, start date, and end date
+     */
     @Transactional
     public void updateTrip(Long tripId, TripDto tripDto) {
         Trip trip = tripRepository.findById(tripId)
@@ -80,6 +96,12 @@ public class TripService {
         tripRepository.save(trip);
     }
 
+    /**
+     * Marks the specified trip as deleted by setting the current timestamp to its "deletedAt" field.
+     * If the trip is not found or is already marked as deleted, no action is taken.
+     *
+     * @param tripId the ID of the trip to be deleted
+     */
     public void deleteTrip(long tripId) {
         Trip trip = tripRepository.findById(tripId).orElse(null);
         if (trip == null || trip.getDeletedAt() != null) return;
@@ -87,19 +109,37 @@ public class TripService {
         tripRepository.save(trip);
     }
 
+    /**
+     * Adds an experience to the specified trip.
+     *
+     * @param experienceId the ID of the experience to add to the trip
+     * @param tripId the ID of the trip
+     * @throws IllegalArgumentException if the trip does not exist or if the experience is already associated with the
+     * trip
+     */
     @Transactional
     public void addExperienceToTrip(Long experienceId, Long tripId) {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + tripId + " does not exist"));
 
         if (trip.getExperienceList().contains(experienceId)) {
-            throw new IllegalArgumentException("Experience with ID " + experienceId + " is already added to this trip.");
+            throw new IllegalArgumentException("Experience with ID " + experienceId
+                    + " is already added to this trip.");
         }
         trip.getExperienceList().add(experienceId);
         tripRepository.save(trip);
     }
 
+
+    /**
+     * Retrieves a list of created by a specified user.
+     *
+     * @param userId the ID of the user whose recent trips are to be retrieved
+     * @return a list of the top 10 most recent trips associated with the specified user,
+     *         or an empty list if the user has no trips
+     */
     public List<Trip> getRecentTripsByUserId(Long userId) {
-        return tripRepository.findTop10ByUserIdOrderByCreatedDateDesc(userId);
+        Pageable pageable = PageRequest.of(0, 10);
+        return tripRepository.findTop10ByUserIdOrderByCreatedDateDesc(userId, pageable);
     }
 }

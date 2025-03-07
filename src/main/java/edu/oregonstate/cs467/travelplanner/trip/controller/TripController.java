@@ -43,25 +43,19 @@ public class TripController {
         if (trip == null) {
             throw new IllegalArgumentException("Trip not found for id: " + tripId);
         }
-        // Ensure experienceList is initialized to avoid null in the template
         if (trip.getExperienceList() == null) {
             trip.setExperienceList(new ArrayList<>());
         }
         List<Experience> experiences = experienceService.getExperiencesByIds(trip.getExperienceList());
 
-        // Add 'success' to the model if it exists
         if ("true".equals(success)) {
             model.addAttribute("successMessage", "Trip updated successfully!");
         }
-
         model.addAttribute("trip", trip);
         model.addAttribute("experiences", experiences);
         return "trip/trip-details";
     }
 
-    /**
-     * Show the trip creation form.
-     */
     @GetMapping(path = "/create")
     public String showAddTripForm(Model model) {
         model.addAttribute("trip", new TripDto());
@@ -93,13 +87,11 @@ public class TripController {
             throw new AccessDeniedException("Access denied");
         }
 
-        // Check for validation errors in TripDto
         if (result.hasErrors()) {
             model.addAttribute("errors", result.getAllErrors());
             return "trip/create-trip"; // Return to form with error messages
         }
 
-        // Attempt to create the trip
         try {
             tripService.createTrip(tripDto);
         } catch (IllegalArgumentException e) {
