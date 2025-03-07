@@ -72,6 +72,11 @@
                     <strong>Start Date:</strong> <span th:text="${trip.startDate}"></span><br>
                     <strong>End Date:</strong> <span th:text="${trip.endDate}"></span>
                 </p>
+                <div class="col-12 mt-3">
+                    <div th:if="${successMessage}" class="alert alert-success text-center" role="alert">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                </div>
 
                 <div>
                     <!-- Edit Button -->
@@ -84,7 +89,7 @@
                         Delete
                     </button>
 
-                    <!-- Delete Confirmation Modal -->
+                    <!-- Delete Confirmation -->
                     <div class="modal fade" id="confirmTripDeleteModal" tabindex="-1" aria-labelledby="confirmTripDeleteModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
