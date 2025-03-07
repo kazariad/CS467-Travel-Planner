@@ -33,10 +33,19 @@ function initGMapsApi() {
         gestureHandling: "cooperative"
     });
 
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const experiences = document.querySelectorAll(".experience:not([hidden])");
+    const infoWindow = new google.maps.InfoWindow({
+        headerDisabled: true
+    });
+    let selectedMarker;
+    map.addListener("click", (mapMouseEvent) => {
+        infoWindow.close();
+        selectedMarker = null;
+    });
+
+    const experiences = document.querySelectorAll(".experience");
     const markers = [];
     const bounds = {}
+    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < experiences.length; i++) {
         const experience = experiences[i];
 
@@ -55,8 +64,26 @@ function initGMapsApi() {
         const marker = new google.maps.marker.AdvancedMarkerElement({
             map,
             position,
+            gmpClickable: true,
             content: pinGlyph.element,
         });
+
+        const thisInfoWindow = experience.querySelector(".info-window");
+        thisInfoWindow.querySelector(".content").addEventListener("click", event => {
+            experience.scrollIntoView({behavior: "smooth"});
+        });
+
+        marker.addListener("click", (mapMouseEvent) => {
+            infoWindow.close();
+            if (selectedMarker !== marker) {
+                infoWindow.setContent(thisInfoWindow);
+                infoWindow.open(marker.map, marker);
+                selectedMarker = marker;
+            } else {
+                selectedMarker = null;
+            }
+        });
+
         markers.push(marker);
     }
     new markerClusterer.MarkerClusterer({ markers, map });

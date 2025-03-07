@@ -96,7 +96,6 @@
 
     <div th:if="${!noResults}" class="row mb-4">
         <div id="map" class="w-100" style="height: 50vh"></div>
-        <div id="infowindow"></div>
     </div>
 
     <div th:each="details : ${searchResult.experienceDetailsList}" th:with="experience = ${details.experience}"
@@ -144,10 +143,43 @@
                     </span>
                 </div>
             </a>
+        </div>
 
-            <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
-            <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
-            <input th:value="${experience.address}" type="hidden" name="address">
+        <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
+        <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
+        <input th:value="${experience.address}" type="hidden" name="address">
+
+        <div hidden>
+            <div class="info-window d-flex flex-column">
+                <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                   href="view-experience.html" target="_blank" class="fs-6 align-self-end"
+                   title="Open in a new window">
+                    <i class="bi bi-box-arrow-in-up-right"></i>
+                </a>
+                <div class="content d-flex flex-column row-gap-1" style="cursor: pointer">
+                    <h5 th:text="${experience.title}" class="m-0">Experience Title</h5>
+                    <div>
+                        <i class="bi bi-globe-europe-africa"></i>
+                        <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                            123 Fake St. City, State Country
+                        </span>
+                    </div>
+                    <div>
+                        <i class="bi bi-star"></i>
+                        <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                        <span th:if="${experience.ratingCnt > 0}"
+                              th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
+                        <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                        <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                              th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                    </div>
+                    <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
+                         th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                         class="mw-100 h-auto object-fit-cover align-self-center" alt="Experience photo"
+                         style="max-height: 200px"
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                </div>
+            </div>
         </div>
     </div>
 
