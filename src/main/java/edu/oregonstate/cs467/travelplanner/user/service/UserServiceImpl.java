@@ -89,6 +89,13 @@ public class UserServiceImpl implements UserService {
         return userProfileDto;
     }
 
+    /**
+     * Updates the password of a given user and records the update timestamp.
+     * The new password is securely encoded before being saved to the database.
+     *
+     * @param user        The User entity whose password is being updated.
+     * @param newPassword The new password to be set for the user.
+     */
     @Transactional
     @Override
     public void updatePassword(User user, String newPassword) {
