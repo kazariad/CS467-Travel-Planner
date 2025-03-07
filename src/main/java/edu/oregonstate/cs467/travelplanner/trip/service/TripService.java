@@ -142,4 +142,11 @@ public class TripService {
         Pageable pageable = PageRequest.of(0, 10);
         return tripRepository.findTop10ByUserIdOrderByCreatedDateDesc(userId, pageable);
     }
+
+    public void deleteExperienceFromTrip(long tripId, long experienceId) {
+        Trip trip = tripRepository.findById(tripId).orElse(null);
+        if (trip == null) return;
+        trip.getExperienceList().remove(experienceId);
+        tripRepository.save(trip);
+    }
 }

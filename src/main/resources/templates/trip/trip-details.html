@@ -126,9 +126,40 @@
                         th:each="experience : ${experiences}">
                         <td th:text="${experience.title}"></td>
                         <td>
+                            <!-- View Experience Button -->
                             <a type="button"
                                th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
-                               class="btn btn-primary">View Experience</a>
+                               class="btn btn-primary" style="width: 8rem;">View Experience</a>
+
+                            <!-- Delete Experience Button -->
+                            <button type="button" class="btn btn-danger" style="width: 8rem;" data-bs-toggle="modal"
+                                    data-bs-target="#confirmExperienceDeleteModal-${experience.experienceId}">
+                                Delete Experience
+                            </button>
+
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="confirmExperienceDeleteModal-${experience.experienceId}" tabindex="-1"
+                                 aria-labelledby="confirmExperienceDeleteModalLabel-${experience.experienceId}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h5 class="modal-title" id="confirmExperienceDeleteModalLabel-${experience.experienceId}">
+                                                Confirm Delete
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete "<span th:text="${experience.title}"></span>"?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form th:action="@{/trip/{tripId}/experience/delete/{experienceId}(tripId=${trip.tripId}, experienceId=${experience.experienceId})}" method="post">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

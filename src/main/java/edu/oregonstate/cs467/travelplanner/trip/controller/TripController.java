@@ -125,4 +125,11 @@ public class TripController {
         tripService.deleteTrip(tripId);
         return "redirect:/user/details?success=true&action=delete";
     }
+
+    @PostMapping(path = "/{tripId}/experience/delete/{experienceId}")
+    public String deleteExperienceFromTrip(@PathVariable long tripId, @PathVariable long experienceId) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        tripService.deleteExperienceFromTrip(tripId, experienceId);
+        return "redirect:/trip/{tripId}?success=true";
+    }
 }
