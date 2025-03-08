@@ -41,8 +41,7 @@ CREATE TABLE `experience`  (
     SPATIAL INDEX `location_spt_idx`(`location`),
     -- index to enable keyword search
     FULLTEXT INDEX `title_description_address_ft_idx`(`title`, `description`, `address`),
-    INDEX `user_id_fk_idx`(`user_id`) USING BTREE,
-    CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+    CONSTRAINT `experience_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 DROP TABLE IF EXISTS `trip`;
@@ -52,11 +51,11 @@ CREATE TABLE `trip` (
     `trip_title` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     `start_date` DATE NOT NULL,
     `end_date` DATE NOT NULL,
-    `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    `updated_at` DATETIME(6) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(6),
+    `created_at` DATETIME(6) NOT NULL,
+    `updated_at` DATETIME(6) DEFAULT NULL,
     `deleted_at` DATETIME(6) DEFAULT NULL,
     PRIMARY KEY (`trip_id`) USING BTREE,
-    CONSTRAINT `user_id_fk_trip` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `trip_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB CHARACTER SET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 -- join table
@@ -65,7 +64,8 @@ CREATE TABLE `trip_experience` (
     `trip_id` BIGINT NOT NULL,
     `experience_id` BIGINT NOT NULL,
     PRIMARY KEY (`trip_id`, `experience_id`) USING BTREE,
-    CONSTRAINT `trip_fk` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `te_trip_id_fk` FOREIGN KEY (`trip_id`) REFERENCES `trip` (`trip_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `te_experience_id_fk` FOREIGN KEY (`experience_id`) REFERENCES `experience` (`experience_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB CHARACTER SET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

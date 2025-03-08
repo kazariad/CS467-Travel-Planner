@@ -26,10 +26,10 @@ INSERT INTO `user` VALUES (2, 'Luís Roberto Barroso', 'luisbrasil', '{bcrypt}$2
 -- Records of trips
 -- ----------------------------
 INSERT INTO `trip` (`trip_id`, `user_id`, `trip_title`, `start_date`, `end_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 3, 'California Adventure', '2024-12-01', '2024-12-18', '2024-11-30 00:00:00', NULL, NULL),
-(2, 3, 'Seafood Tour in Tokyo', '2024-12-31', '2025-01-06', '2024-12-30 00:00:00', NULL, NULL),
-(3, 4, 'Brazilian Nights', '2025-01-06', '2025-01-21', '2025-01-05 00:00:00', NULL, NULL),
-(4, 5, 'Spiritual Retreat in India', '2025-01-15', '2025-01-20', '2025-01-14 00:00:00', NULL, NULL);
+(1, 1, 'California Adventure', '2024-12-01', '2024-12-18', '2024-11-30 00:00:00', NULL, NULL),
+(2, 1, 'Seafood Tour in Tokyo', '2024-12-31', '2025-01-06', '2024-12-30 00:00:00', NULL, NULL),
+(3, 2, 'Brazilian Nights', '2025-01-06', '2025-01-21', '2025-01-05 00:00:00', NULL, NULL),
+(4, 2, 'Spiritual Retreat in India', '2025-01-15', '2025-01-20', '2025-01-14 00:00:00', NULL, NULL);
 INSERT INTO `trip_experience` (`trip_id`, `experience_id`) VALUES
 -- California Adventure
 (1, 1),

@@ -9,12 +9,9 @@ import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvid
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ExperienceService {
@@ -35,15 +32,11 @@ public class ExperienceService {
     }
 
     public List<Experience> getExperiencesByIds(List<Long> experienceIds) {
-        if (experienceIds == null || experienceIds.isEmpty()) {
-            return Collections.emptyList();
-        }
         return experienceDao.findByIds(experienceIds);
     }
 
     public List<Experience> findByUserId(long userId) {
-        return Optional.ofNullable(experienceDao.findByUserId(userId))
-                .orElseGet(ArrayList::new);
+        return experienceDao.findByUserId(userId);
     }
 
     public long createExperience(CreateUpdateExperienceDto experienceDto) {

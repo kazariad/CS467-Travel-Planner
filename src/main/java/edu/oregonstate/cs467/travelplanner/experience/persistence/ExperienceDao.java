@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,9 +79,7 @@ public class ExperienceDao {
      * @return A list of {@link Experience} objects matching the provided IDs, or an empty list if no matches are found.
      */
     public List<Experience> findByIds(List<Long> experienceIds) {
-        if (experienceIds == null || experienceIds.isEmpty()) {
-            return Collections.emptyList();
-        }
+        if (experienceIds.isEmpty()) return List.of();
 
         String sql = """
             SELECT *, 
