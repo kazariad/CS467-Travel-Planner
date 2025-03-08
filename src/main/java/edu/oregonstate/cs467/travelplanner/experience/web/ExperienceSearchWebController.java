@@ -81,7 +81,7 @@ public class ExperienceSearchWebController {
         Map<Long, String> submittedDurationMap = new HashMap<>();
         Map<Long, String> ratingMap = new HashMap<>();
         Map<Long, String> labelMap = new HashMap<>();
-        char c = 65;
+        char c = 'A';
         for (ExperienceDetails details : searchResult.getExperienceDetailsList()) {
             Experience experience = details.getExperience();
             submittedDurationMap.put(experience.getExperienceId(),
@@ -92,7 +92,7 @@ public class ExperienceSearchWebController {
                 ratingMap.put(experience.getExperienceId(), rating);
             }
             labelMap.put(experience.getExperienceId(), String.valueOf(c++));
-            if (c > 90) c = 65;
+            if (c > 'Z') c = 'A';
         }
         model.addAttribute("submittedDurationMap", submittedDurationMap);
         model.addAttribute("ratingMap", ratingMap);

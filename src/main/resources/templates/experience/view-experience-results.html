@@ -105,9 +105,9 @@
         <div class="row g-0">
             <div class="view-on-map col-1 d-flex flex-row justify-content-center align-items-center column-gap-1"
                  title="View on map" style="cursor: pointer">
-                <span th:text="${labelMap.get(experience.experienceId)}" class="fs-4">A</span>
+                <span th:text="${labelMap.get(experience.experienceId)}" class="fs-5">A</span>
                 <img th:src="@{/images/gmaps-pin.png}" src="../../static/images/gmaps-pin.png" title="View on map"
-                     style="height: 2rem; width: auto">
+                     style="height: 1.5rem; width: auto">
             </div>
             <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
                href="view-experience.html" class="col-4 bg-black d-flex align-items-center">

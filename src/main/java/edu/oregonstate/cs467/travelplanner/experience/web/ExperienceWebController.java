@@ -183,41 +183,4 @@ public class ExperienceWebController {
         tripService.addExperienceToTrip(experienceId, tripId);
         return "redirect:/trip/" + tripId + "?success=experience-added";
     }
-
-    @GetMapping(path = "/search")
-    public String searchExperiences(@ModelAttribute ExperienceSearchForm searchForm) {
-        searchForm.normalize();
-        ExperienceSearchParams params = convertSearchFormToParams(searchForm);
-        ExperienceSearchResult result = experienceService.search(params);
-        return "n/a";
-    }
-
-    ExperienceSearchParams convertSearchFormToParams(ExperienceSearchForm form) {
-        ExperienceSearchParams params = new ExperienceSearchParams();
-        params.setKeywords(form.getKeywords());
-
-        if (form.getLocationLat() != null && form.getLocationLng() != null && form.getDistanceMiles() != null) {
-            params.setLocation(new ExperienceSearchLocationParams(
-                    form.getLocationLat(), form.getLocationLng(), form.getDistanceMiles() * 1609.34));
-        }
-
-        switch (form.getSort()) {
-            case "bestmatch":
-                params.setSort(ExperienceSearchSort.KEYWORD_MATCH);
-                break;
-            case "distance":
-                params.setSort(ExperienceSearchSort.DISTANCE);
-                break;
-            case "rating":
-                params.setSort(ExperienceSearchSort.RATING);
-                break;
-            case "newest":
-                params.setSort(ExperienceSearchSort.NEWEST);
-                break;
-        }
-
-        params.setOffset(form.getOffset());
-        params.setLimit(10);
-        return params;
-    }
 }

@@ -47,11 +47,10 @@ function initGMapsApi() {
     const experiences = document.querySelectorAll(".experience");
     const markers = [];
     const bounds = {}
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (let i = 0; i < experiences.length; i++) {
         const experience = experiences[i];
 
-        const label = labels[i % labels.length];
+        const label = experience.querySelector("div.view-on-map span").textContent;
         const pinGlyph = new google.maps.marker.PinElement({
             glyph: label,
             glyphColor: "white",
@@ -93,23 +92,23 @@ function initGMapsApi() {
     new markerClusterer.MarkerClusterer({ markers, map });
 
     // https://stackoverflow.com/a/4065006
-    google.maps.event.addListenerOnce(map, "idle", function() {
-        if (!map.getZoom() || map.getZoom() > 16) map.setZoom(16);
+    google.maps.event.addListenerOnce(map, "idle", () => {
+        if (map.getZoom() > 16) map.setZoom(16);
     });
     map.fitBounds(bounds);
 }
 
 function extendBounds(bounds, position) {
-    if (!bounds.north || position.lat > bounds.north) bounds.north = position.lat;
-    if (!bounds.south || position.lat < bounds.south) bounds.south = position.lat;
-    if (!bounds.east || position.lng > bounds.east) bounds.east = position.lng;
-    if (!bounds.west || position.lng < bounds.west) bounds.west = position.lng;
+    if (bounds.north == null || position.lat > bounds.north) bounds.north = position.lat;
+    if (bounds.south == null || position.lat < bounds.south) bounds.south = position.lat;
+    if (bounds.east == null || position.lng > bounds.east) bounds.east = position.lng;
+    if (bounds.west == null || position.lng < bounds.west) bounds.west = position.lng;
 }
 
 function showInfoWindow(marker, content, zoom) {
     infoWindow.close();
-    map.setCenter(marker.position);
-    if (zoom !== undefined) map.setZoom(zoom);
+    map.panTo(marker.position);
+    if (zoom != null) map.setZoom(zoom);
     infoWindow.setContent(content);
     infoWindow.open({
         anchor: marker,
@@ -123,7 +122,7 @@ function autocompletePlaceSelected() {
     const place = autocomplete.getPlace();
     let location = place.geometry?.location;
     let formattedAddress = place.formatted_address;
-    if (!formattedAddress || !location) {
+    if (location == null || formattedAddress == null) {
         // autocompleteInput.classList.add("is-invalid");
         return;
     }

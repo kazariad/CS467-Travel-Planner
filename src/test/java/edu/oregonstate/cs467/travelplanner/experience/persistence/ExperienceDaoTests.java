@@ -28,12 +28,14 @@ class ExperienceDaoTests extends AbstractBaseTest {
     @Autowired
     private ExperienceDao dao;
 
-    private Experience exp1, exp2;
+    private Experience exp1, exp2, exp3, exp4;
 
     @BeforeEach
     void beforeEach() throws Exception {
         exp1 = objectMapper.readValue(new ClassPathResource("/json/Experience/1.json").getInputStream(), Experience.class);
         exp2 = objectMapper.readValue(new ClassPathResource("/json/Experience/2.json").getInputStream(), Experience.class);
+        exp3 = objectMapper.readValue(new ClassPathResource("/json/Experience/3.json").getInputStream(), Experience.class);
+        exp4 = objectMapper.readValue(new ClassPathResource("/json/Experience/4.json").getInputStream(), Experience.class);
     }
 
     @Test
@@ -53,8 +55,12 @@ class ExperienceDaoTests extends AbstractBaseTest {
     @Test
     @Sql(scripts = "/sql/Experience/1.sql")
     @Sql(scripts = "/sql/Experience/2.sql")
+    @Sql(scripts = "/sql/Experience/3.sql")
     void findByIds() throws Exception {
-        var actual = dao.findByIds(List.of(1L, 2L));
+        var actual = dao.findByIds(List.of(1L, 2L, 3L));
+        assertThat(actual).usingRecursiveComparison().isEqualTo(List.of(exp2, exp3));
+
+        actual = dao.findByIds(List.of(2L));
         assertThat(actual).usingRecursiveComparison().isEqualTo(List.of(exp2));
 
         actual = dao.findByIds(List.of());
@@ -94,9 +100,11 @@ class ExperienceDaoTests extends AbstractBaseTest {
     @Test
     @Sql(scripts = "/sql/Experience/1.sql")
     @Sql(scripts = "/sql/Experience/2.sql")
+    @Sql(scripts = "/sql/Experience/3.sql")
+    @Sql(scripts = "/sql/Experience/4.sql")
     void findByUserId() throws Exception {
         var actual = dao.findByUserId(1);
-        assertThat(actual).isEmpty();
+        assertThat(actual).usingRecursiveComparison().isEqualTo(List.of(exp3, exp4));
 
         actual = dao.findByUserId(2);
         assertThat(actual).usingRecursiveComparison().isEqualTo(List.of(exp2));
