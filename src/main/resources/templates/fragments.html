@@ -27,7 +27,8 @@
             <ul class="navbar-nav">
                 <li th:if="${!@authenticatedUserProvider.isAnyUser()}" class="nav-item">
                     <a th:href="@{/login}" href="login.html" class="nav-link text-white">
-                        <i class="bi bi-person-fill"></i> Login
+                        <i class="bi bi-person-fill"></i>
+                        Login
                     </a>
                 </li>
                 <li th:if="${@authenticatedUserProvider.isAnyUser()}" class="nav-item dropdown">

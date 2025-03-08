@@ -117,8 +117,11 @@ public class ExperienceWebController {
     @PostMapping(path = "/create")
     public String createExperience(
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("autocompleteText", generateAutocompleteText(experienceDto));
             return "experience/create-update-experience";
         } else {
             long experienceId = experienceService.createExperience(experienceDto);
@@ -135,6 +138,7 @@ public class ExperienceWebController {
         CreateUpdateExperienceDto experienceDto = new CreateUpdateExperienceDto(experience);
         model.addAttribute("experienceId", experienceId);
         model.addAttribute("experienceDto", experienceDto);
+        model.addAttribute("autocompleteText", generateAutocompleteText(experienceDto));
         return "experience/create-update-experience";
     }
 
@@ -142,8 +146,11 @@ public class ExperienceWebController {
     public String updateExperience(
             @PathVariable long experienceId,
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("autocompleteText", generateAutocompleteText(experienceDto));
             return "experience/create-update-experience";
         } else {
             experienceService.updateExperience(experienceId, experienceDto);
@@ -154,7 +161,7 @@ public class ExperienceWebController {
     @PostMapping(path = "/{experienceId}/delete")
     public String deleteExperience(@PathVariable long experienceId) {
         experienceService.deleteExperience(experienceId);
-        return "redirect:/";
+        return "redirect:/user/details";
     }
 
     @GetMapping("/{experienceId}/add-to-trip")
@@ -181,5 +188,11 @@ public class ExperienceWebController {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
         tripService.addExperienceToTrip(experienceId, tripId);
         return "redirect:/trip/" + tripId + "?success=experience-added";
+    }
+
+    String generateAutocompleteText(CreateUpdateExperienceDto experienceDto) {
+        if (experienceDto.getAddress() != null) return experienceDto.getAddress();
+        if (experienceDto.getLocationLat() == null || experienceDto.getLocationLng() == null) return null;
+        return String.format("%.6f, %.6f", experienceDto.getLocationLat(), experienceDto.getLocationLng());
     }
 }
