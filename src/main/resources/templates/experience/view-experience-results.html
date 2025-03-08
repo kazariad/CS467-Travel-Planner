@@ -111,8 +111,8 @@
             </div>
             <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
                href="view-experience.html" class="col-4 bg-black d-flex align-items-center">
-                <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
-                     th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
+                     th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                      class="w-100 object-fit-cover" alt="Experience photo" style="min-height: 100%; max-height: 18vh"
                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
             </a>
@@ -179,8 +179,8 @@
                         <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
                               th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
                     </div>
-                    <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
-                         th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                    <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
+                         th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                          class="mw-100 h-auto object-fit-cover align-self-center" alt="Experience photo"
                          style="max-height: 200px"
                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">

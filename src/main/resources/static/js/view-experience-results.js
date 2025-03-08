@@ -71,7 +71,10 @@ function initGMapsApi() {
 
         const thisInfoWindow = experience.querySelector(".info-window");
         thisInfoWindow.querySelector(".content").addEventListener("click", event => {
-            experience.scrollIntoView({behavior: "smooth"});
+            experience.scrollIntoView({
+                block: "center",
+                behavior: "auto"
+            });
         });
 
         marker.addListener("click", (mapMouseEvent) => {
@@ -85,7 +88,7 @@ function initGMapsApi() {
         markers.push(marker);
 
         experience.querySelector(".view-on-map").addEventListener("click", event => {
-            searchForm.scrollIntoView({behavior: "smooth"});
+            searchForm.scrollIntoView({behavior: "auto"});
             showInfoWindow(marker, thisInfoWindow, 16);
         });
     }
