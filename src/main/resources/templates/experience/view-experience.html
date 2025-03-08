@@ -38,7 +38,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a th:href="@{/user/details}" href="../user-details.html" class="dropdown-item">
+                            <a th:href="@{/user/details}" href="../user/user-details.html" class="dropdown-item">
                                 My Account
                             </a>
                         </li>
@@ -73,78 +73,89 @@
         -->
         <h1 class="col mb-4" th:text="${experience.title}">Experience Title</h1>
     </div>
-    <a th:href="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}" class="btn btn-primary">
-        Add to Trip
-    </a>
-    <div th:if="${isAuthor}" class="row gx-5 mb-2">
 
+    <div class="row gy-2 mb-3" th:with="isAuthor = ${@authenticatedUserProvider.isUserWithId(experience.userId)}">
+        <div class="col-auto">
+            <a th:href="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}"
+               href="../trip/add-experience-to-trip.html" class="btn btn-sm btn-primary" style="width: 7rem">
+                <i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Add to Trip
+            </a>
+        </div>
 
-        <a th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
-           href="./create-update-experience.html" class="col-auto">
-            <button type="button" class="btn btn-primary btn-sm" style="width: 4rem">Edit</button>
-        </a>
+        <div class="col-auto">
+            <a th:if="${isAuthor}" th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
+               href="create-update-experience.html" class="btn btn-sm btn-outline-primary" style="width: 7rem">
+                <i class="bi bi-pencil"></i>&nbsp;&nbsp;Edit
+            </a>
+        </div>
 
-        <button type="button" class="btn btn-danger btn-sm col-auto"
-                data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" style="width: 4rem">
-            Delete
-        </button>
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h1 class="modal-title fs-5 w-100" id="confirmDeleteModalLabel">
-                            Are you sure you want to delete this Experience?
-                        </h1>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <form th:action="@{/experience/{experienceId}/delete(experienceId=${experienceId})}"
-                              action="#" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
-                                Yes
+        <div class="col-auto">
+            <button th:if="${isAuthor}" type="button" class="btn btn-sm btn-outline-danger" style="width: 7rem"
+                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                <i class="bi bi-trash"></i>&nbsp;&nbsp;Delete
+            </button>
+            <div th:if="${isAuthor}" class="modal fade" id="confirmDeleteModal" tabindex="-1"
+                 aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h1 class="modal-title fs-5 w-100" id="confirmDeleteModalLabel">
+                                Are you sure you want to delete this Experience?
+                            </h1>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <form th:action="@{/experience/{experienceId}/delete(experienceId=${experienceId})}"
+                                  action="#" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
+                                    Yes
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width: 3rem">
+                                No
                             </button>
-                        </form>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width: 3rem">
-                            No
-                        </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <p class="col mb-2">
-            <!-- Boostrap icon prepended to the text, in this case a map-pin -->
-            <i class="bi bi-pin-map"></i>
-            <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+    <div class="row bg-body-secondary py-1 mb-3">
+        <div class="row mb-2">
+            <div class="col">
+                <i class="bi bi-globe-europe-africa"></i>&nbsp;
+                <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
                 123 Fake St. City, State Country
             </span>
-        </p>
-    </div>
+            </div>
+        </div>
 
-    <div class="row">
-        <p class="col mb-2">
-            <i class="bi bi-calendar-date"></i>
-            <span th:text="${#temporals.format(experience.eventDate)}">January 1, 2025</span>
-        </p>
-    </div>
+        <div class="row mb-2">
+            <div class="col">
+                <i class="bi bi-calendar-date"></i>&nbsp;
+                <span th:text="${#temporals.format(experience.eventDate)}">January 1, 2025</span>
+            </div>
+        </div>
 
-    <div class="row">
-        <p class="col mb-2">
-            <i class="bi bi-star"></i>
-            <span th:if="${experience.ratingCnt == 0}">No ratings</span>
-            <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.67 / 5.0</span>
-            <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-            <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                  th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
-        </p>
-    </div>
+        <div class="row mb-2">
+            <div class="col">
+                <i class="bi bi-star"></i>&nbsp;
+                <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.6 / 5.0</span>
+                <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                      th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+            </div>
+        </div>
 
-    <div class="row">
-        <p class="col mb-4">
-            <i class="bi bi-person"></i>
-            <span th:text="${'Submitted by ' + author + ' ' + submittedDuration + ' ago'}">Submitted by username 5 days ago</span>
-        </p>
+        <div class="row">
+            <div class="col">
+                <i class="bi bi-person"></i>&nbsp;
+                <span th:text="${'Submitted ' + submittedDuration + ' ago by ' + author}">
+                Submitted 5 days ago by username
+            </span>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap tab component for switching between the Experience photo, map view, and street view displays -->
@@ -166,9 +177,9 @@
         </li>
     </ul>
 
-    <div class="tab-content overflow-hidden mb-4" style="height: 50vh">
+    <div class="row tab-content overflow-hidden mb-3" style="height: 50vh; min-height: min(500px, 75vh)">
         <!-- Add a black background to the photo -->
-        <div class="tab-pane w-100 h-100 bg-black fade show active" id="photo-tab-pane"
+        <div class="tab-pane w-100 h-100 p-0 bg-black fade show active" id="photo-tab-pane"
              role="tabpanel" aria-labelledby="photo-tab" tabindex="0">
             <div class="w-100 h-100 d-flex justify-content-center align-items-center">
                 <!--
@@ -183,7 +194,8 @@
                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
             </div>
         </div>
-        <div class="tab-pane w-100 h-100 fade" id="map-tab-pane" role="tabpanel" aria-labelledby="map-tab" tabindex="0">
+        <div class="tab-pane w-100 h-100 p-0 fade" id="map-tab-pane"
+             role="tabpanel" aria-labelledby="map-tab" tabindex="0">
             <iframe
                     class="w-100 h-100"
                     referrerpolicy="no-referrer-when-downgrade"
@@ -191,8 +203,8 @@
                     src="https://www.google.com/maps/embed/v1/view?key=AIzaSyDuFGE39oMheD0Y3071eSpRdA8ib4F5OFw&center=33.985778,-118.472896&zoom=19">
             </iframe>
         </div>
-        <div class="tab-pane w-100 h-100 fade" id="street-view-tab-pane" role="tabpanel"
-             aria-labelledby="street-view-tab" tabindex="0">
+        <div class="tab-pane w-100 h-100 p-0 fade" id="street-view-tab-pane"
+             role="tabpanel" aria-labelledby="street-view-tab" tabindex="0">
             <iframe
                     class="w-100 h-100"
                     referrerpolicy="no-referrer-when-downgrade"
@@ -203,7 +215,7 @@
     </div>
 
     <!-- th:if allows omitting HTML blocks based on some condition, in this case the Experience must have a description -->
-    <div class="row" th:if="${experience.description}">
+    <div th:if="${experience.description}" class="row">
         <p class="col" th:text="${experience.description}" style="white-space: pre-wrap">Description</p>
     </div>
 
