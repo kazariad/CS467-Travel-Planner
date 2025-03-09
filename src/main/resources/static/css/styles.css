@@ -31,6 +31,17 @@ main {
     box-shadow: -3px 0 5px rgb(0 0 0 / 0.15), 3px 0 5px rgb(0 0 0 / 0.15);
 }
 
+#searchForm input:focus, #searchForm select:focus {
+    /* Bring to top when focused (z-axis) so box-shadow outline is fully visible*/
+    position: relative;
+}
+
+@media (min-width: 992px) {
+    #searchForm [name='distanceMiles'], #searchForm [name='keywords'] {
+        border-radius: 0;
+    }
+}
+
 footer {
     flex: 1 0 auto;
     display: flex;

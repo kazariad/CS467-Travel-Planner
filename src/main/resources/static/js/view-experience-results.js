@@ -50,7 +50,7 @@ function initGMapsApi() {
     for (let i = 0; i < experiences.length; i++) {
         const experience = experiences[i];
 
-        const label = experience.querySelector("div.view-on-map span").textContent;
+        const label = experience.querySelector(".view-on-map .label").textContent;
         const pinGlyph = new google.maps.marker.PinElement({
             glyph: label,
             glyphColor: "white",
@@ -70,7 +70,9 @@ function initGMapsApi() {
         });
 
         const thisInfoWindow = experience.querySelector(".info-window");
-        thisInfoWindow.querySelector(".content").addEventListener("click", event => {
+        thisInfoWindow.querySelector("button.view-in-list").addEventListener("click", event => {
+            event.stopPropagation();
+            event.preventDefault();
             experience.scrollIntoView({
                 block: "center",
                 behavior: "auto"
@@ -87,7 +89,9 @@ function initGMapsApi() {
         });
         markers.push(marker);
 
-        experience.querySelector(".view-on-map").addEventListener("click", event => {
+        experience.querySelector("button.view-on-map").addEventListener("click", event => {
+            event.stopPropagation();
+            event.preventDefault();
             searchForm.scrollIntoView({behavior: "auto"});
             showInfoWindow(marker, thisInfoWindow, 16);
         });
