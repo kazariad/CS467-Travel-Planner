@@ -25,29 +25,27 @@ public class UserProfileController {
     @Autowired
     private AuthenticatedUserProvider authUserProvider;
 
-    /**
-     * Handles the request to view the details of the currently authenticated user.
-     *
-     * @param model the model instance to add attributes to render the view
-     * @return the name of the view template to render (e.g., "user/user-details")
-     * @throws AccessDeniedException if no user is authenticated
-     */
     @GetMapping("/user/details")
-    public String viewUserDetails(Model model) {
+    public String viewUserDetails(@RequestParam(name = "success", required = false) String success,
+                                  @RequestParam(name = "action", required = false) String action,
+                                  Model model) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
         User user = authUserProvider.getUser();
         UserProfileDto userProfileDto = userService.getUserProfile(user);
+        if ("true".equals(success)) {
+            if ("delete".equals(action)) {
+                model.addAttribute("successMessage", "Trip was successfully deleted!");
+            } else if ("add".equals(action)) {
+                model.addAttribute("successMessage", "Trip was successfully added!");
+            } else {
+                model.addAttribute("successMessage", "Operation successful!");
+            }
+        }
         model.addAttribute("user", userProfileDto);
         return "user/user-details";
     }
 
-    /**
-     * Handles the GET request to load the form for updating the user's password.
-     * Adds necessary attributes to the model to render the form view.
-     *
-     * @param model the model instance to add attributes to render the view
-     * @return the name of the view template used to display the password update form, "user/update-password"
-     */
+
     @GetMapping("/user/update-password")
     public String loadUpdatePasswordForm(Model model) {
         model.addAttribute("newPassword", "");
@@ -55,16 +53,6 @@ public class UserProfileController {
         return "user/update-password";
     }
 
-    /**
-     * Handles the POST request to update the password of the currently authenticated user.
-     * This method ensures that the authenticated user's password is securely updated
-     * in the database and logs the user out of the session.
-     *
-     * @param newPassword the new password to set for the authenticated user
-     * @param request the current HTTP servlet request containing session information
-     * @return a redirection URL to the login page with a success indicator
-     * @throws AccessDeniedException if no user is currently authenticated
-     */
     @PostMapping("/user/update-password")
     public String updatePassword(@RequestParam("newPassword") String newPassword, HttpServletRequest request) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");

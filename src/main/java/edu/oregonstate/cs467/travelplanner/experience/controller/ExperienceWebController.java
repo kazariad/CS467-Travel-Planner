@@ -3,6 +3,8 @@ package edu.oregonstate.cs467.travelplanner.experience.controller;
 import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
+import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
 import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
@@ -21,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 @Controller
 @RequestMapping("/experience")
@@ -30,12 +33,14 @@ public class ExperienceWebController {
     private final UserService userService;
     private final TimeUtils timeUtils;
     private final String gmapsApiKey;
+    private final TripService tripService;
 
     public ExperienceWebController(
             AuthenticatedUserProvider authUserProvider,
             ExperienceService experienceService,
             UserService userService,
             TimeUtils timeUtils,
+            TripService tripService,
             @Value("${google.maps.api.key}")
             String gmapsApiKey
     ) {
@@ -44,6 +49,7 @@ public class ExperienceWebController {
         this.userService = userService;
         this.timeUtils = timeUtils;
         this.gmapsApiKey = gmapsApiKey;
+        this.tripService = tripService;
     }
 
     @ModelAttribute
@@ -152,5 +158,31 @@ public class ExperienceWebController {
     public String deleteExperience(@PathVariable long experienceId) {
         experienceService.deleteExperience(experienceId);
         return "redirect:/";
+    }
+
+    @GetMapping("/{experienceId}/add-to-trip")
+    public String addToTripForm(
+            @PathVariable Long experienceId,
+            Model model
+    ) {
+        if (!authUserProvider.isAnyUser()) {
+            return "redirect:/registration";
+        }
+        User currentUser = authUserProvider.getUser();
+        List<Trip> userTrips = tripService.getRecentTripsByUserId(currentUser.getUserId());
+        Experience experience = experienceService.getExperience(experienceId);
+        model.addAttribute("trips", userTrips);
+        model.addAttribute("experience", experience);
+        return "trip/add-experience-to-trip";
+    }
+
+    @PostMapping("/{experienceId}/add-to-trip")
+    public String addExperienceToTrip(
+            @PathVariable Long experienceId,
+            @RequestParam Long tripId
+    ) {
+        if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        tripService.addExperienceToTrip(experienceId, tripId);
+        return "redirect:/trip/" + tripId + "?success=experience-added";
     }
 }

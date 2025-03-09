@@ -22,4 +22,23 @@ INSERT INTO `experience` VALUES (5, 'A Serene and Spiritual Experience', 'This H
 INSERT INTO `user` VALUES (1, 'Joe Smith', 'jsmith57', '{noop}password', '2024-12-30 02:03:52.000000', NULL);
 INSERT INTO `user` VALUES (2, 'Luís Roberto Barroso', 'luisbrasil', '{bcrypt}$2a$10$r.5nrugrtMFGWVxfXSom2enSMi4/MBrntK21m9ypSr.39691b8SYq', '2025-01-20 13:59:20.000000', NULL);
 
+-- ----------------------------
+-- Records of trips
+-- ----------------------------
+INSERT INTO `trip` (`trip_id`, `user_id`, `trip_title`, `start_date`, `end_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 'California Adventure', '2024-12-01', '2024-12-18', '2024-11-30 00:00:00', NULL, NULL),
+(2, 1, 'Seafood Tour in Tokyo', '2024-12-31', '2025-01-06', '2024-12-30 00:00:00', NULL, NULL),
+(3, 2, 'Brazilian Nights', '2025-01-06', '2025-01-21', '2025-01-05 00:00:00', NULL, NULL),
+(4, 2, 'Spiritual Retreat in India', '2025-01-15', '2025-01-20', '2025-01-14 00:00:00', NULL, NULL);
+INSERT INTO `trip_experience` (`trip_id`, `experience_id`) VALUES
+-- California Adventure
+(1, 1),
+(1, 2),
+-- Seafood Tour in Tokyo
+(2, 3),
+-- Brazilian Nights
+(3, 4),
+-- Spiritual Retreat in India
+(4, 5);
+
 SET FOREIGN_KEY_CHECKS = 1;

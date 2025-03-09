@@ -72,6 +72,30 @@ public class ExperienceDao {
                 .optional();
     }
 
+
+    /**
+     * Retrieves a list of experiences based on the provided list of experience IDs, excluding soft-deleted records
+     * @param experienceIds A list of experience IDs to search for.
+     * @return A list of {@link Experience} objects matching the provided IDs, or an empty list if no matches are found.
+     */
+    public List<Experience> findByIds(List<Long> experienceIds) {
+        if (experienceIds.isEmpty()) return List.of();
+
+        String sql = """
+            SELECT *, 
+                   ST_Latitude(location) AS location_lat, 
+                   ST_Longitude(location) AS location_lng 
+            FROM experience
+            WHERE experience_id IN (:experienceIds)
+            AND deleted_at IS NULL
+            """;
+
+        return jdbcClient.sql(sql)
+                .param("experienceIds", experienceIds) // Bind the IDs to the query
+                .query(rowMapper)
+                .list();
+    }
+
     /**
      * Save a new Experience in the database.  Experience's ID will be updated with the generated key.
      * @param experience

@@ -1,6 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.user.dto.UserProfileDto;
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ExperienceService experienceService;
+
+    @Autowired
+    private TripService tripService;
 
     /**
      * Checks whether a username already exists in the repository.
@@ -81,9 +85,17 @@ public class UserServiceImpl implements UserService {
         userProfileDto.setFullName(user.getFullName());
         userProfileDto.setUsername(user.getUsername());
         userProfileDto.setExperienceList(experienceService.findByUserId(user.getUserId()));
+        userProfileDto.setTripList(tripService.getTripsByUserId(user.getUserId()));
         return userProfileDto;
     }
 
+    /**
+     * Updates the password of a given user and records the update timestamp.
+     * The new password is securely encoded before being saved to the database.
+     *
+     * @param user        The User entity whose password is being updated.
+     * @param newPassword The new password to be set for the user.
+     */
     @Transactional
     @Override
     public void updatePassword(User user, String newPassword) {

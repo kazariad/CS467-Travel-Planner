@@ -2,6 +2,9 @@ package edu.oregonstate.cs467.travelplanner.user.service;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.trip.dto.TripDto;
+import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
+import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.repository.UserRepository;
 import edu.oregonstate.cs467.travelplanner.user.dto.UserProfileDto;
@@ -19,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +38,9 @@ public class UserServiceTest {
 
     @Mock
     private ExperienceService experienceService;
+
+    @Mock
+    private TripService tripService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -174,13 +181,13 @@ public class UserServiceTest {
         verify(userRepository, times(1)).findByUsername("unknownUser");
     }
 
+
     /**
-     * Tests getUserProfile() method to ensure it correctly converts a User entity into UserProfileDto
+     * Tests that the getUserProfile() method in the UserService class retrieves the correct
+     * user profile.
      *
-     * Verifies:
-     *  - The returned UserProfileDto is not null.
-     *  - fullName and username fields are correctly mapped.
-     *  - The
+     * This ensures that the UserProfileDto returned by the getUserProfile() method matches
+     * the expected output and that external service dependencies are invoked properly.
      */
     @Test
     public void testGetUserProfile() {
@@ -197,21 +204,44 @@ public class UserServiceTest {
                 "of food options. The beach itself is clean, great for a relaxing stroll or a game of volleyball. " +
                 "While it can get crowded, the energy is part of the charm. Perfect for people-watching, biking, or " +
                 "just soaking in the California vibes. Highly recommended for anyone looking to experience the heart " +
-                "of LA’s beach culture!'");
+                "of LA’s beach culture!");
         experience1.setEventDate(LocalDate.of(2024, 12, 18));
         experience1.setLocationLat(33.986267981122);
         experience1.setLocationLng(-118.473022732421);
         experience1.setAddress("1701 Ocean Front Walk, Venice, CA 90291");
-        experience1.setImageUrl("'https://drupal-prod.visitcalifornia.com/sites/default/files/styles/fixed_300" +
-                "/public/VC_California101_VeniceBeach_Stock_RF_638340372_1280x640.jpg.webp?itok=vHd_tD-I");
+        experience1.setImageUrl("https://drupal-prod.visitcalifornia.com/sites/default/files/styles/fixed_300/public/VC_California101_VeniceBeach_Stock_RF_638340372_1280x640.jpg.webp?itok=vHd_tD-I");
         experience1.setRatingCnt(1);
         experience1.setRatingSum(5);
         experience1.setUserId(1L);
         experience1.setCreatedAt(Instant.parse("2024-12-18T21:51:05.000000Z"));
-        when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
 
+        Trip trip = new Trip();
+        trip.setTripId(3L);
+        trip.setTripTitle("California Beach Trip");
+        trip.setStartDate(LocalDate.of(2024, 12, 15));
+        trip.setEndDate(LocalDate.of(2024, 12, 20));
+        trip.setExperienceList(List.of(experience1.getExperienceId()));
+
+        // Mock the services to return the expected data
+        when(experienceService.findByUserId(1L)).thenReturn(List.of(experience1));
+        when(tripService.getTripsByUserId(1L)).thenReturn(List.of(trip));
+
+        // Call the method under test
         UserProfileDto actual = userService.getUserProfile(testUser);
-        UserProfileDto expected = new UserProfileDto("Test User", "testUser", List.of(experience1));
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+        // the expected UserProfileDto
+        UserProfileDto expectedUserProfile = new UserProfileDto(
+                "Test User",
+                "testUser",
+                List.of(experience1),
+                List.of(trip)
+        );
+
+        // Verify the results
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expectedUserProfile);
+
+        // verifications to ensure mocks were invoked
+        verify(experienceService).findByUserId(1L);
+        verify(tripService).getTripsByUserId(1L);
     }
 }
