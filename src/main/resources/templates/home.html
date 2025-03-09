@@ -69,7 +69,7 @@
     </div>
 
     <div class="row">
-        <h1 class="col text-center display-4">Looking for that perfect getaway? Start here.</h1>
+        <h4 class="col text-center display-4">Looking for that perfect getaway? Start here.</h4>
     </div>
 
     <form th:action="@{/experience/search}" action="#" method="get" id="searchForm" novalidate
@@ -103,44 +103,53 @@
     </form>
 
     <div class="row mb-3">
-        <h1 class="col text-center display-6">Or, share your own Experience.</h1>
+        <h6 class="col text-center display-6">Or, share your own Experience.</h6>
     </div>
 
-    <div class="row justify-content-center mb-5">
+    <div class="row justify-content-center" style="margin-bottom: 5rem">
         <a th:href="@{/experience/create}" href="./experience/create" class="col-auto btn btn-primary">
             <i class="bi bi-upload"></i>
             Create Experience
         </a>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-md d-flex justify-content-center">
-            <h1 class="display-5">Some of our experiences include...</h1>
-        </div>
-    </div>
-    <div class="row mt-5 d-flex justify-content-center">
-        <div class="col-sm-2 m-2 text-center">
-            <img class="rounded-circle shadow-1-strong mb-4"
-                 src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Tiruvallikeni1.jpg" alt=""
-                 style="width: 150px; height: 150px;"/>
-            <p>A Serene and Spiritual Experience</p>
-            <p><i class="bi bi-pin-map"></i> Tamil Nadu, India</p>
-            <p><i class="bi bi-star"></i> 5.0 / 5.0</p>
-        </div>
-        <div class="col-sm-2 m-2 text-center">
-            <img class="rounded-circle shadow-1-strong mb-4" src="https://www.japan-guide.com/g20/3754_01.jpg" alt=""
-                 style="width: 150px; height: 150px;"/>
-            <p>A Hidden Gem for Seafood Lovers</p>
-            <p><i class="bi bi-pin-map"></i> Tokyo, Japan</p>
-            <p><i class="bi bi-star"></i> 4.9 / 5.0</p>
-        </div>
-        <div class="col-sm-2 m-2 text-center">
-            <img class="rounded-circle shadow-1-strong mb-4"
-                 src="https://www.visittheusa.com/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2024-09/05ffa2d9-31e9-473e-ba5a-98a9045e6d70.jpeg"
-                 alt="" style="width: 150px; height: 150px;"/>
-            <p>Breathtaking Views and Vibrant Atmosphere</p>
-            <p><i class="bi bi-pin-map"></i> Venice, California</p>
-            <p><i class="bi bi-star"></i> 5.0 / 5.0</p>
+    <div class="row rounded border bg-body-tertiary align-self-center" style="max-width: 900px">
+        <div class="col-12">
+            <div class="row">
+                <h6 class="col text-center display-6">Featured Experiences</h6>
+            </div>
+            <div class="row my-3">
+                <a th:each="experience : ${experiences}"
+                   th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                   href="experience/view-experience.html"
+                   class="col-12 col-md" style="text-decoration: inherit; color: inherit">
+                    <div class="card w-100 h-100 rounded overflow-hidden shadow">
+                        <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
+                             th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
+                             alt="Experience photo"
+                             class="w-100 object-fit-cover" style="aspect-ratio: 4/3"
+                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                        <div class="card-body">
+                            <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
+                            <div class="card-text">
+                                <i class="bi bi-globe-europe-africa"></i>
+                                <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                                123 Fake St. City, State Country
+                            </span>
+                            </div>
+                            <div class="card-text">
+                                <i class="bi bi-star"></i>
+                                <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                                <span th:if="${experience.ratingCnt > 0}"
+                                      th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
+                                <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                                <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                                      th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 
