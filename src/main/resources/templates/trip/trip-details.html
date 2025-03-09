@@ -62,8 +62,8 @@
 
             <h3 th:text="${trip.tripTitle}">Trip Title</h3>
             <p>
-                <strong>Start Date:</strong> <span th:text="${trip.startDate}"></span><br>
-                <strong>End Date:</strong> <span th:text="${trip.endDate}"></span>
+                <strong>Start Date:</strong> <span th:text="${#temporals.format(trip.startDate)}"></span><br>
+                <strong>End Date:</strong> <span th:text="${#temporals.format(trip.endDate)}"></span>
             </p>
             <div class="col-12 mt-3">
                 <div th:if="${successMessage}" class="alert alert-success text-center" role="alert">

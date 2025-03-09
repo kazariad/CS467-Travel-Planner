@@ -154,8 +154,8 @@
                 <tr th:if="${not #lists.isEmpty(user.tripList)}"
                     th:each="trip : ${user.tripList}">
                     <td th:text="${trip.tripTitle}"></td>
-                    <td th:text="${trip.startDate}"></td>
-                    <td th:text="${trip.endDate}"></td>
+                    <td th:text="${#temporals.format(trip.startDate)}">5</td>
+                    <td th:text="${#temporals.format(trip.endDate)}">5</td>
                     <td>
                         <a type="button"
                            th:href="@{/trip/{tripId}(tripId=${trip.tripId})}"
