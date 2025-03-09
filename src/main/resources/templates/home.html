@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div th:replace="~{fragments :: head}"></div>
+    <title>Home</title>
+</head>
+
+<body>
+<header th:replace="~{fragments :: header}"></header>
+    <div class="container-fluid p-5 mt-n5" style="background-color: #c9c9c9;">
+
+        <div class="row">
+            <div class="col-md d-flex justify-content-center">
+                <h1 class="display-1">Welcome</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md d-flex justify-content-center">
+                <h1 class="display-4">Looking for that perfect getaway? Start here.</h1>
+            </div>
+        </div>
+        <div class="row mt-5 d-flex justify-content-center">
+            <div class="col-sm-2 m-2 text-center">
+                <a th:href="@{/login}">
+                    <button  type="button" class="btn btn-light btn-lg">Log In</button>
+                </a>
+            </div>
+            <div class="col-sm-2 m-2 text-center">
+                <a th:href="@{/registration}">
+                    <button type="button" class="btn btn-light btn-lg">Register</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- TODO: Replace with a carousel, at the least figure out how to dynamically populate this with extant experiences -->
+
+        <div class="row mt-5">
+            <div class="col-md d-flex justify-content-center">
+                <h1 class="display-5">Some of our experiences include...</h1>
+            </div>
+        </div>
+        <div class="row mt-5 d-flex justify-content-center">
+            <div class="col-sm-2 m-2 text-center">
+                <img class="rounded-circle shadow-1-strong mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Tiruvallikeni1.jpg" alt="" style="width: 150px; height: 150px;" />
+                <p>A Serene and Spiritual Experience</p>
+                <p><i class="bi bi-pin-map"></i> Tamil Nadu, India</p>
+                <p><i class="bi bi-star"></i> 5.0 / 5.0</p>
+            </div>
+            <div class="col-sm-2 m-2 text-center">
+                <img class="rounded-circle shadow-1-strong mb-4" src="https://www.japan-guide.com/g20/3754_01.jpg" alt="" style="width: 150px; height: 150px;" />
+                <p>A Hidden Gem for Seafood Lovers</p>
+                <p><i class="bi bi-pin-map"></i> Tokyo, Japan</p>
+                <p><i class="bi bi-star"></i>  4.9 / 5.0</p>
+            </div>
+            <div class="col-sm-2 m-2 text-center">
+                <img class="rounded-circle shadow-1-strong mb-4" src="https://www.visittheusa.com/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2024-09/05ffa2d9-31e9-473e-ba5a-98a9045e6d70.jpeg" alt="" style="width: 150px; height: 150px;" />
+                <p>Breathtaking Views and Vibrant Atmosphere</p>
+                <p><i class="bi bi-pin-map"></i> Venice, California</p>
+                <p><i class="bi bi-star"></i> 5.0 / 5.0</p>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+</html>
