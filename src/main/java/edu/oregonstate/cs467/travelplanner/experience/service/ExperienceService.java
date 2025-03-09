@@ -1,8 +1,11 @@
 package edu.oregonstate.cs467.travelplanner.experience.service;
 
-import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.persistence.ExperienceDao;
+import edu.oregonstate.cs467.travelplanner.experience.persistence.ExperienceSearchDao;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchParams;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.ExperienceSearchResult;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.util.exception.ResourceNotFoundException;
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
@@ -17,11 +20,13 @@ import java.util.List;
 public class ExperienceService {
     private final AuthenticatedUserProvider authUserProvider;
     private final ExperienceDao experienceDao;
+    private final ExperienceSearchDao experienceSearchDao;
     private final Clock clock;
 
-    public ExperienceService(AuthenticatedUserProvider authUserProvider, ExperienceDao experienceDao, Clock clock) {
+    public ExperienceService(AuthenticatedUserProvider authUserProvider, ExperienceDao experienceDao, ExperienceSearchDao experienceSearchDao, Clock clock) {
         this.authUserProvider = authUserProvider;
         this.experienceDao = experienceDao;
+        this.experienceSearchDao = experienceSearchDao;
         this.clock = clock;
     }
 
@@ -69,5 +74,9 @@ public class ExperienceService {
 
         experience.setDeletedAt(Instant.now(clock));
         experienceDao.update(experience);
+    }
+
+    public ExperienceSearchResult search(ExperienceSearchParams params) {
+        return experienceSearchDao.search(params);
     }
 }

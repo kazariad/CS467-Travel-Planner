@@ -1,7 +1,7 @@
 package edu.oregonstate.cs467.travelplanner.experience.service;
 
 import edu.oregonstate.cs467.travelplanner.AbstractBaseTest;
-import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.util.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;

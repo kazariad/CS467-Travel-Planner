@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js" defer></script>
+    <script th:src="@{/js/view-experience-results.js}"
+            src="../../static/js/view-experience-results.js"
+            defer></script>
+    <script th:src="@{https://maps.googleapis.com/maps/api/js(key=${gmapsApiKey}, loading='async', libraries='marker,places', callback='initGMapsApi')}"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuFGE39oMheD0Y3071eSpRdA8ib4F5OFw&loading=async&libraries=marker,places&callback=initGMapsApi"
+            defer></script>
+
+    <title>Search Results</title>
+
+    <style>
+        #searchForm input:focus, #searchForm select:focus {
+            /* Bring to top when focused (z-axis) so box-shadow outline is fully visible*/
+            position: relative;
+        }
+
+        @media (min-width: 992px) {
+            #searchForm [name='distanceMiles'], #searchForm [name='keywords'] {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main class="container" th:with="noResults = ${searchResult.experienceDetailsList.isEmpty()}">
+    <form th:action="@{/experience/search}" th:object="${searchForm}" action="#" method="get"
+          class="row gx-0 mx-auto justify-content-center mb-4" id="searchForm" novalidate>
+        <div class="col-9 col-lg">
+            <input th:value="*{locationText}" type="search" id="autocomplete" placeholder="Location"
+                   aria-label="Location" class="form-control mb-1 rounded-end-0" maxlength="1000">
+        </div>
+        <input th:value="*{locationText}" type="hidden" name="locationText">
+        <input th:value="*{locationLat}" type="hidden" name="locationLat">
+        <input th:value="*{locationLng}" type="hidden" name="locationLng">
+        <div class="col-3 col-lg-auto">
+            <select name="distanceMiles" aria-label="Distance" class="form-select rounded-start-0">
+                <option value="-1" th:selected="*{distanceMiles == null}">Anywhere</option>
+                <option value="1" th:selected="*{distanceMiles == 1}">1 mile</option>
+                <option value="5" th:selected="*{distanceMiles == 5}">5 miles</option>
+                <option value="25" th:selected="*{distanceMiles == 25}">25 miles</option>
+                <option value="100" th:selected="*{distanceMiles == 100}">100 miles</option>
+            </select>
+        </div>
+        <!--
+         Create full-width dummy div to force row to break at <lg screen sizes
+         At lg+, set display = none to disable
+         https://getbootstrap.com/docs/5.3/utilities/display/
+         -->
+        <div class="w-100 d-lg-none"></div>
+        <div class="col-9 col-lg">
+            <input th:value="*{keywords}" type="search" name="keywords" placeholder="Keywords" aria-label="Keywords"
+                   class="form-control rounded-end-0" spellcheck="true" maxlength="100">
+        </div>
+        <div class="col-3 col-lg-auto">
+            <button type="submit" class="btn btn-success w-100 rounded-start-0 m-0" style="white-space: nowrap">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+
+    <div th:if="${noResults}" class="row text-center mt-5">
+        <h2>No results</h2>
+    </div>
+
+    <div th:if="${!noResults}" class="row justify-content-between align-items-center">
+        <h1 class="col">Results</h1>
+        <div class="dropdown col-auto">
+            <button class="btn btn-outline-primary dropdown-toggle"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu">
+                <li th:each="entry : ${sortByUrlMap}">
+                    <a th:if="${entry.getValue() == null}" th:text="${entry.getKey()}"
+                       class="dropdown-item active" href="javascript:;">
+                        Sort 1 (Active)
+                    </a>
+                    <a th:if="${entry.getValue() != null}" th:href="@{${entry.getValue()}}" th:text="${entry.getKey()}"
+                       class="dropdown-item" href="#">
+                        Sort 2
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div th:if="${!noResults}" class="row mb-4">
+        <div id="map" class="w-100" style="height: 50vh"></div>
+    </div>
+
+    <div th:each="details : ${searchResult.experienceDetailsList}" th:with="experience = ${details.experience}"
+         th:id="${experience.experienceId}" id="0"
+         class="experience card bg-body-tertiary border-secondary rounded-start overflow-hidden mb-4 m-auto"
+         style="max-width: 800px">
+        <div class="row g-0">
+            <div class="view-on-map col-1 d-flex flex-row justify-content-center align-items-center column-gap-1"
+                 title="View on map" style="cursor: pointer">
+                <span th:text="${labelMap.get(experience.experienceId)}" class="fs-5">A</span>
+                <img th:src="@{/images/gmaps-pin.png}" src="../../static/images/gmaps-pin.png" title="View on map"
+                     style="height: 1.5rem; width: auto">
+            </div>
+            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+               href="view-experience.html" class="col-4 bg-black d-flex align-items-center">
+                <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
+                     th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                     class="w-100 object-fit-cover" alt="Experience photo" style="min-height: 100%; max-height: 18vh"
+                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+            </a>
+            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+               href="view-experience.html" class="col d-flex flex-column row-gap-1 ps-4"
+               style="text-decoration: inherit; color: inherit">
+                <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
+                <div class="card-text">
+                    <i class="bi bi-globe-europe-africa"></i>
+                    <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                            123 Fake St. City, State Country
+                        </span>
+                </div>
+                <div class="card-text">
+                    <i class="bi bi-star"></i>
+                    <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                    <span th:if="${experience.ratingCnt > 0}"
+                          th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
+                    <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                    <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                          th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                </div>
+                <div class="card-text">
+                    <i class="bi bi-person"></i>
+                    <span th:text="${'Submitted ' + submittedDurationMap.get(experience.experienceId) + ' ago by ' + details.author}">
+                        Submitted 5 days ago by username
+                    </span>
+                </div>
+                <div th:if="${details.distanceMeters}" class="card-text">
+                    <i class="bi bi-pin-map"></i>
+                    <span th:text="${#numbers.formatDecimal(details.distanceMeters / 1609.34, 1, 1) + ' miles away'}"
+                          class="fw-bold">
+                        1.2 miles away
+                    </span>
+                </div>
+            </a>
+        </div>
+
+        <input th:value="${experience.locationLat}" type="hidden" name="locationLat">
+        <input th:value="${experience.locationLng}" type="hidden" name="locationLng">
+        <input th:value="${experience.address}" type="hidden" name="address">
+
+        <div hidden>
+            <div class="info-window d-flex flex-column">
+                <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                   href="view-experience.html" target="_blank" class="fs-6 align-self-end"
+                   title="Open in a new window">
+                    <i class="bi bi-box-arrow-in-up-right"></i>
+                </a>
+                <div class="content d-flex flex-column row-gap-1" style="cursor: pointer">
+                    <h5 th:text="${experience.title}" class="m-0">Experience Title</h5>
+                    <div>
+                        <i class="bi bi-globe-europe-africa"></i>
+                        <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                            123 Fake St. City, State Country
+                        </span>
+                    </div>
+                    <div>
+                        <i class="bi bi-star"></i>
+                        <span th:if="${experience.ratingCnt == 0}">No ratings</span>
+                        <span th:if="${experience.ratingCnt > 0}"
+                              th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
+                        <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
+                        <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
+                              th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                    </div>
+                    <img th:src="${experience.imageUrl} ?: @{/images/fallback-picture.png}"
+                         th:onerror="|this.src='@{/images/fallback-picture.png}'; this.onerror='';|"
+                         class="mw-100 h-auto object-fit-cover align-self-center" alt="Experience photo"
+                         style="max-height: 200px"
+                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${!noResults && !searchResult.hasNext}" class="row text-center my-5">
+        <h6>End of results</h6>
+    </div>
+
+    <nav th:if="${!noResults}" aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            <li th:classappend="${prevPageUrl == null ? 'disabled' : ''}" class="page-item" style="min-width: 76px">
+                <a th:href="${prevPageUrl}" class="page-link"><i class="bi bi-arrow-left-short"></i>Prev.</a>
+            </li>
+            <li th:classappend="${nextPageUrl == null ? 'disabled' : ''}" class="page-item text-center" style="min-width: 76px">
+                <a th:href="${nextPageUrl}" class="page-link">Next<i class="bi bi-arrow-right-short"></i></a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

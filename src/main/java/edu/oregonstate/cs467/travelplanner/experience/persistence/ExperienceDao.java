@@ -9,9 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,33 +21,11 @@ import java.util.Optional;
 @Validated
 public class ExperienceDao {
     private final JdbcClient jdbcClient;
+    private final RowMapper<Experience> rowMapper;
 
-    private final RowMapper<Experience> rowMapper = (rs, rowNum) -> {
-        // RowMapper creates Experience objects from returned data rows by reading the individual columns
-        Experience exp = new Experience();
-        exp.setExperienceId(rs.getLong("experience_id"));
-        exp.setTitle(rs.getString("title"));
-        exp.setDescription(rs.getString("description"));
-        exp.setEventDate(rs.getObject("event_date", LocalDate.class));
-        exp.setLocationLat(rs.getDouble("location_lat"));
-        exp.setLocationLng(rs.getDouble("location_lng"));
-        exp.setAddress(rs.getString("address"));
-        exp.setPlaceId(rs.getString("place_id"));
-        exp.setImageUrl(rs.getString("image_url"));
-        exp.setRatingCnt(rs.getInt("rating_cnt"));
-        exp.setRatingSum(rs.getInt("rating_sum"));
-        exp.setUserId(rs.getLong("user_id"));
-        Timestamp ts = rs.getTimestamp("created_at");
-        exp.setCreatedAt(ts.toInstant());
-        ts = rs.getTimestamp("updated_at");
-        exp.setUpdatedAt(ts == null ? null : ts.toInstant());
-        ts = rs.getTimestamp("deleted_at");
-        exp.setDeletedAt(ts == null ? null : ts.toInstant());
-        return exp;
-    };
-
-    public ExperienceDao(JdbcClient jdbcClient) {
+    public ExperienceDao(JdbcClient jdbcClient, RowMapper<Experience> rowMapper) {
         this.jdbcClient = jdbcClient;
+        this.rowMapper = rowMapper;
     }
 
     /**

@@ -1,0 +1,15 @@
+INSERT INTO `experience`
+VALUES (5,
+        'Wander twilight breeze canyon echo',
+        NULL,
+        '2025-02-10',
+        ST_PointFromText('POINT(48.874998347812486 2.296897424175867)', 4326),
+        NULL,
+        NULL,
+        NULL,
+        100,
+        400,
+        2,
+        '2025-02-17 00:00:00.000000',
+        NULL,
+        NULL);

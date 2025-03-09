@@ -1,8 +1,8 @@
-package edu.oregonstate.cs467.travelplanner.experience.controller;
+package edu.oregonstate.cs467.travelplanner.experience.web;
 
-import edu.oregonstate.cs467.travelplanner.experience.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
@@ -118,8 +118,7 @@ public class ExperienceWebController {
     @PostMapping(path = "/create")
     public String createExperience(
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult)
-    {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "experience/create-update-experience";
         } else {
@@ -144,8 +143,7 @@ public class ExperienceWebController {
     public String updateExperience(
             @PathVariable long experienceId,
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
-            BindingResult bindingResult)
-    {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "experience/create-update-experience";
         } else {

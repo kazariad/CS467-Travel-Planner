@@ -1,0 +1,15 @@
+INSERT INTO `experience`
+VALUES (4,
+        'Moonlight cascade journey whisper echo',
+        NULL,
+        '2025-01-10',
+        ST_PointFromText('POINT(34.06413001564114 -118.35870084280937)', 4326),
+        '5905 Wilshire Blvd, Los Angeles, CA 90036',
+        NULL,
+        NULL,
+        100,
+        500,
+        1,
+        '2025-02-05 00:00:00.000000',
+        NULL,
+        NULL);
