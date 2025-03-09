@@ -1,4 +1,4 @@
-package edu.oregonstate.cs467.travelplanner.web.controller;
+package edu.oregonstate.cs467.travelplanner.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
