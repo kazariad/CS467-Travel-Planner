@@ -89,8 +89,15 @@
                 <div class="invalid-feedback">End date is required.</div>
             </div>
 
-            <div class="row mt-4">
-                <button type="submit" class="btn btn-primary">Update Trip</button>
+            <div class="row">
+                <div class="col d-flex justify-content-center flex-wrap">
+                    <button type="submit" class="btn btn-success btn-sm" style="width: 4rem">Save</button>
+                    <div class="flex-grow-0 flex-shrink-1" style="width: 10rem"></div>
+                    <a th:href="${tripId} ? @{/trip/{tripId}(tripId=${tripId})} : @{/}"
+                       href="trip-details.html" class="btn btn-sm btn-secondary" style="width: 4rem">
+                        Cancel
+                    </a>
+                </div>
             </div>
         </form>
     </div>
