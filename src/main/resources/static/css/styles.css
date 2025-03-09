@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Sriracha&display=swap');
+
+html, body {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1116px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+header .navbar-brand img {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+header .navbar-brand span {
+    font-family: "Sriracha", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -3px 0 5px rgb(0 0 0 / 0.15), 3px 0 5px rgb(0 0 0 / 0.15);
+}
+
+#searchForm input:focus, #searchForm select:focus {
+    /* Bring to top when focused (z-axis) so box-shadow outline is fully visible*/
+    position: relative;
+}
+
+@media (min-width: 992px) {
+    #searchForm [name='distanceMiles'], #searchForm [name='keywords'] {
+        border-radius: 0;
+    }
+}
+
+footer {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}

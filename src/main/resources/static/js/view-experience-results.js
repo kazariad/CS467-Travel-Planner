@@ -50,8 +50,8 @@ function initGMapsApi() {
     for (let i = 0; i < experiences.length; i++) {
         const experience = experiences[i];
 
-        const label = experience.querySelector("div.view-on-map span").textContent;
-        const pinGlyph = new google.maps.marker.PinElement({
+        const label = experience.querySelector(".view-on-map .label").textContent;
+        const pin = new google.maps.marker.PinElement({
             glyph: label,
             glyphColor: "white",
         });
@@ -66,12 +66,17 @@ function initGMapsApi() {
             map,
             position,
             gmpClickable: true,
-            content: pinGlyph.element,
+            content: pin.element,
         });
 
         const thisInfoWindow = experience.querySelector(".info-window");
-        thisInfoWindow.querySelector(".content").addEventListener("click", event => {
-            experience.scrollIntoView({behavior: "smooth"});
+        thisInfoWindow.querySelector("button.view-in-list").addEventListener("click", event => {
+            event.stopPropagation();
+            event.preventDefault();
+            experience.scrollIntoView({
+                block: "center",
+                behavior: "auto"
+            });
         });
 
         marker.addListener("click", (mapMouseEvent) => {
@@ -84,11 +89,42 @@ function initGMapsApi() {
         });
         markers.push(marker);
 
-        experience.querySelector(".view-on-map").addEventListener("click", event => {
-            searchForm.scrollIntoView({behavior: "smooth"});
+        experience.querySelector("button.view-on-map").addEventListener("click", event => {
+            event.stopPropagation();
+            event.preventDefault();
+            searchForm.scrollIntoView({behavior: "auto"});
             showInfoWindow(marker, thisInfoWindow, 16);
         });
     }
+
+    if (locationTextInput.value !== "" && locationLatInput.value !== "" && locationLngInput.value !== "") {
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+            map,
+            position: {
+                lat: Number(locationLatInput.value),
+                lng: Number(locationLngInput.value)
+            },
+            gmpClickable: true,
+            content: new google.maps.marker.PinElement({
+                background: "orange"
+            }).element
+        });
+
+        const infoWindow = document.createElement("span");
+        infoWindow.textContent = locationTextInput.value;
+        infoWindow.style.fontWeight = "bold";
+
+        marker.addListener("click", (mapMouseEvent) => {
+            if (selectedMarker !== marker) {
+                showInfoWindow(marker, infoWindow);
+            } else {
+                infoWindow.close();
+                selectedMarker = null;
+            }
+        });
+        markers.push(marker);
+    }
+
     new markerClusterer.MarkerClusterer({ markers, map });
 
     // https://stackoverflow.com/a/4065006

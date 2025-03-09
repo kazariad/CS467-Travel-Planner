@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<!--th:remove="tag"-->
+<head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,40 +12,21 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous" defer></script>
 
-    <link rel="icon" th:href="@{/images/favicon.png}" href="../../static/images/favicon.png">
-    <link rel="stylesheet" th:href="@{/css/styles.css}" href="../../static/css/styles.css">
-
-    <title>Add Experience to Trip</title>
-
-    <style>
-        .form-container {
-            width: 100%;
-            max-width: 900px;
-            margin: auto;
-            margin-top: 50px;
-            padding: 40px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-
-        .btn-space {
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="icon" th:href="@{/images/favicon.png}" href="../static/images/favicon.png">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="../static/css/styles.css">
 </head>
 
 <body class="bg-body-tertiary">
-<header>
+<header th:fragment="header">
     <nav class="navbar navbar-expand py-1 bg-black">
         <div class="container">
             <a th:href="@{/}" href="/" class="navbar-brand d-flex align-items-center text-white">
-                <img th:src="@{/images/site-logo.png}" src="../../static/images/site-logo.png" alt="Logo" class="me-2">
+                <img th:src="@{/images/site-logo.png}" src="../static/images/site-logo.png" alt="Logo" class="me-2">
                 <span class="fs-3">Travel Planner</span>
             </a>
             <ul class="navbar-nav">
                 <li th:if="${!@authenticatedUserProvider.isAnyUser()}" class="nav-item">
-                    <a th:href="@{/login}" href="../login.html" class="nav-link text-white">
+                    <a th:href="@{/login}" href="login.html" class="nav-link text-white">
                         <i class="bi bi-person-fill"></i>
                         Login
                     </a>
@@ -56,7 +38,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a th:href="@{/user/details}" href="../user/user-details.html" class="dropdown-item">
+                            <a th:href="@{/user/details}" href="user/user-details.html" class="dropdown-item">
                                 My Account
                             </a>
                         </li>
@@ -74,32 +56,8 @@
 </header>
 
 <main class="container bg-body pt-3">
-    <!-- Form to Add Experience to Trip -->
-    <div class="form-container">
-        <h2 class="text-center">Add Experience to Trip</h2>
-
-        <!-- Error Message -->
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <p th:text="${error}"></p>
-        </div>
-
-        <form th:action="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}"
-              method="post">
-            <input type="hidden" th:field="*{experienceId}" th:value="${experience.experienceId}"/>
-
-            <!-- Trip Dropdown -->
-            <label for="trip">Select Trip</label>
-            <select id="trip" name="tripId" class="form-select mb-3" required>
-                <option th:each="trip : ${trips}" th:value="${trip.tripId}"
-                        th:text="${trip.tripTitle + ' (' + trip.startDate + ' - ' + trip.endDate + ')'}">
-                </option>
-            </select>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-space">
-                Add to Trip
-            </button>
-        </form>
+    <div>
+        Content
     </div>
 
     <footer>
