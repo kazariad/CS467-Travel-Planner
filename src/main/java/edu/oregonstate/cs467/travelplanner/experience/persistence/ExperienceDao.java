@@ -163,4 +163,22 @@ public class ExperienceDao {
                 .param(userId)
                 .query(rowMapper).list();
     }
+
+    public List<Experience> findRandomFeatured(double minRating, int limit) {
+        String sql = """
+                SELECT *, 
+                       ST_Latitude(location) AS location_lat,
+                       ST_Longitude(location) AS location_lng
+                FROM experience
+                WHERE deleted_at IS NULL
+                AND image_url IS NOT NULL
+                AND (rating_sum / rating_cnt) >= ?
+                ORDER BY RAND()
+                LIMIT ?""";
+        return jdbcClient.sql(sql)
+                .param(minRating)
+                .param(limit)
+                .query(rowMapper)
+                .list();
+    }
 }
