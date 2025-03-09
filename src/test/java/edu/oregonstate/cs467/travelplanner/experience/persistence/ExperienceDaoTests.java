@@ -13,7 +13,9 @@ import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.context.jdbc.SqlMergeMode.MergeMode;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,7 +30,7 @@ class ExperienceDaoTests extends AbstractBaseTest {
     @Autowired
     private ExperienceDao dao;
 
-    private Experience exp1, exp2, exp3, exp4;
+    private Experience exp1, exp2, exp3, exp4, exp5;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -36,6 +38,7 @@ class ExperienceDaoTests extends AbstractBaseTest {
         exp2 = objectMapper.readValue(new ClassPathResource("/json/Experience/2.json").getInputStream(), Experience.class);
         exp3 = objectMapper.readValue(new ClassPathResource("/json/Experience/3.json").getInputStream(), Experience.class);
         exp4 = objectMapper.readValue(new ClassPathResource("/json/Experience/4.json").getInputStream(), Experience.class);
+        exp5 = objectMapper.readValue(new ClassPathResource("/json/Experience/5.json").getInputStream(), Experience.class);
     }
 
     @Test
@@ -110,6 +113,26 @@ class ExperienceDaoTests extends AbstractBaseTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(List.of(exp2));
 
         actual = dao.findByUserId(3);
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    @Sql(scripts = "/sql/Experience/1.sql")
+    @Sql(scripts = "/sql/Experience/2.sql")
+    @Sql(scripts = "/sql/Experience/3.sql")
+    @Sql(scripts = "/sql/Experience/4.sql")
+    @Sql(scripts = "/sql/Experience/5.sql")
+    void findRandomFeatured() throws Exception {
+        var actual = dao.findRandomFeatured(2, 3);
+        assertThat(new HashSet<>(actual)).usingRecursiveComparison().isEqualTo(Set.of(exp4, exp5));
+
+        actual = dao.findRandomFeatured(4.25, 3);
+        assertThat(new HashSet<>(actual)).usingRecursiveComparison().isEqualTo(Set.of(exp4));
+
+        actual = dao.findRandomFeatured(5, 3);
+        assertThat(actual).isEmpty();
+
+        actual = dao.findRandomFeatured(0, 0);
         assertThat(actual).isEmpty();
     }
 }

@@ -5,8 +5,9 @@
   "locationLat": 34.06413001564114,
   "locationLng": -118.35870084280937,
   "address": "5905 Wilshire Blvd, Los Angeles, CA 90036",
+  "imageUrl": "http://image.url",
   "ratingCnt": 100,
-  "ratingSum": 500,
+  "ratingSum": 450,
   "userId": 1,
   "createdAt": "2025-02-05T00:00:00Z"
 }

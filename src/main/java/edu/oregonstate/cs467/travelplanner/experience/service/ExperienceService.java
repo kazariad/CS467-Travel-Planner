@@ -76,6 +76,10 @@ public class ExperienceService {
         experienceDao.update(experience);
     }
 
+    public List<Experience> getFeaturedExperiences() {
+        return experienceDao.findRandomFeatured(4, 3);
+    }
+
     public ExperienceSearchResult search(ExperienceSearchParams params) {
         return experienceSearchDao.search(params);
     }
