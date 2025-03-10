@@ -77,14 +77,14 @@
 
     <div class="row gy-2 mb-3" th:with="isAuthor = ${@authenticatedUserProvider.isUserWithId(experience.userId)}">
         <div class="col-auto">
-            <a th:href="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}"
+            <a th:href="@{${@experienceUrlGenerator.addToTrip(experience.experienceId)}}"
                href="../trip/add-experience-to-trip.html" class="btn btn-sm btn-primary" style="width: 7rem">
                 <i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Add to Trip
             </a>
         </div>
 
         <div class="col-auto">
-            <a th:if="${isAuthor}" th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
+            <a th:if="${isAuthor}" th:href="@{${@experienceUrlGenerator.update(experience.experienceId)}}"
                href="create-update-experience.html" class="btn btn-sm btn-outline-primary" style="width: 7rem">
                 <i class="bi bi-pencil"></i>&nbsp;&nbsp;Edit
             </a>
@@ -105,7 +105,7 @@
                             </h1>
                         </div>
                         <div class="modal-footer justify-content-center">
-                            <form th:action="@{/experience/{experienceId}/delete(experienceId=${experienceId})}"
+                            <form th:action="@{${@experienceUrlGenerator.delete(experience.experienceId)}}"
                                   action="#" method="post">
                                 <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
                                     Yes

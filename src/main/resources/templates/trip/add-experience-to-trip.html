@@ -83,10 +83,7 @@
             <p th:text="${error}"></p>
         </div>
 
-        <form th:action="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}"
-              method="post">
-            <input type="hidden" th:field="*{experienceId}" th:value="${experience.experienceId}"/>
-
+        <form th:action="@{${@experienceUrlGenerator.addToTrip(experience.experienceId)}}" method="post">
             <!-- Trip Dropdown -->
             <label for="trip">Select Trip</label>
             <select id="trip" name="tripId" class="form-select mb-3" required>

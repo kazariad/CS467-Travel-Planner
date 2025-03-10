@@ -106,7 +106,7 @@
                         <td th:text="${experience.title}"></td>
                         <td>
                             <a type="button"
-                               th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                               th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                                class="btn btn-primary">View Experience</a>
                         </td>
                     </tr>

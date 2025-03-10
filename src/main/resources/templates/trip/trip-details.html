@@ -121,7 +121,7 @@
                     <td>
                         <!-- View Experience Button -->
                         <a type="button"
-                           th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                           th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                            class="btn btn-primary" style="width: 8rem;">View Experience</a>
 
                         <!-- Delete Experience Button -->
@@ -146,7 +146,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form th:action="@{/trip/{tripId}/experience/delete/{experienceId}(tripId=${trip.tripId}, experienceId=${experience.experienceId})}" method="post">
+                                        <form th:action="@{/trip/{tripId}/experience/delete/{hashId}(tripId=${trip.tripId}, hashId=${@experienceHashIdEncoder.encode(experience.experienceId)})}" method="post">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </div>

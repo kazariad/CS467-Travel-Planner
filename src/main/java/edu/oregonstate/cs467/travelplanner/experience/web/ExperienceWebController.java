@@ -3,6 +3,8 @@ package edu.oregonstate.cs467.travelplanner.experience.web;
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
 import edu.oregonstate.cs467.travelplanner.experience.service.dto.CreateUpdateExperienceDto;
+import edu.oregonstate.cs467.travelplanner.experience.web.util.ExperienceHashIdEncoder;
+import edu.oregonstate.cs467.travelplanner.experience.web.util.ExperienceUrlGenerator;
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
@@ -30,6 +32,8 @@ import java.util.List;
 public class ExperienceWebController {
     private final AuthenticatedUserProvider authUserProvider;
     private final ExperienceService experienceService;
+    private final ExperienceHashIdEncoder hashIdEncoder;
+    private final ExperienceUrlGenerator urlGenerator;
     private final UserService userService;
     private final TimeUtils timeUtils;
     private final String gmapsApiKey;
@@ -38,6 +42,8 @@ public class ExperienceWebController {
     public ExperienceWebController(
             AuthenticatedUserProvider authUserProvider,
             ExperienceService experienceService,
+            ExperienceHashIdEncoder hashIdEncoder,
+            ExperienceUrlGenerator urlGenerator,
             UserService userService,
             TimeUtils timeUtils,
             TripService tripService,
@@ -46,6 +52,8 @@ public class ExperienceWebController {
     ) {
         this.authUserProvider = authUserProvider;
         this.experienceService = experienceService;
+        this.hashIdEncoder = hashIdEncoder;
+        this.urlGenerator = urlGenerator;
         this.userService = userService;
         this.timeUtils = timeUtils;
         this.gmapsApiKey = gmapsApiKey;
@@ -57,8 +65,9 @@ public class ExperienceWebController {
         model.addAttribute("gmapsApiKey", gmapsApiKey);
     }
 
-    @GetMapping("/{experienceId}")
-    public String viewExperience(@PathVariable long experienceId, Model model) {
+    @GetMapping("/{hashId}")
+    public String viewExperience(@PathVariable String hashId, Model model) {
+        long experienceId = hashIdEncoder.decode(hashId);
         // retrieve the Experience object from persistent storage based on the path ID
         Experience experience = experienceService.getExperience(experienceId);
         // if the Experience doesn't exist (or was deleted), return a 404 error
@@ -125,12 +134,13 @@ public class ExperienceWebController {
             return "experience/create-update-experience";
         } else {
             long experienceId = experienceService.createExperience(experienceDto);
-            return "redirect:/experience/" + experienceId;
+            return "redirect:" + urlGenerator.view(experienceId);
         }
     }
 
-    @GetMapping(path = "/{experienceId}/update")
-    public String initUpdateForm(@PathVariable long experienceId, Model model) {
+    @GetMapping(path = "/{hashId}/update")
+    public String initUpdateForm(@PathVariable String hashId, Model model) {
+        long experienceId = hashIdEncoder.decode(hashId);
         Experience experience = experienceService.getExperience(experienceId);
         if (experience == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         if (!authUserProvider.isUserWithId(experience.getUserId())) throw new AccessDeniedException("Access denied");
@@ -142,9 +152,9 @@ public class ExperienceWebController {
         return "experience/create-update-experience";
     }
 
-    @PostMapping(path = "/{experienceId}/update")
+    @PostMapping(path = "/{hashId}/update")
     public String updateExperience(
-            @PathVariable long experienceId,
+            @PathVariable String hashId,
             @Valid @ModelAttribute("experienceDto") CreateUpdateExperienceDto experienceDto,
             BindingResult bindingResult,
             Model model
@@ -153,25 +163,24 @@ public class ExperienceWebController {
             model.addAttribute("autocompleteText", generateAutocompleteText(experienceDto));
             return "experience/create-update-experience";
         } else {
+            long experienceId = hashIdEncoder.decode(hashId);
             experienceService.updateExperience(experienceId, experienceDto);
-            return "redirect:/experience/{experienceId}";
+            return "redirect:" + urlGenerator.view(experienceId);
         }
     }
 
-    @PostMapping(path = "/{experienceId}/delete")
-    public String deleteExperience(@PathVariable long experienceId) {
+    @PostMapping(path = "/{hashId}/delete")
+    public String deleteExperience(@PathVariable String hashId) {
+        long experienceId = hashIdEncoder.decode(hashId);
         experienceService.deleteExperience(experienceId);
         return "redirect:/user/details";
     }
 
-    @GetMapping("/{experienceId}/add-to-trip")
-    public String addToTripForm(
-            @PathVariable Long experienceId,
-            Model model
-    ) {
-        if (!authUserProvider.isAnyUser()) {
-            return "redirect:/registration";
-        }
+    @GetMapping("/{hashId}/add-to-trip")
+    public String addToTripForm(@PathVariable String hashId, Model model) {
+        if (!authUserProvider.isAnyUser()) return "redirect:/registration";
+
+        long experienceId = hashIdEncoder.decode(hashId);
         User currentUser = authUserProvider.getUser();
         List<Trip> userTrips = tripService.getRecentTripsByUserId(currentUser.getUserId());
         Experience experience = experienceService.getExperience(experienceId);
@@ -180,12 +189,11 @@ public class ExperienceWebController {
         return "trip/add-experience-to-trip";
     }
 
-    @PostMapping("/{experienceId}/add-to-trip")
-    public String addExperienceToTrip(
-            @PathVariable Long experienceId,
-            @RequestParam Long tripId
-    ) {
+    @PostMapping("/{hashId}/add-to-trip")
+    public String addExperienceToTrip(@PathVariable String hashId, @RequestParam Long tripId) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+
+        long experienceId = hashIdEncoder.decode(hashId);
         tripService.addExperienceToTrip(experienceId, tripId);
         return "redirect:/trip/" + tripId + "?success=experience-added";
     }
