@@ -77,14 +77,14 @@
 
     <div class="row gy-2 mb-3" th:with="isAuthor = ${@authenticatedUserProvider.isUserWithId(experience.userId)}">
         <div class="col-auto">
-            <a th:href="@{/experience/{experienceId}/add-to-trip(experienceId=${experience.experienceId})}"
+            <a th:href="@{${@experienceUrlGenerator.addToTrip(experience.experienceId)}}"
                href="../trip/add-experience-to-trip.html" class="btn btn-sm btn-primary" style="width: 7rem">
                 <i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Add to Trip
             </a>
         </div>
 
         <div class="col-auto">
-            <a th:if="${isAuthor}" th:href="@{/experience/{experienceId}/update(experienceId=${experienceId})}"
+            <a th:if="${isAuthor}" th:href="@{${@experienceUrlGenerator.update(experience.experienceId)}}"
                href="create-update-experience.html" class="btn btn-sm btn-outline-primary" style="width: 7rem">
                 <i class="bi bi-pencil"></i>&nbsp;&nbsp;Edit
             </a>
@@ -105,7 +105,7 @@
                             </h1>
                         </div>
                         <div class="modal-footer justify-content-center">
-                            <form th:action="@{/experience/{experienceId}/delete(experienceId=${experienceId})}"
+                            <form th:action="@{${@experienceUrlGenerator.delete(experience.experienceId)}}"
                                   action="#" method="post">
                                 <button type="submit" class="btn btn-danger btn-sm me-5" style="width: 3rem">
                                     Yes
@@ -125,7 +125,7 @@
         <div class="row mb-2">
             <div class="col">
                 <i class="bi bi-globe-europe-africa"></i>&nbsp;
-                <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                <span th:text="${@experienceFormatter.location(experience)}">
                 123 Fake St. City, State Country
             </span>
             </div>
@@ -142,19 +142,20 @@
             <div class="col">
                 <i class="bi bi-star"></i>&nbsp;
                 <span th:if="${experience.ratingCnt == 0}">No ratings</span>
-                <span th:if="${experience.ratingCnt > 0}" th:text="${rating}">4.6 / 5.0</span>
-                <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                      th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                <span th:if="${experience.ratingCnt > 0}"
+                      th:text="${@experienceFormatter.avgRating(experience)}">4.6 / 5.0</span>
+                <span th:if="${experience.ratingCnt > 0}"
+                      th:text="${'(' + @experienceFormatter.numRatings(experience) + ')'}"
+                      style="font-size: 0.75rem">(5 ratings)</span>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
                 <i class="bi bi-person"></i>&nbsp;
-                <span th:text="${'Submitted ' + submittedDuration + ' ago by ' + author}">
-                Submitted 5 days ago by username
-            </span>
+                <span th:text="${'Submitted ' + @experienceFormatter.submittedDuration(experience) + ' ago by ' + author}">
+                    Submitted 5 days ago by username
+                </span>
             </div>
         </div>
     </div>
@@ -192,7 +193,7 @@
                      th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                      class="mw-100 mh-100 object-fit-contain"
                      alt="Photo"
-                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                     src="../../sample-images/hollywood-sign.jpg">
             </div>
         </div>
         <div class="tab-pane w-100 h-100 p-0 fade" id="map-tab-pane"

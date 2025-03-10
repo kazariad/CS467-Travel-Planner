@@ -7,9 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class MainController {
@@ -28,20 +26,8 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("gmapsApiKey", gmapsApiKey);
-
         List<Experience> experiences = experienceService.getFeaturedExperiences();
         model.addAttribute("experiences", experiences);
-
-        Map<Long, String> ratingMap = new HashMap<>();
-        for (Experience experience : experiences) {
-            if (experience.getRatingCnt() > 0) {
-                String rating = String.format("%.1f / 5.0",
-                        (double) experience.getRatingSum() / (double) experience.getRatingCnt());
-                ratingMap.put(experience.getExperienceId(), rating);
-            }
-        }
-        model.addAttribute("ratingMap", ratingMap);
-
         return "home";
     }
 

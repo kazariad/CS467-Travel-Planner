@@ -2,6 +2,7 @@ package edu.oregonstate.cs467.travelplanner.trip.controller;
 
 import edu.oregonstate.cs467.travelplanner.experience.model.Experience;
 import edu.oregonstate.cs467.travelplanner.experience.service.ExperienceService;
+import edu.oregonstate.cs467.travelplanner.experience.web.util.ExperienceHashIdEncoder;
 import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
@@ -27,6 +28,9 @@ public class TripController {
 
     @Autowired
     private ExperienceService experienceService;
+
+    @Autowired
+    private ExperienceHashIdEncoder hashIdEncoder;
 
     @Autowired
     private AuthenticatedUserProvider authUserProvider;
@@ -126,9 +130,10 @@ public class TripController {
         return "redirect:/user/details?success=true&action=delete";
     }
 
-    @PostMapping(path = "/{tripId}/experience/delete/{experienceId}")
-    public String deleteExperienceFromTrip(@PathVariable long tripId, @PathVariable long experienceId) {
+    @PostMapping(path = "/{tripId}/experience/delete/{hashId}")
+    public String deleteExperienceFromTrip(@PathVariable long tripId, @PathVariable String hashId) {
         if (!authUserProvider.isAnyUser()) throw new AccessDeniedException("Access denied");
+        long experienceId = hashIdEncoder.decode(hashId);
         tripService.deleteExperienceFromTrip(tripId, experienceId);
         return "redirect:/trip/{tripId}?success=true";
     }

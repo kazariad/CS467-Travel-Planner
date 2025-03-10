@@ -126,39 +126,38 @@
     </div>
 
     <div th:each="details : ${searchResult.experienceDetailsList}" th:with="experience = ${details.experience}"
-         th:id="${experience.experienceId}" id="0"
-         class="experience card align-self-center w-100 bg-body-tertiary border-secondary rounded overflow-hidden mb-4"
+         class="experience card w-100 align-self-center bg-body-tertiary border-secondary rounded shadow overflow-hidden mb-4"
          style="max-width: 800px">
         <div class="row g-0">
-            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+            <a th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                href="view-experience.html" class="col-12 col-sm-5 d-flex justify-content-center align-items-center">
                 <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
                      th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                      class="w-100 h-100 object-fit-cover" alt="Experience photo" style="max-height: min(250px, 50vh)"
-                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                     src="../../sample-images/hollywood-sign.jpg">
             </a>
-            <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+            <a th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                href="view-experience.html" class="col-12 col-sm d-flex flex-column justify-content-center row-gap-1 p-3"
                style="text-decoration: inherit; color: inherit">
                 <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
                 <div class="card-text">
                     <i class="bi bi-globe-europe-africa"></i>
-                    <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                    <span th:text="${@experienceFormatter.location(experience)}">
                             123 Fake St. City, State Country
                         </span>
                 </div>
                 <div class="card-text">
-                    <i class="bi bi-star"></i>
+                    <i class="bi bi-star"></i>&nbsp;
                     <span th:if="${experience.ratingCnt == 0}">No ratings</span>
                     <span th:if="${experience.ratingCnt > 0}"
-                          th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
-                    <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                    <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                          th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                          th:text="${@experienceFormatter.avgRating(experience)}">4.6 / 5.0</span>
+                    <span th:if="${experience.ratingCnt > 0}"
+                          th:text="${'(' + @experienceFormatter.numRatings(experience) + ')'}"
+                          style="font-size: 0.75rem">(5 ratings)</span>
                 </div>
                 <div class="card-text">
                     <i class="bi bi-person"></i>
-                    <span th:text="${'Submitted ' + submittedDurationMap.get(experience.experienceId) + ' ago by ' + details.author}">
+                    <span th:text="${'Submitted ' + @experienceFormatter.submittedDuration(experience) + ' ago by ' + details.author}">
                         Submitted 5 days ago by username
                     </span>
                 </div>
@@ -184,24 +183,24 @@
             <input th:value="${experience.address}" type="hidden" name="address">
 
             <div hidden>
-                <a th:href="@{/experience/{experienceId}(experienceId=${experience.experienceId})}"
+                <a th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                    href="view-experience.html" class="info-window d-flex flex-column row-gap-1"
                    style="text-decoration: inherit; color: inherit">
                     <h5 th:text="${experience.title}" class="m-0">Experience Title</h5>
                     <div>
                         <i class="bi bi-globe-europe-africa"></i>
-                        <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                        <span th:text="${@experienceFormatter.location(experience)}">
                             123 Fake St. City, State Country
                         </span>
                     </div>
                     <div>
-                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>&nbsp;
                         <span th:if="${experience.ratingCnt == 0}">No ratings</span>
                         <span th:if="${experience.ratingCnt > 0}"
-                              th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
-                        <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                        <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                              th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                              th:text="${@experienceFormatter.avgRating(experience)}">4.6 / 5.0</span>
+                        <span th:if="${experience.ratingCnt > 0}"
+                              th:text="${'(' + @experienceFormatter.numRatings(experience) + ')'}"
+                              style="font-size: 0.75rem">(5 ratings)</span>
                     </div>
                     <button class="view-in-list btn btn-sm btn-success">
                         View in list
@@ -210,7 +209,7 @@
                          th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                          class="img-fluid object-fit-cover align-self-center" alt="Experience photo"
                          style="max-height: 190px"
-                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                         src="../../sample-images/hollywood-sign.jpg">
                 </a>
             </div>
 
