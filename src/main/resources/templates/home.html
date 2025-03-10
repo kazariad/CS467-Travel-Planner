@@ -115,14 +115,14 @@
 
     <div class="row rounded border bg-body-tertiary align-self-center" style="max-width: 900px">
         <div class="col-12">
-            <div class="row">
+            <div class="row mb-3">
                 <h6 class="col text-center display-6">Featured Experiences</h6>
             </div>
-            <div class="row my-3">
+            <div class="row">
                 <a th:each="experience : ${experiences}"
                    th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                    href="experience/view-experience.html"
-                   class="col-12 col-md" style="text-decoration: inherit; color: inherit">
+                   class="col-12 col-md mb-4" style="text-decoration: inherit; color: inherit">
                     <div class="card w-100 h-100 rounded overflow-hidden shadow">
                         <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
                              th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"

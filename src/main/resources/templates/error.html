@@ -15,6 +15,13 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="../static/css/styles.css">
 
     <title th:text="${error}">Internal Server Error</title>
+
+    <style>
+        /* Fix for error code line-height masking the Travel Planner span and blocking clicks */
+        header a.navbar-brand {
+            z-index: 1;
+        }
+    </style>
 </head>
 
 <body class="bg-body-tertiary">

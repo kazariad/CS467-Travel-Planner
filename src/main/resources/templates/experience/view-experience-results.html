@@ -126,7 +126,7 @@
     </div>
 
     <div th:each="details : ${searchResult.experienceDetailsList}" th:with="experience = ${details.experience}"
-         class="experience card align-self-center w-100 bg-body-tertiary border-secondary rounded overflow-hidden mb-4"
+         class="experience card w-100 align-self-center bg-body-tertiary border-secondary rounded shadow overflow-hidden mb-4"
          style="max-width: 800px">
         <div class="row g-0">
             <a th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
