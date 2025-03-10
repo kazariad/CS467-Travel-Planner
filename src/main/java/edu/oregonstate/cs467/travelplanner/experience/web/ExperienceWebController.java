@@ -82,12 +82,6 @@ public class ExperienceWebController {
         // use relative time to avoid having to determine the client's timezone (surprisingly there isn't a standard header for this, requires JS)
         model.addAttribute("submittedDuration", timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
 
-        if (experience.getRatingCnt() > 0) {
-            // the Experience avg. rating is calculated by dividing the cumulative rating sum by the number of ratings
-            // make sure Experience has at least 1 rating to avoid dividing by 0
-            model.addAttribute("rating", String.format("%.1f / 5.0", (double) experience.getRatingSum() / (double) experience.getRatingCnt()));
-        }
-
         String location = String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng());
         UriBuilder mapUrlBuilder = UriComponentsBuilder
                 .fromUriString("https://www.google.com/maps/embed/v1/")

@@ -147,13 +147,13 @@
                         </span>
                 </div>
                 <div class="card-text">
-                    <i class="bi bi-star"></i>
+                    <i class="bi bi-star"></i>&nbsp;
                     <span th:if="${experience.ratingCnt == 0}">No ratings</span>
                     <span th:if="${experience.ratingCnt > 0}"
-                          th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
-                    <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                    <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                          th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                          th:text="${@experienceFormatter.getAvgRating(experience)}">4.6 / 5.0</span>
+                    <span th:if="${experience.ratingCnt > 0}"
+                          th:text="${'(' + @experienceFormatter.getNumRatings(experience) + ')'}"
+                          style="font-size: 0.75rem">(5 ratings)</span>
                 </div>
                 <div class="card-text">
                     <i class="bi bi-person"></i>
@@ -194,13 +194,13 @@
                         </span>
                     </div>
                     <div>
-                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>&nbsp;
                         <span th:if="${experience.ratingCnt == 0}">No ratings</span>
                         <span th:if="${experience.ratingCnt > 0}"
-                              th:text="${ratingMap.get(experience.experienceId)}">4.6 / 5.0</span>
-                        <span th:if="${experience.ratingCnt == 1}" style="font-size: 0.75rem"> (1 rating)</span>
-                        <span th:if="${experience.ratingCnt > 1}" style="font-size: 0.75rem"
-                              th:text="${' (' + experience.ratingCnt + ' ratings)'}"> (5 ratings)</span>
+                              th:text="${@experienceFormatter.getAvgRating(experience)}">4.6 / 5.0</span>
+                        <span th:if="${experience.ratingCnt > 0}"
+                              th:text="${'(' + @experienceFormatter.getNumRatings(experience) + ')'}"
+                              style="font-size: 0.75rem">(5 ratings)</span>
                     </div>
                     <button class="view-in-list btn btn-sm btn-success">
                         View in list
