@@ -143,9 +143,9 @@
                 <i class="bi bi-star"></i>&nbsp;
                 <span th:if="${experience.ratingCnt == 0}">No ratings</span>
                 <span th:if="${experience.ratingCnt > 0}"
-                      th:text="${@experienceFormatter.getAvgRating(experience)}">4.6 / 5.0</span>
+                      th:text="${@experienceFormatter.avgRating(experience)}">4.6 / 5.0</span>
                 <span th:if="${experience.ratingCnt > 0}"
-                      th:text="${'(' + @experienceFormatter.getNumRatings(experience) + ')'}"
+                      th:text="${'(' + @experienceFormatter.numRatings(experience) + ')'}"
                       style="font-size: 0.75rem">(5 ratings)</span>
             </div>
         </div>
@@ -153,9 +153,9 @@
         <div class="row">
             <div class="col">
                 <i class="bi bi-person"></i>&nbsp;
-                <span th:text="${'Submitted ' + submittedDuration + ' ago by ' + author}">
-                Submitted 5 days ago by username
-            </span>
+                <span th:text="${'Submitted ' + @experienceFormatter.submittedDuration(experience) + ' ago by ' + author}">
+                    Submitted 5 days ago by username
+                </span>
             </div>
         </div>
     </div>

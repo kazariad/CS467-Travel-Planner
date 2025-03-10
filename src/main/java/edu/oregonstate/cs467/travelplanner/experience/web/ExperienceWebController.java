@@ -9,7 +9,6 @@ import edu.oregonstate.cs467.travelplanner.trip.model.Trip;
 import edu.oregonstate.cs467.travelplanner.trip.service.TripService;
 import edu.oregonstate.cs467.travelplanner.user.model.User;
 import edu.oregonstate.cs467.travelplanner.user.service.UserService;
-import edu.oregonstate.cs467.travelplanner.util.TimeUtils;
 import edu.oregonstate.cs467.travelplanner.util.security.AuthenticatedUserProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -35,7 +32,6 @@ public class ExperienceWebController {
     private final ExperienceHashIdEncoder hashIdEncoder;
     private final ExperienceUrlGenerator urlGenerator;
     private final UserService userService;
-    private final TimeUtils timeUtils;
     private final String gmapsApiKey;
     private final TripService tripService;
 
@@ -45,7 +41,6 @@ public class ExperienceWebController {
             ExperienceHashIdEncoder hashIdEncoder,
             ExperienceUrlGenerator urlGenerator,
             UserService userService,
-            TimeUtils timeUtils,
             TripService tripService,
             @Value("${google.maps.api.key}")
             String gmapsApiKey
@@ -55,7 +50,6 @@ public class ExperienceWebController {
         this.hashIdEncoder = hashIdEncoder;
         this.urlGenerator = urlGenerator;
         this.userService = userService;
-        this.timeUtils = timeUtils;
         this.gmapsApiKey = gmapsApiKey;
         this.tripService = tripService;
     }
@@ -78,9 +72,6 @@ public class ExperienceWebController {
         // find the User who created this Experience and add their username to the model
         User author = userService.findById(experience.getUserId()).get();
         model.addAttribute("author", author.getUsername());
-        // how long ago this Experience was submitted as a relative duration, e.g. "12 hours ago", "5 days ago", etc.
-        // use relative time to avoid having to determine the client's timezone (surprisingly there isn't a standard header for this, requires JS)
-        model.addAttribute("submittedDuration", timeUtils.formatDuration(Duration.between(experience.getCreatedAt(), Instant.now())));
 
         String location = String.format("%s,%s", experience.getLocationLat(), experience.getLocationLng());
         UriBuilder mapUrlBuilder = UriComponentsBuilder
