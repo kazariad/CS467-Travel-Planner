@@ -115,39 +115,41 @@
                 </thead>
                 <tbody>
 
-                <tr th:if="${not #lists.isEmpty(experiences)}"
-                    th:each="experience : ${experiences}">
+                <tr th:if="${not #lists.isEmpty(experiences)}" th:each="experience,iterStat : ${experiences}">
                     <td th:text="${experience.title}"></td>
                     <td>
                         <!-- View Experience Button -->
-                        <a type="button"
-                           th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
+                        <a type="button" th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
+                           href="../experience/view-experience.html"
                            class="btn btn-primary" style="width: 8rem;">View Experience</a>
 
                         <!-- Delete Experience Button -->
                         <button type="button" class="btn btn-danger" style="width: 8rem;" data-bs-toggle="modal"
-                                data-bs-target="#confirmExperienceDeleteModal-${experience.experienceId}">
-                            Delete Experience
+                                th:attr="data-bs-target = ${'#deleteModal-' + iterStat.count}"
+                                data-bs-target="#deleteModal-1">
+                            Remove From Trip
                         </button>
 
                         <!-- Delete Confirmation Modal -->
-                        <div class="modal fade" id="confirmExperienceDeleteModal-${experience.experienceId}" tabindex="-1"
-                             aria-labelledby="confirmExperienceDeleteModalLabel-${experience.experienceId}" aria-hidden="true">
+                        <div th:id="${'deleteModal-' + iterStat.count}"
+                             id="deleteModal-1" class="modal fade" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="confirmExperienceDeleteModalLabel-${experience.experienceId}">
-                                            Confirm Delete
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title">Confirm Removal</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Are you sure you want to delete "<span th:text="${experience.title}"></span>"?
+                                        Are you sure you want to remove "<span th:text="${experience.title}">Experience Title</span>"?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form th:action="@{/trip/{tripId}/experience/delete/{hashId}(tripId=${trip.tripId}, hashId=${@experienceHashIdEncoder.encode(experience.experienceId)})}" method="post">
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <form th:action="@{/trip/{tripId}/experience/delete/{hashId}(tripId=${trip.tripId}, hashId=${@experienceHashIdEncoder.encode(experience.experienceId)})}"
+                                              method="post">
+                                            <button type="submit" class="btn btn-danger">Remove</button>
                                         </form>
                                     </div>
                                 </div>
