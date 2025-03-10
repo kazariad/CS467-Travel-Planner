@@ -134,7 +134,7 @@
                 <img th:src="${experience.imageUrl} ?: @{/images/default-experience.png}"
                      th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                      class="w-100 h-100 object-fit-cover" alt="Experience photo" style="max-height: min(250px, 50vh)"
-                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                     src="../../sample-images/hollywood-sign.jpg">
             </a>
             <a th:href="@{${@experienceUrlGenerator.view(experience.experienceId)}}"
                href="view-experience.html" class="col-12 col-sm d-flex flex-column justify-content-center row-gap-1 p-3"
@@ -209,7 +209,7 @@
                          th:onerror="|this.src='@{/images/default-experience.png}'; this.onerror='';|"
                          class="img-fluid object-fit-cover align-self-center" alt="Experience photo"
                          style="max-height: 190px"
-                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hollywood_Sign_%28Zuschnitt%29.jpg/2560px-Hollywood_Sign_%28Zuschnitt%29.jpg">
+                         src="../../sample-images/hollywood-sign.jpg">
                 </a>
             </div>
 
