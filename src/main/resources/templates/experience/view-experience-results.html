@@ -142,7 +142,7 @@
                 <h5 th:text="${experience.title}" class="card-title">Experience Title</h5>
                 <div class="card-text">
                     <i class="bi bi-globe-europe-africa"></i>
-                    <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                    <span th:text="${@experienceFormatter.location(experience)}">
                             123 Fake St. City, State Country
                         </span>
                 </div>
@@ -189,7 +189,7 @@
                     <h5 th:text="${experience.title}" class="m-0">Experience Title</h5>
                     <div>
                         <i class="bi bi-globe-europe-africa"></i>
-                        <span th:text="${experience.address} ?: ${#numbers.formatDecimal(experience.locationLat, 1, 6)} + ', ' + ${#numbers.formatDecimal(experience.locationLng, 1, 6)}">
+                        <span th:text="${@experienceFormatter.location(experience)}">
                             123 Fake St. City, State Country
                         </span>
                     </div>

@@ -15,6 +15,11 @@ public class ExperienceFormatter {
         this.clock = clock;
     }
 
+    public String location(Experience experience) {
+        if (experience.getAddress() != null) return experience.getAddress();
+        return String.format("%.6f, %.6f", experience.getLocationLat(), experience.getLocationLng());
+    }
+
     public String avgRating(Experience experience) {
         if (experience.getRatingCnt() == 0) return "N/A";
         return String.format("%.1f / %.1f", (double) experience.getRatingSum() / (double) experience.getRatingCnt(), 5.0);

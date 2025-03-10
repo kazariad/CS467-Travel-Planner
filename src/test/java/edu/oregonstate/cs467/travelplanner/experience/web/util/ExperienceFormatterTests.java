@@ -17,6 +17,17 @@ class ExperienceFormatterTests extends AbstractBaseTest {
     private ExperienceFormatter formatter;
 
     @Test
+    void location() {
+        var exp = new Experience();
+        exp.setLocationLat(0.0);
+        exp.setLocationLng(0.0);
+        assertThat(formatter.location(exp)).isEqualTo("0.000000, 0.000000");
+
+        exp.setAddress("address");
+        assertThat(formatter.location(exp)).isEqualTo("address");
+    }
+
+    @Test
     void avgRating() {
         Locale.setDefault(Locale.US);
         var exp = new Experience();
