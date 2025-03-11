@@ -223,10 +223,10 @@
     <nav th:if="${!noResults}" class="mt-5" aria-label="Pagination">
         <ul class="pagination justify-content-center">
             <li th:classappend="${prevPageUrl == null ? 'disabled' : ''}" class="page-item" style="min-width: 76px">
-                <a th:href="${prevPageUrl}" class="page-link"><i class="bi bi-arrow-left-short"></i>Prev.</a>
+                <a th:href="@{${prevPageUrl}}" class="page-link"><i class="bi bi-arrow-left-short"></i>Prev.</a>
             </li>
             <li th:classappend="${nextPageUrl == null ? 'disabled' : ''}" class="page-item text-center" style="min-width: 76px">
-                <a th:href="${nextPageUrl}" class="page-link">Next<i class="bi bi-arrow-right-short"></i></a>
+                <a th:href="@{${nextPageUrl}}" class="page-link">Next<i class="bi bi-arrow-right-short"></i></a>
             </li>
         </ul>
     </nav>
